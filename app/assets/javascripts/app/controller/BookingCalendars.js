@@ -43,6 +43,7 @@ Ext.define("AM.controller.BookingCalendars", {
 			
 			'bookingCalendar bookingCalendarPanel' : {
 				'viewchange' : this.alertViewChange,
+				'render' : this.beforeBookingCalendarPanelRender, 
 				// 'datechange' : this.alertDateChange,
 				// 'beforedatechange' : this.alertBeforeDateChange,
 				// 'eventsrendered' : this.alertAfterEventsRendered,
@@ -52,7 +53,7 @@ Ext.define("AM.controller.BookingCalendars", {
 			
 			'bookingCalendar facilityList' : {
 				'click' : this.onFacilityListClicked,
-				'render' : this.onFacilityListRendered
+				'render' : this.beforeFacilityListRendered
 				// 'datechange' : this.alertDateChange,
 				// 'beforedatechange' : this.alertBeforeDateChange,
 				// 'eventsrendered' : this.alertAfterEventsRendered,
@@ -69,13 +70,17 @@ Ext.define("AM.controller.BookingCalendars", {
 	},
 	
 	
+	beforeBookingCalendarPanelRender: function(){
+		var calPanel  = this.getCalendarPanel(); 
+		calPanel.getActiveView().reloadStore();
+	},
 	
 	onLaunch : function(){
 	 
 		
 	},
 	
-	onFacilityListRendered: function(){
+	beforeFacilityListRendered: function(){
 		var fList = Ext.ComponentQuery.query("facilityList")[0];
 		fList.store.reload()  // => do this, and it will auto refresh itself.
 	},
@@ -87,8 +92,8 @@ Ext.define("AM.controller.BookingCalendars", {
 		// var calPanel = this.getCalendarPanel
 		
 		// load the first page from the server 
-		var calPanel  = this.getCalendarPanel(); 
-		calPanel.getActiveView().reloadStore(); 
+		// var calPanel  = this.getCalendarPanel(); 
+		// 		calPanel.getActiveView().reloadStore(); 
 		
 		// check whether there is facility list
 		// var fList = this.getCalendarList();

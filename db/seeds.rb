@@ -1,3 +1,20 @@
+role = {
+  :system => {
+    :administrator => true
+  }
+}
+
+Role.create!(
+:name        => ROLE_NAME[:admin],
+:title       => 'Administrator',
+:description => 'Role for administrator',
+:the_role    => role.to_json
+)
+
+admin = User.create_main_user(   :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
+
+admin.set_as_main_user
+
 def make_date(*args)
   now = DateTime.now  
   
