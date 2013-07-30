@@ -1,7 +1,7 @@
 Ext.define('AM.view.BookingCalendar', {
     extend: 'Ext.panel.Panel',
 		alias : 'widget.bookingCalendar',
-    title: 'Booking  Haha Calendar' , 
+    // title: 'Booking  Haha Calendar' , 
 		// id: 'bookingCalendar',
 		
 		layout : {
@@ -43,13 +43,13 @@ Ext.define('AM.view.BookingCalendar', {
 					type : 'vbox',
 					align : 'stretch'
 				},
-				flex : 1 , 
+				flex : 1, 
 				items : [
-					{
-						xtype: 'datepicker' ,
-						border: false ,
-						flex : 2 
-					},
+					// {
+					// 	xtype: 'datepicker' ,
+					// 	border: false ,
+					// 	flex : 2 
+					// },
 					{
 						xtype: 'facilityList',
             store: me.calendarStore, 

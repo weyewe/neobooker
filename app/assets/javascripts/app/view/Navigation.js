@@ -12,7 +12,12 @@ Ext.define('AM.view.Navigation', {
 				tooltip: 'Calendar',
 				xtype: 'button',
 				text : "Calendar",
-				action : "switchCalendar"
+				action : "switchCalendar",
+				listeners: {
+					click: function() {
+						console.log("Inside the listener of calendar");
+					}
+				}
 
 			},
 			{

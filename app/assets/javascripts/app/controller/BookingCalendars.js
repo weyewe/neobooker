@@ -73,16 +73,14 @@ Ext.define("AM.controller.BookingCalendars", {
 	beforeBookingCalendarPanelRender: function(){
 		var calPanel  = this.getCalendarPanel(); 
 		calPanel.getActiveView().reloadStore();
+		// calPanel.doLayout();
 	},
 	
-	onLaunch : function(){
 	 
-		
-	},
-	
 	beforeFacilityListRendered: function(){
 		var fList = Ext.ComponentQuery.query("facilityList")[0];
-		fList.store.reload()  // => do this, and it will auto refresh itself.
+		fList.store.reload();  // => do this, and it will auto refresh itself.
+		// fList.doLayout();
 	},
 	
 	
@@ -136,6 +134,7 @@ Ext.define("AM.controller.BookingCalendars", {
 	
 	
 	onDatePickerSelected: function(dp, dt){
+		console.log("The date picker is selected");
 			var calendarPanel = this.getCalendarPanel();
 			calendarPanel.setStartDate(dt); 
   },

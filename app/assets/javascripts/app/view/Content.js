@@ -4,7 +4,7 @@ Ext.define('AM.view.Content', {
     
     
 		border: false,
-		activeItem : 0 ,
+		activeItem : 1 ,
 
 		layout: {
 			type : 'card',
@@ -13,7 +13,8 @@ Ext.define('AM.view.Content', {
 		
 		items : [
 			{
-				xtype : 'bookingCalendar'
+				xtype : 'bookingCalendar',
+				// header: false
 			},
 			{
 				html : "First",
