@@ -74,7 +74,7 @@ Ext.define("AM.controller.BookingCalendars", {
 	},
 	
 	reloadCalendar: function(){
-		console.log("The login is SUCCESS");
+		// console.log("The login is SUCCESS");
 		// this.beforeBookingCalendarPanelRender();
 		// this.beforeFacilityListRendered();
 		
@@ -82,20 +82,20 @@ Ext.define("AM.controller.BookingCalendars", {
 		Ext.ComponentQuery.query("facilityList")[0].store.reload();
 	},
 	
-	beforeBookingCalendarPanelRender: function(){
-		// var calPanel  = this.getCalendarPanel(); 
-		// calPanel.getActiveView().reloadStore();
-		
-		
-		// calPanel.doLayout();
-	},
-	
-	 
-	beforeFacilityListRendered: function(){
-		var fList = 
-		fList.store.reload();  // => do this, and it will auto refresh itself.
-		// fList.doLayout();
-	},
+	// beforeBookingCalendarPanelRender: function(){
+	// 	// var calPanel  = this.getCalendarPanel(); 
+	// 	// calPanel.getActiveView().reloadStore();
+	// 	
+	// 	
+	// 	// calPanel.doLayout();
+	// },
+	// 
+	//  
+	// beforeFacilityListRendered: function(){
+	// 	var fList = 
+	// 	fList.store.reload();  // => do this, and it will auto refresh itself.
+	// 	// fList.doLayout();
+	// },
 	
 	
 	onViewportLoaded: function(){

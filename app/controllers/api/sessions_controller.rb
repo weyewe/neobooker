@@ -1,5 +1,8 @@
 class Api::SessionsController < Api::BaseApiController
   before_filter :authenticate_user!, :except => [:create, :destroy, :say_hi ]
+  skip_before_filter :authenticate_auth_token, :only => [:create, :destroy, :say_hi ]
+  
+  
   before_filter :ensure_params_exist, :except => [:say_hi, :destroy, :authenticate_auth_token]
 
   respond_to :json

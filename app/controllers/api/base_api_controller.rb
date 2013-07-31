@@ -1,6 +1,30 @@
 class Api::BaseApiController < ApplicationController
   respond_to :json
   
+  before_filter :authenticate_auth_token
+  
+  def authenticate_auth_token
+    puts "Inside the authenticate_auth_token\n"*10
+    puts "The auth_token: #{params[:auth_token]}"
+    resource = User.find_by_authentication_token( params[:auth_token])
+    puts "The resource : #{resource.inspect}"
+    if resource.nil?
+      msg = {
+        :success => false, 
+        :auth_token_invalid => true, 
+        :message => {
+          :errors => {
+            :auth_token_invalid => "False authentication. Please try to log in"
+          }
+        }
+      }
+      
+      render :json => msg 
+      return 
+    end
+  end
+  
+  
   def extjs_error_format( errors ) 
     new_error = {}
     errors.messages.each do |field, messages|

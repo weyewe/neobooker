@@ -82,6 +82,7 @@ Ext.define("AM.controller.Authentication", {
  
 	
 	onLoginClick: function( button ){
+		console.log("inside onLoginClick");
 		var me = this; 
 		
 		var fieldset = button.up('fieldset');
@@ -157,6 +158,7 @@ Ext.define("AM.controller.Authentication", {
 						
 						var responseText=  result.responseText; 
 						var data = Ext.decode(responseText ); 
+						
 						var currentUserObject = {
 							'auth_token' : data['auth_token'] ,
 							'email'				: data['email'],
@@ -164,6 +166,9 @@ Ext.define("AM.controller.Authentication", {
 						};
 				 
 						localStorage.setItem('currentUser', Ext.encode( currentUserObject ));
+						
+						console.log("The currentUserObject");
+						console.log( currentUserObject );
 						me.currentUser = currentUserObject;
 						me.showProtectedArea(); 
 		    },
