@@ -38,12 +38,15 @@ Ext.define("AM.controller.BookingCalendars", {
 			'viewport' : {
 				'render' : this.onViewportLoaded,
 				'eventsStoreLoaded' : this.onEventsStoreLoaded,
-				'beforeEventsStoreLoad' : this.beforeEventsStoreLoaded
+				'beforeEventsStoreLoad' : this.beforeEventsStoreLoaded,
+				// "authenticateSuccess" : this.onAuthenticateSuccess,
+				"loadCalendar" : this.onAuthenticateSuccess
+				// 'loginSuccess' : this.loginSuccess
 			} ,
 			
 			'bookingCalendar bookingCalendarPanel' : {
 				'viewchange' : this.alertViewChange,
-				'render' : this.beforeBookingCalendarPanelRender, 
+				// 'render' : this.beforeBookingCalendarPanelRender, 
 				// 'datechange' : this.alertDateChange,
 				// 'beforedatechange' : this.alertBeforeDateChange,
 				// 'eventsrendered' : this.alertAfterEventsRendered,
@@ -53,7 +56,8 @@ Ext.define("AM.controller.BookingCalendars", {
 			
 			'bookingCalendar facilityList' : {
 				'click' : this.onFacilityListClicked,
-				'render' : this.beforeFacilityListRendered
+				// 'render' : this.beforeFacilityListRendered,
+				// 'activate' : this.beforeFacilityListRendered,
 				// 'datechange' : this.alertDateChange,
 				// 'beforedatechange' : this.alertBeforeDateChange,
 				// 'eventsrendered' : this.alertAfterEventsRendered,
@@ -69,6 +73,11 @@ Ext.define("AM.controller.BookingCalendars", {
 		// console.log("Init is finished");
 	},
 	
+	onAuthenticateSuccess: function(){
+		console.log("The login is SUCCESS");
+		this.beforeBookingCalendarPanelRender();
+		this.beforeFacilityListRendered();
+	},
 	
 	beforeBookingCalendarPanelRender: function(){
 		var calPanel  = this.getCalendarPanel(); 

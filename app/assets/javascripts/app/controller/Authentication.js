@@ -33,6 +33,7 @@ Ext.define("AM.controller.Authentication", {
 			    jsonData: {},
 			    success: function(result, request ) {
 							me.getViewport().setLoading( false ) ;
+							// me.getViewport().fireEvent("authenticateSuccess");
 			    },
 			    failure: function(result, request ) {
 							me.getViewport().setLoading( false ) ;
@@ -55,6 +56,7 @@ Ext.define("AM.controller.Authentication", {
 			me.showLoginForm(); 
 		}else{
 			me.currentUser = Ext.decode( currentUserBase ) ;
+			
 			me.showProtectedArea(); 
 		}
 	},
@@ -174,6 +176,7 @@ Ext.define("AM.controller.Authentication", {
 	
 	showProtectedArea : function(){
 		var me = this; 
+		me.getViewport().fireEvent("authenticateSuccess");
 		me.getViewport().getLayout().setActiveItem( 1) ;
 	},
 	showLoginForm : function(){

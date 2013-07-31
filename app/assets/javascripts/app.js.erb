@@ -65,12 +65,12 @@ Ext.onReady(function(){
 	
 	Ext.Ajax.on('beforerequest', function(conn, options) {
 		// always include the auth_token.. 
-			var currentUser = Ext.decode( localStorage.getItem('currentUser'));
-
-			if( currentUser !== null){
-				var auth_token_value = currentUser['auth_token'];
-				Ext.Ajax.extraParams = { auth_token: auth_token_value };
-			}
+			// var currentUser = Ext.decode( localStorage.getItem('currentUser'));
+			// 
+			// if( currentUser !== null){
+			// 	var auth_token_value = currentUser['auth_token'];
+			// 	Ext.Ajax.extraParams = { auth_token: auth_token_value };
+			// }
 			
 		// include the csrf prevention 
 	    var content, metatag;
@@ -81,6 +81,7 @@ Ext.onReady(function(){
 	      return options.headers["X-CSRF-Token"] = content;
 	    }
 	  }, this);
+	
 	
 	
 	

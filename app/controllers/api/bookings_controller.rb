@@ -1,6 +1,7 @@
 class Api::BookingsController < Api::BaseApiController
   
   def index
+    puts "The current user : #{current_user}"  
     # sleep 5
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"

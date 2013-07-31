@@ -55,6 +55,10 @@ Ext.define("AM.controller.Navigation", {
 		
 		me.getContent().layout.setActiveItem( AM.view.Constants[ btn.action ] )
 		
+	 if(btn.action ==='switchCalendar'){
+		me.getViewport().fireEvent("loadCalendar");
+	}
+		
 		// if( btn.action === 'switchCalendar'){
 		// 	me.getContent().layout.setActiveItem(0)
 		// }else{
