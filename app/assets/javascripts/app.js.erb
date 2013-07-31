@@ -87,7 +87,8 @@ Ext.onReady(function(){
 
 		Extensible.calendar.data.EventMappings = {
 			EventId:     {name: 'id', mapping:'id', type:'int'}, // int by default
-			CalendarId:  {name: 'calendar_id', mapping: 'calendar_id', type: 'string'}, // int by default
+			// CalendarId:  {name: 'calendar_id', mapping: 'calendar_id', type: 'string'}, // int by default
+			CalendarId:  {name: 'calendar_id', mapping: 'calendar_id', type: 'int'}, // int by default
 			Title:       {name: 'title', mapping: 'title', type :'string'},
 			StartDate:   {name: 'start_datetime', mapping: 'start_datetime', type: 'date', dateFormat: 'c'},
 			EndDate:     {name: 'end_datetime', mapping: 'end_datetime', type: 'date', dateFormat: 'c'},
@@ -108,10 +109,11 @@ Ext.onReady(function(){
 			
 		Extensible.calendar.data.CalendarMappings = {
 			// Same basic concept for the CalendarMappings as above
-			CalendarId:   {name:'calendar_id', mapping: 'cal_id', type: 'string'}, // int by default
-			Title:        {name:'CalTitle', mapping: 'cal_title', type: 'string'},
-			Description:  {name:'Desc', mapping: 'cal_desc', type: 'string'},
-			ColorId:      {name:'Color', mapping: 'cal_color', type: 'int'},
+			// CalendarId:   {name:'calendar_id', mapping: 'cal_id', type: 'string'}, // int by default
+			CalendarId:   {name:'id', mapping: 'id', type: 'int'}, // int by default
+			Title:        {name:'title', mapping: 'title', type: 'string'},
+			Description:  {name:'description', mapping: 'description', type: 'string'},
+			ColorId:      {name:'color', mapping: 'color', type: 'int'},
 			IsHidden:     {name:'Hidden', mapping: 'hidden', type: 'boolean'}
 		};
 

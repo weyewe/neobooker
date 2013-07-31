@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20130730084611) do
     t.datetime "start_datetime"
     t.datetime "end_datetime"
     t.string   "title"
-    t.string   "calendar_id"
+    t.integer  "calendar_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

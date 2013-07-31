@@ -2,23 +2,25 @@ class Api::CalendarsController < Api::BaseApiController
   
   def index
      
-     @objects = [{
-         "cal_id"    => "C1",
-         "cal_title" => "Home",
-         "cal_color" => 2
-     },{
-         "cal_id"    => "C2",
-         "cal_title" => "Work",
-         "cal_color" => 22
-     },{
-         "cal_id"    => "C3",
-         "cal_title" => "School",
-         "cal_color" => 7
-     },{
-         "cal_id"    => "C4",
-         "cal_title" => "Sports",
-         "cal_color" => 26
-     }]
+     # @objects = [{
+     #     "cal_id"    => "C1",
+     #     "cal_title" => "Home",
+     #     "cal_color" => 2
+     # },{
+     #     "cal_id"    => "C2",
+     #     "cal_title" => "Work",
+     #     "cal_color" => 22
+     # },{
+     #     "cal_id"    => "C3",
+     #     "cal_title" => "School",
+     #     "cal_color" => 7
+     # },{
+     #     "cal_id"    => "C4",
+     #     "cal_title" => "Sports",
+     #     "cal_color" => 26
+     # }]
+     # 
+     @objects = Calendar.all 
      
      # {
      #      "cal_id"    :"C8",

@@ -1,4 +1,6 @@
 class Booking < ActiveRecord::Base
+  belongs_to :calendar 
+  
   attr_accessible :start_datetime, :end_datetime,
           :title, :calendar_id 
           
