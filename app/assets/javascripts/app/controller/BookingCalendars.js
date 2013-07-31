@@ -40,7 +40,7 @@ Ext.define("AM.controller.BookingCalendars", {
 				'eventsStoreLoaded' : this.onEventsStoreLoaded,
 				'beforeEventsStoreLoad' : this.beforeEventsStoreLoaded,
 				// "authenticateSuccess" : this.onAuthenticateSuccess,
-				"loadCalendar" : this.onAuthenticateSuccess
+				"loadCalendar" : this.reloadCalendar
 				// 'loginSuccess' : this.loginSuccess
 			} ,
 			
@@ -73,21 +73,26 @@ Ext.define("AM.controller.BookingCalendars", {
 		// console.log("Init is finished");
 	},
 	
-	onAuthenticateSuccess: function(){
+	reloadCalendar: function(){
 		console.log("The login is SUCCESS");
-		this.beforeBookingCalendarPanelRender();
-		this.beforeFacilityListRendered();
+		// this.beforeBookingCalendarPanelRender();
+		// this.beforeFacilityListRendered();
+		
+		Ext.ComponentQuery.query("bookingCalendarPanel")[0].store.reload();
+		Ext.ComponentQuery.query("facilityList")[0].store.reload();
 	},
 	
 	beforeBookingCalendarPanelRender: function(){
-		var calPanel  = this.getCalendarPanel(); 
-		calPanel.getActiveView().reloadStore();
+		// var calPanel  = this.getCalendarPanel(); 
+		// calPanel.getActiveView().reloadStore();
+		
+		
 		// calPanel.doLayout();
 	},
 	
 	 
 	beforeFacilityListRendered: function(){
-		var fList = Ext.ComponentQuery.query("facilityList")[0];
+		var fList = 
 		fList.store.reload();  // => do this, and it will auto refresh itself.
 		// fList.doLayout();
 	},
