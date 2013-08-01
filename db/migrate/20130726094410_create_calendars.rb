@@ -6,6 +6,8 @@ class CreateCalendars < ActiveRecord::Migration
       t.text :description 
       t.integer :color  
       
+      t.boolean :is_deleted , :default => false 
+      
       t.timestamps
     end
   end

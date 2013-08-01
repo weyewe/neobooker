@@ -25,19 +25,22 @@ Ext.define('AM.store.Events', {
 			 
 			
 			proxy: {
-				url: 'api/bookings',
+				// url: 'api/bookings',
+				url: 'api/events',
 				type: 'rest',
 				format: 'json',
 
 				reader: {
-					root: 'bookings',
+					// root: 'bookings',
+					root: 'events',
 					successProperty: 'success',
 					totalProperty : 'total'
 				},
 
 				writer: {
 					getRecordData: function(record) {
-						return { booking : record.data };
+						// return { booking : record.data };
+						return { 'event' : record.data };
 					}
 				}
 			}

@@ -5,6 +5,7 @@ class CreateBookings < ActiveRecord::Migration
       t.datetime :end_datetime
       t.string :title 
       t.integer  :calendar_id 
+      t.integer :customer_id 
       
       t.datetime :actual_start_datetime
       t.datetime :actual_end_datetime 

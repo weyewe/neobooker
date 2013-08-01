@@ -75,10 +75,6 @@ Ext.onReady(function(){
 			 
 			
 			
-			
-			
-			
-			
 		// include the csrf prevention 
 	    var content, metatag;
 	    metatag = Ext.select('meta[name="csrf-token"]');
@@ -105,6 +101,7 @@ Ext.onReady(function(){
 			Ext.Msg.alert("Login Error", "The authentication token is expired. Please retry login");
 		}
 	});
+	
 	
 	
 

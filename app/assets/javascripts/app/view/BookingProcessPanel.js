@@ -1,6 +1,6 @@
-Ext.define('AM.view.BookingProcess', {
+Ext.define('AM.view.BookingProcessPanel', {
     extend: 'Ext.panel.Panel',
-		alias : 'widget.bookingProcess',
+		alias : 'widget.bookingProcessPanel',
     
 
 		layout: {

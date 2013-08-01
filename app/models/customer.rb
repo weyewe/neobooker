@@ -1,5 +1,6 @@
 class Customer < ActiveRecord::Base
   # validate :unique_non_deleted_name 
+  has_many :bookings
   
   validates_presence_of :name 
  
@@ -15,6 +16,7 @@ class Customer < ActiveRecord::Base
     new_object.mobile_phone = params[:mobile_phone]
     new_object.contact = params[:contact]
     
+    
     new_object.save 
     return new_object 
   end
@@ -24,6 +26,7 @@ class Customer < ActiveRecord::Base
     self.bb_pin = params[:bb_pin]
     self.mobile_phone = params[:mobile_phone]
     self.contact = params[:contact]
+    
     
     self.save 
     return self

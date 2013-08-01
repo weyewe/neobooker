@@ -20,7 +20,7 @@ class Api::CalendarsController < Api::BaseApiController
      #     "cal_color" => 26
      # }]
      # 
-     @objects = Calendar.all 
+     @objects = Calendar.all.order("id ASC")
      
      # {
      #      "cal_id"    :"C8",
@@ -32,11 +32,11 @@ class Api::CalendarsController < Api::BaseApiController
   end
 
   def create
-    @object = Calendar.new(params[:employee])
+    @object = Calendar.new(params[:calendar])
  
     if @object.save
       render :json => { :success => true, 
-                        :employees => [@object] , 
+                        :calendars => [@object] , 
                         :total => Calendar.active_objects.count }  
     else
       msg = {
@@ -56,16 +56,16 @@ class Api::CalendarsController < Api::BaseApiController
   def show
     @object  = Calendar.find params[:id]
     render :json => { :success => true,   
-                      :employee => @object,
+                      :calendar => @object,
                       :total => Calendar.active_objects.count  }
   end
 
   def update
     @object = Calendar.find(params[:id])
     
-    if @object.update_attributes(params[:employee])
+    if @object.update_object(params[:calendar])
       render :json => { :success => true,   
-                        :employees => [@object],
+                        :calendars => [@object],
                         :total => Calendar.active_objects.count  } 
     else
       msg = {
@@ -85,7 +85,7 @@ class Api::CalendarsController < Api::BaseApiController
     @object = Calendar.find(params[:id])
     @object.delete_object
 
-    if @object.is_deleted
+    if ( not @object.persisted? )   or @object.is_deleted
       render :json => { :success => true, :total => Calendar.active_objects.count }  
     else
       render :json => { :success => false, :total => Calendar.active_objects.count }  

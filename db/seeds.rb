@@ -45,6 +45,10 @@ admin = User.create_main_user(   :email => "admin@gmail.com" ,:password => "will
 
 admin.set_as_main_user
 
+customer = Customer.create_object({
+  :name => "Andy"
+})
+
 @objects = [{
      "cal_id"    => "C1",
      "cal_title" => "Home",
@@ -165,5 +169,11 @@ booking_list = [{
 }]
 
 booking_list.each do |booking|
-  Booking.create booking 
+  hash = {}
+  booking.each do |key,value|
+    hash[key.to_sym] = value 
+  end
+  puts hash 
+  hash[:customer_id] = customer.id
+  Booking.create_object hash 
 end

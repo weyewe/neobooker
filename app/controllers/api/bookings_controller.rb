@@ -38,13 +38,13 @@ class Api::BookingsController < Api::BaseApiController
       puts "startDate.to_time : #{startDate.to_time.to_s}"
       puts "endDate.to_time : #{endDate.to_time.to_s}"
       
-      @objects = Booking.bookings_in_between(startDate, endDate)
+      @objects = Booking.joins(:customer).bookings_in_between(startDate, endDate)
       @total = @objects.count 
       puts "Total count: #{@total}"
       
       # the base grid 
     else
-      @objects = Booking.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+      @objects = Booking.joins(:customer).active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Booking.active_objects.count
     end
     

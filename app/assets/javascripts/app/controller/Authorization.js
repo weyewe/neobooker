@@ -3,15 +3,15 @@ Ext.define("AM.controller.Authorization", {
 	views : [
 		"booking.BookingProcessList",
 		'Navigation',
-		'BookingProcess'
+		'BookingProcessPanel'
 	],
 
 	 
 	
 	refs: [
 		{
-			ref: 'bookingProcess',
-			selector: 'bookingProcess'
+			ref: 'bookingProcessPanel',
+			selector: 'bookingProcessPanel'
 		} ,
 		{
 			ref: 'bookingProcessList',
@@ -29,7 +29,7 @@ Ext.define("AM.controller.Authorization", {
 		var me = this; 
 		 
 		me.control({
-			"bookingProcess" : {
+			"bookingProcessPanel" : {
 				activate : this.onActiveProtectedContent
 			} 
 			

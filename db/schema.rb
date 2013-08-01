@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20130731024101) do
     t.datetime "end_datetime"
     t.string   "title"
     t.integer  "calendar_id"
+    t.integer  "customer_id"
     t.datetime "actual_start_datetime"
     t.datetime "actual_end_datetime"
     t.boolean  "is_confirmed",                                   default: false
@@ -36,6 +37,7 @@ ActiveRecord::Schema.define(version: 20130731024101) do
     t.string   "title"
     t.text     "description"
     t.integer  "color"
+    t.boolean  "is_deleted",  default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

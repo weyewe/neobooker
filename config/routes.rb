@@ -13,6 +13,8 @@ PortCalendar::Application.routes.draw do
      resources :calendars
      resources :customers
      resources :app_users
+     
+     resources :events 
    end
 end
 

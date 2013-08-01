@@ -17,7 +17,7 @@ Ext.define('AM.view.Content', {
 				// header: false
 			},
 			{
-				xtype : 'bookingProcess'
+				xtype : 'bookingProcessPanel'
 			},
 			{
 				// html : "Second",
