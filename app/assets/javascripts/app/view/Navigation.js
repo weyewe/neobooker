@@ -29,24 +29,24 @@ Ext.define('AM.view.Navigation', {
 				text : "Bookings",
 				action : "switchBooking"
 			},
-			{
-				iconCls: 'tasks-mark-active',
-				id: 'mark-active-btn',
-				disabled: false,
-				tooltip: 'Report',
-				xtype: 'button',
-				text : "Report",
-				action : "switchReport"
-			},
-			{
-				iconCls: 'tasks-mark-active',
-				id: 'mark-master-btn',
-				disabled: false,
-				tooltip: 'Master Data',
-				xtype: 'button',
-				text : "Master Data",
-				action : "switchMaster"
-			},
+			// {
+			// 	iconCls: 'tasks-mark-active',
+			// 	id: 'mark-active-btn',
+			// 	disabled: false,
+			// 	tooltip: 'Master Data',
+			// 	xtype: 'button',
+			// 	text : "Master Data",
+			// 	action : "switchReport"
+			// },
+			// {
+			// 	iconCls: 'tasks-mark-active',
+			// 	id: 'mark-master-btn',
+			// 	disabled: false,
+			// 	tooltip: 'Report',
+			// 	xtype: 'button',
+			// 	text : "Report",
+			// 	action : "switchMaster"
+			// },
 			'->',
 			{
 				text: "Options",

@@ -11,6 +11,36 @@ Role.create!(
 :the_role    => role.to_json
 )
 
+
+
+data_entry_role = {
+  :customers => {
+    :new => true,
+    :create => true, 
+    :edit => true, 
+    :update_customer => true ,
+    :delete_customer => true  
+  },
+  :bookings => {
+    :new => true,
+    :create => true, 
+    :edit => true, 
+    :update_booking => true ,
+    :delete_booking => true ,
+    :confirm_booking => true 
+  }
+}
+
+
+data_entry_role = Role.create!(
+:name        => ROLE_NAME[:data_entry],
+:title       => 'Data Entry',
+:description => 'Role for data entry',
+:the_role    => data_entry_role.to_json
+)
+
+
+
 admin = User.create_main_user(   :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
 
 admin.set_as_main_user

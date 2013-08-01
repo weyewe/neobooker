@@ -3,6 +3,8 @@ class Api::BookingsController < Api::BaseApiController
   def index
     puts "The current user : #{current_user}"  
     # sleep 5
+    
+    # livesearch
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
       @objects = Booking.where{
@@ -19,6 +21,8 @@ class Api::BookingsController < Api::BaseApiController
           (name =~  livesearch )
         )
       }.count
+      
+      # calendar 
     elsif params[:startDate].present? 
       puts "This is the shite\n"*5
       
@@ -37,6 +41,8 @@ class Api::BookingsController < Api::BaseApiController
       @objects = Booking.bookings_in_between(startDate, endDate)
       @total = @objects.count 
       puts "Total count: #{@total}"
+      
+      # the base grid 
     else
       @objects = Booking.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Booking.active_objects.count

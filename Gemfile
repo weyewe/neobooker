@@ -28,6 +28,9 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 1.2'
 
 gem 'devise'
+gem "kaminari"  
+gem 'uuidtools'
+
 gem 'the_role', '~> 2.0.0'
 gem 'protected_attributes'
 gem 'squeel', :git => "git://github.com/ernie/squeel.git"

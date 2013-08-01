@@ -17,11 +17,11 @@ Ext.define('AM.view.Content', {
 				// header: false
 			},
 			{
-				html : "First",
-				xtype : 'container'
+				xtype : 'bookingProcess'
 			},
 			{
-				html : "Second",
+				// html : "Second",
+				html : "second",
 				xtype : 'container'
 			},
 			{

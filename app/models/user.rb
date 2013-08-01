@@ -16,6 +16,17 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email 
   validates_presence_of :email  , :role_id 
   
+  validate :valid_role
+  
+  def valid_role
+    
+    return if not role_id.present?
+    
+    if role_id == 0
+      errors.add(:role_id, "Role harus dipilih")
+    end
+  end
+  
   def self.create_main_user(new_user_params) 
     new_user = User.new( :email => new_user_params[:email], 
                             :password => new_user_params[:password],
@@ -36,7 +47,6 @@ class User < ActiveRecord::Base
   end
   
   def delete_object 
-    return nil if employee.nil?
     
     random_password                    = UUIDTools::UUID.timestamp_create.to_s[0..7]
     self.password = random_password
@@ -66,11 +76,12 @@ class User < ActiveRecord::Base
      
     
     if new_object.valid?
-      if Rails.env.production?
-        UserMailer.notify_new_user_registration( new_object , password    ).deliver
-      end
-      # send_company_admin_approval_notification( company_admin ).deliver
-      # NewsletterMailer.send_company_admin_approval_notification( company_admin ).deliver
+      UserMailer.notify_new_user_registration( new_object , password    ).deliver
+      # if Rails.env.production?
+      #   UserMailer.notify_new_user_registration( new_object , password    ).deliver
+      # end
+       
+      
     end
     return new_object 
 

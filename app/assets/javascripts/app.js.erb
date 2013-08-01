@@ -74,6 +74,9 @@ Ext.onReady(function(){
 			
 			 
 			
+			
+			
+			
 		// include the csrf prevention 
 	    var content, metatag;
 	    metatag = Ext.select('meta[name="csrf-token"]');
@@ -91,6 +94,9 @@ Ext.onReady(function(){
 		var responseText=  response.responseText; 
 		var data = Ext.decode(responseText ); 
 		console.log( data ) ;
+		
+		
+		
 		
 		
 		if( data['auth_token_invalid'] !== undefined && data['auth_token_invalid'] === true ){

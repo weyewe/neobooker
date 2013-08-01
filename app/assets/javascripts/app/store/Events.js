@@ -22,8 +22,7 @@ Ext.define('AM.store.Events', {
 	    autoLoad: false,
 	
 			idProperty: 'id' ,
-			
-			
+			 
 			
 			proxy: {
 				url: 'api/bookings',

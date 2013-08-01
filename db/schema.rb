@@ -11,13 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130730084611) do
+ActiveRecord::Schema.define(version: 20130731024101) do
 
   create_table "bookings", force: true do |t|
     t.datetime "start_datetime"
     t.datetime "end_datetime"
     t.string   "title"
     t.integer  "calendar_id"
+    t.datetime "actual_start_datetime"
+    t.datetime "actual_end_datetime"
+    t.boolean  "is_confirmed",                                   default: false
+    t.datetime "confirmation_datetime"
+    t.decimal  "downpayment_amount",    precision: 12, scale: 2, default: 0.0
+    t.boolean  "is_started",                                     default: false
+    t.boolean  "is_finished",                                    default: false
+    t.boolean  "is_canceled",                                    default: false
+    t.decimal  "remaining_amount",      precision: 12, scale: 2, default: 0.0
+    t.boolean  "is_paid",                                        default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -26,6 +36,16 @@ ActiveRecord::Schema.define(version: 20130730084611) do
     t.string   "title"
     t.text     "description"
     t.integer  "color"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "customers", force: true do |t|
+    t.string   "name"
+    t.string   "bb_pin"
+    t.string   "mobile_phone"
+    t.string   "contact"
+    t.boolean  "is_deleted",   default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
