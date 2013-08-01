@@ -90,6 +90,18 @@ Ext.define("AM.controller.Authorization", {
 						action : 'index'
 					}
 				]
+	     },
+			{ 
+				text:'Facility', 
+				viewClass:'AM.view.master.Facility', 
+				leaf:true, 
+				iconCls:'text',
+				conditions : [
+					{
+						controller : 'calendars',
+						action : 'index'
+					}
+				]
 	     }
 		]
 	},

@@ -23,7 +23,7 @@ Ext.define("AM.controller.BookingCalendars", {
 		},
 		{
 			ref : 'calendarList',
-			selector : 'bookingCalendar facilityList'
+			selector : 'bookingCalendar calendarFacilityList'
 		}
 	],
 	
@@ -79,7 +79,7 @@ Ext.define("AM.controller.BookingCalendars", {
 		// this.beforeFacilityListRendered();
 		
 		Ext.ComponentQuery.query("bookingCalendarPanel")[0].store.reload();
-		Ext.ComponentQuery.query("facilityList")[0].store.reload();
+		Ext.ComponentQuery.query("calendarFacilityList")[0].store.reload();
 	},
 	
 	// beforeBookingCalendarPanelRender: function(){

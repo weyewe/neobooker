@@ -51,7 +51,7 @@ Ext.define('AM.view.BookingCalendar', {
 					// 	flex : 2 
 					// },
 					{
-						xtype: 'facilityList',
+						xtype: 'calendarFacilityList',
             store: me.calendarStore, 
 						flex : 3 , 
 						collapsible : false 
