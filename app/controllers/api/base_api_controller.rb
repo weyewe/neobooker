@@ -51,9 +51,13 @@ class Api::BaseApiController < ApplicationController
   def parse_datetime_from_client( datetime_string)
     date = datetime_string.split("T").first
     time = datetime_string.split("T").last 
+    time = time.split("+").first 
     
     date_array = date.split('-').map{|x| x.to_i}
     time_array = time.split(':').map{|x| x.to_i}
+    
+    puts "The date_array: #{date_array}"
+    puts "The time_array : #{time_array}"
     
     datetime = DateTime.new(date_array[0], date_array[1], date_array[2], 
                                 time_array[0], time_array[1], time_array[2])

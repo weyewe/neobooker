@@ -47,12 +47,12 @@ Ext.define("AM.controller.Authorization", {
         
       { 
           text:'Booking', 
-          viewClass:'AM.view.management.Employee', 
+          viewClass:'AM.view.booking.Booking', 
           leaf:true, 
           iconCls:'text',
  					conditions : [
 						{
-							controller : "employees",
+							controller : "bookings",
 							action  : 'index'
 						}
 					]

@@ -44,7 +44,7 @@ class Api::BookingsController < Api::BaseApiController
       
       # the base grid 
     else
-      @objects = Booking.joins(:customer).active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+      @objects = Booking.joins(:customer, :calendar).active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Booking.active_objects.count
     end
     
@@ -55,7 +55,10 @@ class Api::BookingsController < Api::BaseApiController
     
     # parse_datetime_from_client
     
+    puts "\nThe start_datetime ********"
     params[:booking][:start_datetime] =  parse_datetime_from_client( params[:booking][:start_datetime] )
+    
+    puts "\nThe end_datetime ********"
     params[:booking][:end_datetime] =  parse_datetime_from_client( params[:booking][:end_datetime] )
     @object = Booking.create_object(params[:booking])
  

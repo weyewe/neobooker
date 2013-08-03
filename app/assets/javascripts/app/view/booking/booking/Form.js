@@ -4,7 +4,7 @@ Ext.define('AM.view.booking.booking.Form', {
 
   title : 'Add / Edit Booking',
   layout: 'fit',
-	width	: 500,
+	width	: 800,
   autoShow: true,  // does it need to be called?
 	modal : true, 
 // win.show() 
@@ -25,23 +25,31 @@ Ext.define('AM.view.booking.booking.Form', {
 	        xtype: 'hidden',
 	        name : 'id',
 	        fieldLabel: 'id'
-	      },{
-	        xtype: 'textfield',
-	        name : 'name',
-	        fieldLabel: ' Nama'
+	      },
+	 
+				{
+	        xtype: 'customdatetimefield',
+	        name : 'start_datetime',
+	        fieldLabel: ' Waktu Mulai',
+					dateCfg : {
+						format: 'd-m-Y',
+					},
+					timeCfg : {
+						increment : 1 
+					}
 				},{
 					xtype: 'textfield',
-					name : 'bb_pin',
-					fieldLabel: 'BB Pin'
+					name : 'facility_title',
+					fieldLabel: 'Facility Title'
 				},{
 					xtype: 'textfield',
-					name : 'mobile_phone',
-					fieldLabel: 'Nomor HP'
+					name : 'title',
+					fieldLabel: 'Judul'
 				},
 				{
-					xtype: 'textarea',
-					name : 'contact',
-					fieldLabel: 'Kontak Lain'
+					xtype: 'textfield',
+					name : 'customer_name',
+					fieldLabel: 'Customer'
 				},
 				// {
 	      // 					xtype: 'textfield',

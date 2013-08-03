@@ -67,8 +67,11 @@ Ext.define('AM.controller.Bookings', {
     var record = this.getList().getSelectedObject();
     var view = Ext.widget('bookingform');
 
+
+		console.log("Gonna load record");
+		console.log( record  ) ;
     view.down('form').loadRecord(record);
-		view.setComboBoxData(record); 
+		// view.setComboBoxData(record); 
   },
 
   updateObject: function(button) {
@@ -79,6 +82,8 @@ Ext.define('AM.controller.Bookings', {
     var record = form.getRecord();
     var values = form.getValues();
 
+		console.log("The values: " ) 
+		console.log( values ) ;
 		
 		if( record ){
 			record.set( values );

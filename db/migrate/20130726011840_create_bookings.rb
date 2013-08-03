@@ -1,11 +1,15 @@
 class CreateBookings < ActiveRecord::Migration
   def change
     create_table :bookings do |t|
-      t.datetime :start_datetime
-      t.datetime :end_datetime
+      
       t.string :title 
       t.integer  :calendar_id 
       t.integer :customer_id 
+      
+      t.datetime :start_datetime
+      t.datetime :end_datetime # end_datetime is derived value
+      
+      t.integer :duration # (# of hours)
       
       t.datetime :actual_start_datetime
       t.datetime :actual_end_datetime 
@@ -13,15 +17,18 @@ class CreateBookings < ActiveRecord::Migration
       t.boolean :is_confirmed , :default => false 
       t.datetime :confirmation_datetime 
       
-      t.decimal :downpayment_amount , :default        => 0,  :precision => 12, :scale => 2
+      t.decimal :discount, :default        => 0,  :precision => 5, :scale => 2 # 999% max.. but it is limited to 100%
+      
+      # downpayment is derived amount, calculated from facility
+      # t.decimal :downpayment_amount , :default        => 0,  :precision => 12, :scale => 2
       
       t.boolean :is_started , :default => false 
       t.boolean :is_finished , :default => false 
       
       t.boolean :is_canceled , :default => false 
       
-      
-      t.decimal :remaining_amount , :default => 0,  :precision => 12, :scale => 2
+      # remaining_amount is derived amount, calculated from facility master data. 
+      # t.decimal :remaining_amount , :default => 0,  :precision => 12, :scale => 2
       t.boolean :is_paid, :default => false 
       
       t.timestamps

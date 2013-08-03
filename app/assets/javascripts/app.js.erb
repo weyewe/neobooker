@@ -97,14 +97,12 @@ Ext.onReady(function(){
 		
 		
 		
+		
 		if( data['auth_token_invalid'] !== undefined && data['auth_token_invalid'] === true ){
 			Ext.Msg.alert("Login Error", "The authentication token is expired. Please retry login");
 		}
 	});
 	
-	
-	
-
 		Extensible.calendar.data.EventMappings = {
 			EventId:     {name: 'id', mapping:'id', type:'int'}, // int by default
 			// CalendarId:  {name: 'calendar_id', mapping: 'calendar_id', type: 'string'}, // int by default
