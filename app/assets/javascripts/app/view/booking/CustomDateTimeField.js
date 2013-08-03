@@ -9,7 +9,7 @@ Ext.define('AM.view.booking.CustomDateTimeField', {
     height: 22,
     combineErrors: true,
     msgTarget: 'side',
-    submitFormat: 'c',
+    submitFormat: 'Y-m-d H:i:s',
 
     dateCfg: null,
     timeCfg: null,
@@ -78,9 +78,9 @@ Ext.define('AM.view.booking.CustomDateTimeField', {
 			console.log("The time_array");
 			console.log( time_array ) ;
 			
-			return new Date( parseInt( date_array[2] ) , 
+			return new Date( parseInt( date_array[0] ) , 
 												parseInt( date_array[1] ) - 1,  // month is indexed from 0
-												parseInt( date_array[0] ), 
+												parseInt( date_array[2] ), 
 									parseInt( time_array[0] ), 
 									parseInt( time_array[1] ), 
 									parseInt( time_array[2] ) )

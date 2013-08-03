@@ -56,10 +56,10 @@ class Api::BookingsController < Api::BaseApiController
     # parse_datetime_from_client
     
     puts "\nThe start_datetime ********"
-    params[:booking][:start_datetime] =  parse_datetime_from_client( params[:booking][:start_datetime] )
+    params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
     
     puts "\nThe end_datetime ********"
-    params[:booking][:end_datetime] =  parse_datetime_from_client( params[:booking][:end_datetime] )
+    params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
     @object = Booking.create_object(params[:booking])
  
     if @object.errors.size  == 0
@@ -91,8 +91,8 @@ class Api::BookingsController < Api::BaseApiController
     render :json => { :success => true,   
                       :booking => {
                         :id 						 =>	@object.id,                                               
-                      	:start_datetime  =>	format_datetime(@object.start_datetime),
-                      	:end_datetime 	 =>	format_datetime(@object.end_datetime)  ,
+                      	:start_datetime  =>	format_datetime_friendly(@object.start_datetime),
+                      	:end_datetime 	 =>	format_datetime_friendly(@object.end_datetime)  ,
                       	:title 					 =>	@object.title,
                       	:calendar_id 		 =>	@object.calendar_id
                       },
@@ -102,16 +102,16 @@ class Api::BookingsController < Api::BaseApiController
   def update
     @object = Booking.find(params[:id])
     
-    params[:booking][:start_datetime] =  parse_datetime_from_client( params[:booking][:start_datetime] )
-    params[:booking][:end_datetime] =  parse_datetime_from_client( params[:booking][:end_datetime] )
+    params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
+    params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
     
     
     if @object.update_object(params[:booking])
       render :json => { :success => true,   
                         :bookings => [{
                           :id 						 =>	@object.id,                                               
-                        	:start_datetime  =>	format_datetime(@object.start_datetime),
-                        	:end_datetime 	 =>	format_datetime(@object.end_datetime)  ,
+                        	:start_datetime  =>	format_datetime_friendly(@object.start_datetime),
+                        	:end_datetime 	 =>	format_datetime_friendly(@object.end_datetime)  ,
                         	:title 					 =>	@object.title,
                         	:calendar_id 		 =>	@object.calendar_id
                         }],

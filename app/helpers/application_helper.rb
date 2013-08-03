@@ -41,7 +41,7 @@ module ApplicationHelper
       second = "0#{second}"
     end
     
-    return "#{day}-#{month}-#{year}" + " " + 
+    return "#{year}-#{month}-#{day}" + " " + 
             "#{hour}:#{minute}:#{second}"
   end
   

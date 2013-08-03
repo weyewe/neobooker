@@ -59,10 +59,30 @@ class Api::BaseApiController < ApplicationController
     puts "The date_array: #{date_array}"
     puts "The time_array : #{time_array}"
     
-    datetime = DateTime.new(date_array[0], date_array[1], date_array[2], 
-                                time_array[0], time_array[1], time_array[2])
+   
+    datetime = DateTime.new( date_array[0], 
+                              date_array[1], 
+                              date_array[2], 
+                              time_array[0], 
+                              time_array[1], 
+                              time_array[2],
+                  Rational( UTC_OFFSET , 24) )
+                  
+                  
+    return datetime.utc
+  end
+  
+  def parse_datetime_from_client_booking( datetime_string)
+    date = datetime_string.split(" ").first
+    time = datetime_string.split(" ").last  
     
-
+    date_array = date.split('-').map{|x| x.to_i}
+    time_array = time.split(':').map{|x| x.to_i}
+    
+    puts "The date_array: #{date_array}"
+    puts "The time_array : #{time_array}"
+    
+   
     datetime = DateTime.new( date_array[0], 
                               date_array[1], 
                               date_array[2], 
