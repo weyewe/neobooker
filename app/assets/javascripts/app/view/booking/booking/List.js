@@ -24,7 +24,8 @@ Ext.define('AM.view.booking.booking.List' ,{
 				text : "Booking",
 				flex : 1,
 				tpl : 'Start:<br /> <b>{start_datetime}</b>' + '<br />' + '<br />' +
-							'Finish:<br /> <b>{end_datetime}</b>'  
+							'Durasi(jam):<br /> <b>{number_of_hours}</b>'  + '<br />' + '<br />' +
+							"Harga: <br /><b>{total_price}</b>"
 			},
 			
 			{

@@ -67,8 +67,9 @@ class Api::BookingsController < Api::BaseApiController
                         :bookings => [
                             {
                               :id 						 =>	@object.id,                                               
-                            	:start_datetime  =>	@object.start_datetime.to_datetime.new_offset( Rational(7,24) ) .to_time.iso8601,
-                            	:end_datetime 	 =>	@object.end_datetime.to_datetime.new_offset( Rational(7,24) ) .to_time.iso8601,
+                            	:start_datetime  =>	format_datetime_friendly(@object.start_datetime),
+                            	:end_datetime 	 =>	format_datetime_friendly(@object.end_datetime)  ,
+                            	:number_of_hours => number_of_hours, 
                             	:title 					 =>	@object.title,
                             	:calendar_id 		 =>	@object.calendar_id
                             }
@@ -93,6 +94,7 @@ class Api::BookingsController < Api::BaseApiController
                         :id 						 =>	@object.id,                                               
                       	:start_datetime  =>	format_datetime_friendly(@object.start_datetime),
                       	:end_datetime 	 =>	format_datetime_friendly(@object.end_datetime)  ,
+                      	:number_of_hours => @object.number_of_hours, 
                       	:title 					 =>	@object.title,
                       	:calendar_id 		 =>	@object.calendar_id
                       },
@@ -112,6 +114,7 @@ class Api::BookingsController < Api::BaseApiController
                           :id 						 =>	@object.id,                                               
                         	:start_datetime  =>	format_datetime_friendly(@object.start_datetime),
                         	:end_datetime 	 =>	format_datetime_friendly(@object.end_datetime)  ,
+                        	:number_of_hours => @object.number_of_hours, 
                         	:title 					 =>	@object.title,
                         	:calendar_id 		 =>	@object.calendar_id
                         }],

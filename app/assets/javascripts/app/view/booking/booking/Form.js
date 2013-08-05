@@ -26,7 +26,17 @@ Ext.define('AM.view.booking.booking.Form', {
 	        name : 'id',
 	        fieldLabel: 'id'
 	      },
+				{
+	        xtype: 'hidden',
+	        name : 'calendar_id',
+	        fieldLabel: 'Calendar ID'
+	      },
 	 
+				{
+	        xtype: 'hidden',
+	        name : 'customer_id',
+	        fieldLabel: 'Customer ID'
+	      },
 				{
 	        xtype: 'customdatetimefield',
 	        name : 'start_datetime',

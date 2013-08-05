@@ -69,21 +69,31 @@ customer = Customer.create_object({
  
 c1 = Calendar.create_object({
   :title => "Home",
-  :color => 2 
+  :color => 2 ,
+  :amount => '200000',
+  :downpayment_percentage => '20'
 })
 
 c2 = Calendar.create_object({
   :title => "Work",
-  :color => 22 
+  :color => 22  ,
+  :amount => '200000',
+  :downpayment_percentage => '20'
 })
 c3 = Calendar.create_object({
   :title => "School",
-  :color => 7 
+  :color => 7  ,
+  :amount => '200000',
+  :downpayment_percentage => '20'
 })
 c4 = Calendar.create_object({
   :title => "Sports",
-  :color => 26 
+  :color => 26  ,
+  :amount => '200000',
+  :downpayment_percentage => '20'
 })
+
+
  
 
 def make_date(*args)
@@ -173,7 +183,12 @@ booking_list.each do |booking|
   booking.each do |key,value|
     hash[key.to_sym] = value 
   end
-  puts hash 
+  
   hash[:customer_id] = customer.id
+  number_of_hours = rand(1..10)
+  hash[:number_of_hours] =    (hash[:end_datetime].to_time - hash[:start_datetime].to_time)/3600
+  next if hash[:number_of_hours] == 0 
+  puts "number_of_hours: #{hash[:number_of_hours]}"
+  puts hash 
   Booking.create_object hash 
 end

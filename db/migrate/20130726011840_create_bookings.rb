@@ -6,8 +6,13 @@ class CreateBookings < ActiveRecord::Migration
       t.integer  :calendar_id 
       t.integer :customer_id 
       
+      t.integer :price_id 
+      
       t.datetime :start_datetime
-      t.datetime :end_datetime # end_datetime is derived value
+      t.datetime :end_datetime
+      t.integer :number_of_hours 
+      
+      # t.datetime :end_datetime # end_datetime is derived value
       
       t.integer :duration # (# of hours)
       
@@ -18,6 +23,8 @@ class CreateBookings < ActiveRecord::Migration
       t.datetime :confirmation_datetime 
       
       t.decimal :discount, :default        => 0,  :precision => 5, :scale => 2 # 999% max.. but it is limited to 100%
+      # A field with precision 5, scale 2 must round to an absolute value less than 10^3.
+      
       
       # downpayment is derived amount, calculated from facility
       # t.decimal :downpayment_amount , :default        => 0,  :precision => 12, :scale => 2

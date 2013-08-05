@@ -2,6 +2,8 @@ Ext.define('AM.model.Booking', {
   	extend: 'Ext.data.Model',
   	fields: [
     	{ name: 'id', type: 'int' },
+		{ name: 'calendar_id', type: 'int' },
+		{ name: 'customer_id', type: 'int' },
 
 			// Booker 
 			{ name: 'customer_name', type: 'string' }  ,
@@ -13,6 +15,8 @@ Ext.define('AM.model.Booking', {
 			// Booking details 
 			{ name: 'start_datetime', type: 'string' },
     	{ name: 'end_datetime', type: 'string' } ,
+			{ name: 'number_of_hours', type: 'int' },
+			{ name: 'total_price', type: 'string' },
 
 			{ name: 'title', type: 'string' } ,
 			

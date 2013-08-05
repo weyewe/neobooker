@@ -11,24 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130731024101) do
+ActiveRecord::Schema.define(version: 20130805101555) do
 
   create_table "bookings", force: true do |t|
-    t.datetime "start_datetime"
-    t.datetime "end_datetime"
     t.string   "title"
     t.integer  "calendar_id"
     t.integer  "customer_id"
+    t.integer  "price_id"
+    t.datetime "start_datetime"
+    t.datetime "end_datetime"
+    t.integer  "number_of_hours"
+    t.integer  "duration"
     t.datetime "actual_start_datetime"
     t.datetime "actual_end_datetime"
-    t.boolean  "is_confirmed",                                   default: false
+    t.boolean  "is_confirmed",                                  default: false
     t.datetime "confirmation_datetime"
-    t.decimal  "downpayment_amount",    precision: 12, scale: 2, default: 0.0
-    t.boolean  "is_started",                                     default: false
-    t.boolean  "is_finished",                                    default: false
-    t.boolean  "is_canceled",                                    default: false
-    t.decimal  "remaining_amount",      precision: 12, scale: 2, default: 0.0
-    t.boolean  "is_paid",                                        default: false
+    t.decimal  "discount",              precision: 5, scale: 2, default: 0.0
+    t.boolean  "is_started",                                    default: false
+    t.boolean  "is_finished",                                   default: false
+    t.boolean  "is_canceled",                                   default: false
+    t.boolean  "is_paid",                                       default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -37,7 +39,9 @@ ActiveRecord::Schema.define(version: 20130731024101) do
     t.string   "title"
     t.text     "description"
     t.integer  "color"
-    t.boolean  "is_deleted",  default: false
+    t.decimal  "amount",                 precision: 9, scale: 2, default: 0.0
+    t.decimal  "downpayment_percentage", precision: 5, scale: 2, default: 0.0
+    t.boolean  "is_deleted",                                     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -48,6 +52,14 @@ ActiveRecord::Schema.define(version: 20130731024101) do
     t.string   "mobile_phone"
     t.string   "contact"
     t.boolean  "is_deleted",   default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "prices", force: true do |t|
+    t.integer  "calendar_id"
+    t.decimal  "amount",      precision: 9, scale: 2, default: 0.0
+    t.boolean  "is_active",                           default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

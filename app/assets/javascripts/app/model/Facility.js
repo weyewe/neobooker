@@ -5,6 +5,9 @@ Ext.define('AM.model.Facility', {
 			{ name: 'title', type: 'string' },
     	{ name: 'description', type: 'string' } , 
 			{ name: 'color', type: 'int' } , 
+			{ name: 'downpayment_percentage', type: 'string' } , 
+			{ name: 'amount', type: 'string' } , 
+			
   	],
 
 	 

@@ -45,4 +45,17 @@ module ApplicationHelper
             "#{hour}:#{minute}:#{second}"
   end
   
+  
+  # ported from base_application controller 
+  def extjs_error_format( errors ) 
+    new_error = {}
+    errors.messages.each do |field, messages|
+      aggregated_messages = "" 
+      
+      new_error[field.to_s] = messages.join(' | ')
+    end
+    
+    return new_error 
+  end
+  
 end

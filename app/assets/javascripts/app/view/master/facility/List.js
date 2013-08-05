@@ -11,6 +11,8 @@ Ext.define('AM.view.master.facility.List' ,{
 			{ header: 'Title',  dataIndex: 'title', flex: 1},
 			{	header: 'Description', dataIndex: 'description', flex: 1 },
 			{	header: 'Color', dataIndex: 'color', flex: 1 },
+			{	header: 'Sewa Per Jam', dataIndex: 'amount', flex: 1 },
+			{	header: '% Downpayment', dataIndex: 'downpayment_percentage', flex: 1 },
 		];
 
 		this.addObjectButton = new Ext.Button({
