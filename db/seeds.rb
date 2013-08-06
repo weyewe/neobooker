@@ -68,26 +68,26 @@ customer = Customer.create_object({
  }]
  
 c1 = Calendar.create_object({
-  :title => "Home",
+  :title => "Futsal 1",
   :color => 2 ,
   :amount => '200000',
   :downpayment_percentage => '20'
 })
 
 c2 = Calendar.create_object({
-  :title => "Work",
+  :title => "Futsal 2",
   :color => 22  ,
   :amount => '200000',
   :downpayment_percentage => '20'
 })
 c3 = Calendar.create_object({
-  :title => "School",
+  :title => "Futsal 3",
   :color => 7  ,
   :amount => '200000',
   :downpayment_percentage => '20'
 })
 c4 = Calendar.create_object({
-  :title => "Sports",
+  :title => "Futsal 4",
   :color => 26  ,
   :amount => '200000',
   :downpayment_percentage => '20'

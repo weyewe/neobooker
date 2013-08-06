@@ -18,12 +18,13 @@ Ext.define('AM.view.booking.booking.List' ,{
 			},
 			
 			
-			{ header: 'Fasilitas',  dataIndex: 'facility_title',  flex: 1 , sortable: false} ,
+			// { header: 'Fasilitas',  dataIndex: 'facility_title',  flex: 1 , sortable: false} ,
 			{
 				xtype : 'templatecolumn',
 				text : "Booking",
 				flex : 1,
-				tpl : 'Start:<br /> <b>{start_datetime}</b>' + '<br />' + '<br />' +
+				tpl : 'Fasilitas:<br /> <b>{facility_title}</b>' + '<br />' + '<br />' +
+				 			'Start:<br /> <b>{start_datetime}</b>' + '<br />' + '<br />' +
 							'Durasi(jam):<br /> <b>{number_of_hours}</b>'  + '<br />' + '<br />' +
 							"Harga: <br /><b>{total_price}</b>"
 			},
@@ -85,9 +86,9 @@ Ext.define('AM.view.booking.booking.List' ,{
 			action: 'startObject',
 			disabled: true
 		});
-		this.finishObjectButton = new Ext.Button({
+		this.endObjectButton = new Ext.Button({
 			text: 'Selesai',
-			action: 'finishObject',
+			action: 'endObject',
 			disabled: true
 		});
 		
@@ -112,7 +113,7 @@ Ext.define('AM.view.booking.booking.List' ,{
 		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton, 
 			this.confirmObjectButton, 
 			this.startObjectButton,
-			this.finishObjectButton,
+			this.endObjectButton,
 			this.payObjectButton,
 		 this.searchField ];
 		
@@ -136,10 +137,18 @@ Ext.define('AM.view.booking.booking.List' ,{
 	enableRecordButtons: function() {
 		this.editObjectButton.enable();
 		this.deleteObjectButton.enable();
+		this.confirmObjectButton.enable();
+		this.startObjectButton.enable();
+		this.endObjectButton.enable();
+		this.payObjectButton.enable();
 	},
 
 	disableRecordButtons: function() {
 		this.editObjectButton.disable();
 		this.deleteObjectButton.disable();
+		this.confirmObjectButton.disable();
+		this.startObjectButton.disable();
+		this.endObjectButton.disable();
+		this.payObjectButton.disable();
 	}
 });

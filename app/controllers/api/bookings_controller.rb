@@ -142,6 +142,25 @@ class Api::BookingsController < Api::BaseApiController
     end
   end
   
+  
+=begin
+  Business Process 
+=end
+  def confirm 
+    # set the role over here. if there is no role, set it as doomed 
+  end
+  
+  def update_start_datetime
+  end
+  
+  def update_end_datetime
+  end
+  
+  def confirm_booking_payment
+  end
+  
+  
+  
   def search
     search_params = params[:query]
     selected_id = params[:selected_id]

@@ -6,7 +6,9 @@ Ext.define('AM.controller.Bookings', {
 
   views: [
     'booking.booking.List',
-    'booking.booking.Form'
+    'booking.booking.Form',
+		'booking.booking.ConfirmationForm',
+		'booking.booking.UpdateStartTimeForm'
   ],
 
   	refs: [
@@ -35,8 +37,35 @@ Ext.define('AM.controller.Bookings', {
       'bookinglist button[action=deleteObject]': {
         click: this.deleteObject
 			}	,
+			'bookinglist button[action=confirmObject]': {
+        click: this.confirmObject
+			}	,
+			
+			'bookinglist button[action=startObject]': {
+        click: this.startObject
+			}	,
+			'bookinglist button[action=endObject]': {
+        click: this.endObject
+			}	,
+			'bookinglist button[action=payObject]': {
+        click: this.payObject
+			}	,
+			
 			'bookinglist textfield[name=searchField]': {
 				change: this.liveSearch
+			},
+			
+			'confirmbookingform button[action=confirm]' : {
+				click : this.executeConfirm
+			},
+			'startbookingform button[action=save]' : {
+				click : this.executeStartBooking
+			},
+			'endbookingform button[action=save]' : {
+				click : this.executeEndBooking
+			},
+			'paybookingform button[action=pay]' : {
+				click : this.executePayBooking
 			}
 		
     });
@@ -150,11 +179,60 @@ Ext.define('AM.controller.Bookings', {
   selectionChange: function(selectionModel, selections) {
     var grid = this.getList();
 
+		// var currentUser = Ext.decode( localStorage.getItem('currentUser'));
+
     if (selections.length > 0) {
       grid.enableRecordButtons();
+
+
     } else {
       grid.disableRecordButtons();
     }
-  }
+  },
 
+	confirmObject : function(){
+		var view = Ext.widget('confirmbookingform');
+		var record = this.getList().getSelectedObject();
+		view.setParentData( record );
+    view.show();
+	},
+	
+	
+	
+	executeConfirm : function(button){
+		alert("Yeah, gonna execute confirm");
+	}	,
+	
+	
+	startObject : function(){
+		var view = Ext.widget('startbookingform');
+		var record = this.getList().getSelectedObject();
+		view.setParentData( record );
+    view.show();
+	},
+	executeStartBooking : function(button){
+		alert("Yeah, gonna start the booking");
+	},
+	
+	endObject : function(){
+		var view = Ext.widget('endbookingform');
+		var record = this.getList().getSelectedObject();
+		view.setParentData( record );
+    view.show();
+	},
+	
+	executeEndBooking : function(button){
+		alert("Yeah, gonna end the booking");
+	},
+	
+	payObject : function(){
+		var view = Ext.widget('paybookingform');
+		var record = this.getList().getSelectedObject();
+		view.setParentData( record );
+    view.show();
+	},
+	
+	executePayBooking : function(button){
+		alert("Yeah, gonna pay the booking");
+	},
 });
