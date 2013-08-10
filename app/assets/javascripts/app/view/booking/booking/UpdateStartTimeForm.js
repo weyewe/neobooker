@@ -32,7 +32,7 @@ Ext.define('AM.view.booking.booking.UpdateStartTimeForm', {
 	        name : 'actual_start_datetime',
 	        fieldLabel: ' Waktu Mulai Pemakaian',
 					dateCfg : {
-						format: 'd-m-Y',
+						format: 'Y-m-d',
 					},
 					timeCfg : {
 						increment : 1 

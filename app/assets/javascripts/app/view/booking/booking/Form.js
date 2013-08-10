@@ -42,7 +42,7 @@ Ext.define('AM.view.booking.booking.Form', {
 	        name : 'start_datetime',
 	        fieldLabel: ' Waktu Mulai',
 					dateCfg : {
-						format: 'd-m-Y',
+						format: 'Y-m-d',
 					},
 					timeCfg : {
 						increment : 1 

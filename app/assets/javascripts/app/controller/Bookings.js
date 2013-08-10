@@ -8,14 +8,23 @@ Ext.define('AM.controller.Bookings', {
     'booking.booking.List',
     'booking.booking.Form',
 		'booking.booking.ConfirmationForm',
-		'booking.booking.UpdateStartTimeForm'
+		'booking.booking.UpdateStartTimeForm',
+		'Viewport'
   ],
 
   	refs: [
 		{
 			ref: 'list',
 			selector: 'bookinglist'
-		} 
+		} ,
+		{
+			ref: 'viewport',
+			selector: 'vp'
+		},
+		{
+			ref : 'confirmBookingForm',
+			selector : 'confirmbookingform'
+		}
 	],
 
   init: function() {
@@ -198,10 +207,62 @@ Ext.define('AM.controller.Bookings', {
 	},
 	
 	
+	 
 	
-	executeConfirm : function(button){
-		alert("Yeah, gonna execute confirm");
-	}	,
+	executeConfirm: function(button){
+		var win = button.up('window');
+    var form = win.down('form');
+
+		var me  = this;
+		var record = this.getList().getSelectedObject();
+		var list = this.getList();
+		me.getViewport().setLoading( true ) ;
+		
+		if(!record){return;}
+		
+		Ext.Ajax.request({
+		    url: 'api/confirm_booking',
+		    method: 'PUT',
+		    params: {
+					id : record.get('id')
+		    },
+		    jsonData: {},
+		    success: function(result, request ) {
+						me.getViewport().setLoading( false );
+						list.getStore().load({
+							callback : function(records, options, success){
+								// this => refers to a store 
+								record = this.getById(record.get('id'));
+								// record = records.getById( record.get('id'))
+								list.fireEvent('confirmed', record);
+							}
+						});
+						win.close();
+						
+		    },
+		    // failure: function(result, request ) {
+		    // 						me.getViewport().setLoading( false ) ;
+		    // 						
+		    // 						
+		    // }
+				failure : function(record,op ){
+					list.setLoading(false);
+					
+					var message  = op.request.scope.reader.jsonData["message"];
+					var errors = message['errors'];
+					
+					if( errors["generic_errors"] ){
+						Ext.MessageBox.show({
+						           title: 'FAIL',
+						           msg: errors["generic_errors"],
+						           buttons: Ext.MessageBox.OK, 
+						           icon: Ext.MessageBox.ERROR
+						       });
+					}
+					
+				}
+		});
+	},
 	
 	
 	startObject : function(){
@@ -210,8 +271,66 @@ Ext.define('AM.controller.Bookings', {
 		view.setParentData( record );
     view.show();
 	},
+	
 	executeStartBooking : function(button){
-		alert("Yeah, gonna start the booking");
+		var me = this; 
+		var win = button.up('window');
+    var form = win.down('form');
+
+		// var parentRecord = this.getParentList().getSelectedObject();
+	
+    var store = this.getBookingsStore();
+		var record = this.getList().getSelectedObject();
+    // var record = form.getRecord();
+    var values = form.getValues();
+
+		console.log("The record");
+		console.log( record ) ;
+		
+		console.log("The values");
+		console.log( values ) ;
+
+		form.setLoading( true ) ;
+ 
+		
+		if(record){
+			var rec_id = record.get("id");
+			record.set( values );
+			 
+			// form.query('checkbox').forEach(function(checkbox){
+			// 	record.set( checkbox['name']  ,checkbox['checked'] ) ;
+			// });
+			// 
+			form.setLoading(true);
+			record.save({
+				params : {
+					booking_id : rec_id,
+					update_actual_start_datetime: true 
+				},
+				success : function(record){
+					console.log("SUccess update");
+					form.setLoading(false);
+					//  since the grid is backed by store, if store changes, it will be updated
+					// form.fireEvent('item_quantity_changed');
+					store.load({
+						params: {
+							booking_id : rec_id
+						}
+					});
+					
+					win.close();
+				},
+				failure : function(record,op ){
+					console.log("Fail update");
+					form.setLoading(false);
+					var message  = op.request.scope.reader.jsonData["message"];
+					var errors = message['errors'];
+					form.getForm().markInvalid(errors);
+					
+					this.reject(); 
+				}
+			});
+		}
 	},
 	
 	endObject : function(){
@@ -222,7 +341,64 @@ Ext.define('AM.controller.Bookings', {
 	},
 	
 	executeEndBooking : function(button){
-		alert("Yeah, gonna end the booking");
+		var me = this; 
+		var win = button.up('window');
+    var form = win.down('form');
+
+		// var parentRecord = this.getParentList().getSelectedObject();
+	
+    var store = this.getBookingsStore();
+		var record = this.getList().getSelectedObject();
+    // var record = form.getRecord();
+    var values = form.getValues();
+
+		console.log("The record");
+		console.log( record ) ;
+		
+		console.log("The values");
+		console.log( values ) ;
+
+		form.setLoading( true ) ;
+ 
+		
+		if(record){
+			var rec_id = record.get("id");
+			record.set( values );
+			 
+			// form.query('checkbox').forEach(function(checkbox){
+			// 	record.set( checkbox['name']  ,checkbox['checked'] ) ;
+			// });
+			// 
+			form.setLoading(true);
+			record.save({
+				params : {
+					booking_id : rec_id,
+					update_actual_end_datetime: true 
+				},
+				success : function(record){
+					console.log("SUccess update");
+					form.setLoading(false);
+					//  since the grid is backed by store, if store changes, it will be updated
+					// form.fireEvent('item_quantity_changed');
+					store.load({
+						params: {
+							booking_id : rec_id
+						}
+					});
+					
+					win.close();
+				},
+				failure : function(record,op ){
+					console.log("Fail update");
+					form.setLoading(false);
+					var message  = op.request.scope.reader.jsonData["message"];
+					var errors = message['errors'];
+					form.getForm().markInvalid(errors);
+					
+					this.reject(); 
+				}
+			});
+		}
 	},
 	
 	payObject : function(){
@@ -233,6 +409,57 @@ Ext.define('AM.controller.Bookings', {
 	},
 	
 	executePayBooking : function(button){
-		alert("Yeah, gonna pay the booking");
+		var win = button.up('window');
+    var form = win.down('form');
+
+		var me  = this;
+		var record = this.getList().getSelectedObject();
+		var list = this.getList();
+		me.getViewport().setLoading( true ) ;
+		
+		if(!record){return;}
+		
+		Ext.Ajax.request({
+		    url: 'api/pay_booking',
+		    method: 'PUT',
+		    params: {
+					id : record.get('id')
+		    },
+		    jsonData: {},
+		    success: function(result, request ) {
+						me.getViewport().setLoading( false );
+						list.getStore().load({
+							callback : function(records, options, success){
+								// this => refers to a store 
+								record = this.getById(record.get('id'));
+								// record = records.getById( record.get('id'))
+								list.fireEvent('confirmed', record);
+							}
+						});
+						win.close();
+						
+		    },
+		    // failure: function(result, request ) {
+		    // 						me.getViewport().setLoading( false ) ;
+		    // 						
+		    // 						
+		    // }
+				failure : function(record,op ){
+					list.setLoading(false);
+					
+					var message  = op.request.scope.reader.jsonData["message"];
+					var errors = message['errors'];
+					
+					if( errors["generic_errors"] ){
+						Ext.MessageBox.show({
+						           title: 'FAIL',
+						           msg: errors["generic_errors"],
+						           buttons: Ext.MessageBox.OK, 
+						           icon: Ext.MessageBox.ERROR
+						       });
+					}
+					
+				}
+		});
 	},
 });

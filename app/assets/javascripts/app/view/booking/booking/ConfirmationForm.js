@@ -4,7 +4,7 @@ Ext.define('AM.view.booking.booking.ConfirmationForm', {
 
   title : 'Confirm Booking',
   layout: 'fit',
-	width	: 500,
+	width	: 700,
   autoShow: true,  // does it need to be called?
 	modal : true, 
 // win.show() 

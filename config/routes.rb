@@ -12,6 +12,7 @@ PortCalendar::Application.routes.draw do
      
      resources :bookings 
      put 'confirm_booking' => 'bookings#confirm' , :as => :confirm_booking 
+     put 'pay_booking' => 'bookings#pay' , :as => :pay_booking
      put 'update_booking_start_datetime' => 'bookings#update_start_datetime' , :as => :update_booking_start_datetime 
      put 'update_booking_end_datetime' => 'bookings#update_end_datetime' , :as => :update_booking_end_datetime 
      put 'confirm_booking_payment' => 'bookings#confirm_booking_payment' , :as => :confirm_booking_payment 

@@ -104,11 +104,19 @@ class Api::BookingsController < Api::BaseApiController
   def update
     @object = Booking.find(params[:id])
     
-    params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
-    params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
+    if params[:update_actual_start_datetime].present?  
+      params[:booking][:actual_start_datetime] =  parse_datetime_from_client_booking( params[:booking][:actual_start_datetime] )
+      @object.update_actual_start_datetime(   params[:booking][:actual_start_datetime] )
+    elsif params[:update_actual_end_datetime].present?
+      params[:booking][:actual_end_datetime] =  parse_datetime_from_client_booking( params[:booking][:actual_end_datetime] ) 
+      @object.update_actual_end_datetime(   params[:booking][:actual_end_datetime ] )
+    else
+      params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
+      params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
+      @object.update_object(params[:booking])
+    end
     
-    
-    if @object.update_object(params[:booking])
+    if @object.errors.size == 0 
       render :json => { :success => true,   
                         :bookings => [{
                           :id 						 =>	@object.id,                                               
@@ -146,17 +154,46 @@ class Api::BookingsController < Api::BaseApiController
 =begin
   Business Process 
 =end
-  def confirm 
-    # set the role over here. if there is no role, set it as doomed 
+  def confirm
+    @object = Booking.find_by_id params[:id]
+    # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
+    @object.confirm   
+    
+    if @object.errors.size == 0  and @object.is_confirmed? 
+      render :json => { :success => true, :total => Booking.active_objects.count }  
+    else
+      # render :json => { :success => false, :total => Delivery.active_objects.count } 
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg 
+    end
   end
   
-  def update_start_datetime
-  end
   
-  def update_end_datetime
-  end
   
-  def confirm_booking_payment
+  def pay
+    @object = Booking.find_by_id params[:id]
+    # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
+    @object.pay   
+    
+    if @object.errors.size == 0  and @object.is_confirmed? 
+      render :json => { :success => true, :total => Booking.active_objects.count }  
+    else
+      # render :json => { :success => false, :total => Delivery.active_objects.count } 
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg 
+    end
   end
   
   

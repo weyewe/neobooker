@@ -46,6 +46,21 @@ Ext.define('AM.view.booking.CustomDateTimeField', {
         }, me.timeCfg)]
     },
 
+
+		markInvalid: function(err_msg){
+			// console.log("The shite is called!! yippiee");
+			// console.log("The message: " ) ; 
+			// console.log( err_msg ) ;
+			var dateField = this.down("datefield");
+			var timeField = this.down("timefield");
+			// console.log("The dateField");
+			// console.log( dateField ) ; 
+			dateField.markInvalid( err_msg ) ;
+			// console.log("The timefield");
+			// console.log( timeField ) ;
+			timeField.markInvalid( err_msg ) ;
+		},
+		
     getValue: function () {
         var me = this,
             value,

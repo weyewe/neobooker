@@ -125,4 +125,42 @@ class Booking < ActiveRecord::Base
   def remaining_amount 
     self.total_price - self.downpayment_amount 
   end
+  
+  
+  def confirm
+    self.is_confirmed = true 
+    self.save 
+  end
+  
+  def pay
+    self.is_paid = true 
+    self.save 
+  end
+  
+  def update_actual_start_datetime( start_datetime )
+    if start_datetime.nil?
+      self.errors.add(:actual_start_datetime, "Jam mulai harus di isi")
+      return self 
+    end
+    
+    self.actual_start_datetime = start_datetime
+    self.save 
+  end
+  
+  def update_actual_end_datetime( end_datetime )
+    
+    if self.actual_start_datetime.nil? 
+      self.errors.add(:actual_end_datetime, "Jam mulai harus di isi")
+      return self 
+    end
+    
+    
+    if end_datetime.nil?
+      self.errors.add(:actual_end_datetime, "Jam selesai harus di isi")
+      return self 
+    end
+    
+    self.actual_end_datetime = end_datetime
+    self.save 
+  end
 end

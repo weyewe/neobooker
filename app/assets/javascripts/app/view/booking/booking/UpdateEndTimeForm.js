@@ -32,7 +32,7 @@ Ext.define('AM.view.booking.booking.UpdateEndTimeForm', {
 	        name : 'actual_end_datetime',
 	        fieldLabel: ' Waktu Selesai Pemakaian',
 					dateCfg : {
-						format: 'd-m-Y',
+						format: 'Y-m-d',
 					},
 					timeCfg : {
 						increment : 1 
