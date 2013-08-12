@@ -17,7 +17,8 @@ Ext.define('AM.view.Navigation', {
 					click: function() {
 						console.log("Inside the listener of calendar");
 					}
-				}
+				},
+				toggleGroup: this.id+'-nav-views'
 
 			},
 			{
@@ -27,7 +28,9 @@ Ext.define('AM.view.Navigation', {
 				tooltip: 'Bookings',
 				xtype: 'button',
 				text : "Bookings",
-				action : "switchBooking"
+				action : "switchBooking",
+				pressed : true,
+				toggleGroup: this.id+'-nav-views'
 			},
 			// {
 			// 	iconCls: 'tasks-mark-active',

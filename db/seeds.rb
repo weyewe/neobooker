@@ -160,6 +160,9 @@ customer_array = [cust_1, cust_2, cust_3, cust_4 ]
         puts msg 
       end
     end
+    
+    booking.confirm
+    booking.pay 
   end
 end
 # 

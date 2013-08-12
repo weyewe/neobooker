@@ -12,3 +12,9 @@ LOCAL_TIME_ZONE = "Jakarta"
 EXT_41_JS = 'https://s3.amazonaws.com/weyewe-extjs/41/ext-all.js'
 
 EXTENSIBLE = 'https://s3.amazonaws.com/weyewe-extjs/extensible-all.js'
+
+VIEW_VALUE = {
+  :week => 0, 
+  :month => 1, 
+  :year => 2 
+}

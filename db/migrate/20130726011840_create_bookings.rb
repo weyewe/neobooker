@@ -34,9 +34,10 @@ class CreateBookings < ActiveRecord::Migration
       
       t.boolean :is_canceled , :default => false 
       
-      # remaining_amount is derived amount, calculated from facility master data. 
-      # t.decimal :remaining_amount , :default => 0,  :precision => 12, :scale => 2
+      t.decimal :received_amount , :default => 0,  :precision => 12, :scale => 2
       t.boolean :is_paid, :default => false 
+      
+      
       
       t.timestamps
     end

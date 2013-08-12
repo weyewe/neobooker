@@ -24,13 +24,14 @@ ActiveRecord::Schema.define(version: 20130805101555) do
     t.integer  "duration"
     t.datetime "actual_start_datetime"
     t.datetime "actual_end_datetime"
-    t.boolean  "is_confirmed",                                  default: false
+    t.boolean  "is_confirmed",                                   default: false
     t.datetime "confirmation_datetime"
-    t.decimal  "discount",              precision: 5, scale: 2, default: 0.0
-    t.boolean  "is_started",                                    default: false
-    t.boolean  "is_finished",                                   default: false
-    t.boolean  "is_canceled",                                   default: false
-    t.boolean  "is_paid",                                       default: false
+    t.decimal  "discount",              precision: 5,  scale: 2, default: 0.0
+    t.boolean  "is_started",                                     default: false
+    t.boolean  "is_finished",                                    default: false
+    t.boolean  "is_canceled",                                    default: false
+    t.decimal  "received_amount",       precision: 12, scale: 2, default: 0.0
+    t.boolean  "is_paid",                                        default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

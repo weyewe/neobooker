@@ -97,65 +97,10 @@ Ext.define("AM.controller.Calendars", {
 		console.log("View Change")
 		cPanel.setLoading = true; 
 		var me = this; 
-		// alert("The view is changed");
-		// console.log("The alertViewChange");
-		// console.log("The cPanel");
-		// console.log( cPanel );
-		// console.log("The view");
-		// console.log(view);
-		// 
-		// console.log("The object");
-		// console.log( object); 
-		// console.log("The viewStart: ")
-		// console.log( object.viewStart); 
-		// console.log("The viewStart inspect"); 
-		// console.log(  + object.viewStart.getDate() );
-		// console.log("The year: " + object.viewStart.getYear() );
-		// console.log("The month: " + object.viewStart.getMonth()  ) ;
-		// console.log("The day: " + object.viewStart.getDay() ) ;
-		
+	
 		viewStart = Ext.Date.format(object.viewStart, 'Y-m-d');
 		viewEnd = Ext.Date.format(object.viewEnd, 'Y-m-d');
-		// console.log("The value viewStart: " + viewStart);
-		
-		
-		// load : function(o) {
-		//         Extensible.log('store load');
-		//         o = o || {};
-		//         
-		//         // if params are passed delete the one-time defaults
-		//         if(o.params){
-		//             delete this.initialParams;
-		//         }
-		//         // this.initialParams will only be set if the store is being loaded manually
-		//         // for the first time (autoLoad = false) so the owning calendar view set
-		//         // the initial start and end date params to use. Every load after that will
-		//         // have these params set automatically during normal UI navigation.
-		//         if(this.initialParams){
-		//             o.params = o.params || {};
-		//             Ext.apply(o.params, this.initialParams);
-		//             delete this.initialParams;
-		//         }
-		//         
-		//         this.callParent(arguments);
-		//     }
-		// 
-		// 
-		// me.getEventsStore().getProxy().extraParams = {
-		//     startDate: viewStart,
-		// 		endDate : viewEnd
-		// };
-	 
-		// me.getEventsStore().load({
-		//     startDate: viewStart,
-		// 		endDate : viewEnd
-		// });
-		
-		// me.getEventsStore().load(); 
-		
-		// if( view.reloadStore ){
-		// 	view.reloadStore(); 
-		// }
+	
 		
 	},
 	

@@ -130,11 +130,30 @@ class Booking < ActiveRecord::Base
   def confirm
     self.is_confirmed = true 
     self.save 
+    
+    self.update_received_amount 
   end
   
   def pay
     self.is_paid = true 
     self.save 
+    
+    self.update_received_amount
+  end
+  
+  def update_received_amount
+    
+    if self.is_confirmed? and not self.is_paid? 
+      self.received_amount = self.downpayment_amount
+      self.save 
+    end
+    
+    if self.is_paid? 
+      self.received_amount = self.total_price
+      self.save 
+    end
+    
+    
   end
   
   def update_actual_start_datetime( start_datetime )
