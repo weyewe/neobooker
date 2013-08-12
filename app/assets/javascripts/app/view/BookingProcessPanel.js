@@ -10,12 +10,13 @@ Ext.define('AM.view.BookingProcessPanel', {
     
     items: [
 			{
-				width: 250,
+				// width: 100,
 				bodyPadding: 5,
-				xtype: 'bookingProcessList'
+				xtype: 'bookingProcessList',
+				flex : 1
 			}, 
       {
-					flex :  1, 
+					flex :  6, 
           // title: '&nbsp;',
           id   : 'worksheetPanel', 
           // overflowY: 'auto',

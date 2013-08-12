@@ -106,6 +106,29 @@ Ext.define("AM.controller.Authorization", {
 		]
 	},
 	
+	reportFolder : {
+		text:'Report', 
+    viewClass:'Will', 
+    iconCls:'text-folder', 
+    expanded: true,
+		children : [
+			{ 
+          text:'Sales', 
+          viewClass:'AM.view.report.SalesReport', 
+          leaf:true, 
+          iconCls:'text' ,
+					conditions : [
+						{
+							controller : 'sales_reports',
+							action : 'index'
+						}
+						
+					]
+      }
+		]
+		
+	},
+	
 	factoryFolder : {
 		text:'Report', 
     viewClass:'Will', 
@@ -278,7 +301,7 @@ Ext.define("AM.controller.Authorization", {
 		var folderList = [
 			this.managementFolder,
 			this.inventoryFolder,
-			// this.factoryFolder, 
+			this.reportFolder, 
 			// this.salesFolder, 
 			// this.paymentFolder 
 		];
