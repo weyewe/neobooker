@@ -11,10 +11,10 @@ class Api::BaseApiController < ApplicationController
   
   
   def authenticate_auth_token
-    puts "Inside the authenticate_auth_token\n"*10
-    puts "The auth_token: #{params[:auth_token]}"
+    # puts "Inside the authenticate_auth_token\n"*10
+    # puts "The auth_token: #{params[:auth_token]}"
     resource = User.find_by_authentication_token( params[:auth_token])
-    puts "The resource : #{resource.inspect}"
+    # puts "The resource : #{resource.inspect}"
     if resource.nil?
       msg = {
         :success => false, 
@@ -51,7 +51,7 @@ class Api::BaseApiController < ApplicationController
     # return date.to_datetime
     
     datetime = DateTime.new(date_array[0], date_array[1], date_array[2], 0 ,0 ,0) 
-    puts "inside extraction.. the datetime: #{datetime}"
+    # puts "inside extraction.. the datetime: #{datetime}"
     return datetime 
   end
   
@@ -63,8 +63,8 @@ class Api::BaseApiController < ApplicationController
     date_array = date.split('-').map{|x| x.to_i}
     time_array = time.split(':').map{|x| x.to_i}
     
-    puts "The date_array: #{date_array}"
-    puts "The time_array : #{time_array}"
+    # puts "The date_array: #{date_array}"
+    # puts "The time_array : #{time_array}"
     
    
     datetime = DateTime.new( date_array[0], 

@@ -8,7 +8,7 @@ class Booking < ActiveRecord::Base
   attr_accessible :start_datetime, :number_of_hours,
           :title, :calendar_id , :customer_id, :price_id 
           
-  validates_presence_of :start_datetime, :number_of_hours , :title , :customer_id , :calendar_id 
+  validates_presence_of :start_datetime, :number_of_hours ,  :customer_id , :calendar_id 
   
   validate :valid_customer_id
   validate :valid_calendar_id
@@ -54,6 +54,10 @@ class Booking < ActiveRecord::Base
   end
   
   
+  def title
+    "#{self.customer.name}, #{self.customer.bb_pin}"
+  end
+  
   
   
    
@@ -62,14 +66,14 @@ class Booking < ActiveRecord::Base
     new_object = self.new 
     new_object.start_datetime = params[:start_datetime]
     new_object.number_of_hours = params[:number_of_hours]
-    new_object.title = params[:title]
+    # new_object.title = params[:title]
     new_object.calendar_id = params[:calendar_id]
     new_object.customer_id = params[:customer_id]
     new_object.discount = BigDecimal( params[:discount] || 0) 
     
     if new_object.save 
       new_object.update_end_datetime 
-      new_object.update_price 
+      new_object.update_price  
     end
     return new_object
   end
@@ -81,7 +85,7 @@ class Booking < ActiveRecord::Base
     end
     self.start_datetime = params[:start_datetime]
     self.number_of_hours = params[:number_of_hours]
-    self.title = params[:title]
+    # self.title = params[:title]
     self.calendar_id = params[:calendar_id]
     self.customer_id = params[:customer_id]
     self.discount = BigDecimal( params[:discount] || 0) 

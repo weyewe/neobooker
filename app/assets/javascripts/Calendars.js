@@ -59,7 +59,7 @@ Ext.define("AM.controller.Calendars", {
 			
 		});
 		
-		console.log("Init is finished");
+		// console.log("Init is finished");
 	},
 	
 	
@@ -69,11 +69,11 @@ Ext.define("AM.controller.Calendars", {
   },
  
 	onDayClick: function(){
-		console.log("On day click");
+		// console.log("On day click");
 	},
 	
 	onEventClick : function(){
-		console.log("on event click");
+		// console.log("on event click");
 	},
 	
 	
@@ -90,11 +90,11 @@ Ext.define("AM.controller.Calendars", {
 	},
 	 
 	alertAfterEventsRendered: function( cPanel ){
-		console.log("After Events Rendered");
+		// console.log("After Events Rendered");
 		cPanel.setLoading = false ; 
 	},
 	alertViewChange: function(cPanel, view, object){
-		console.log("View Change")
+		// console.log("View Change")
 		cPanel.setLoading = true; 
 		var me = this; 
 	

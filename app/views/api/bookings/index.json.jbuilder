@@ -31,6 +31,7 @@ json.bookings @objects do |object|
 	 #// Actual
 	json.actual_start_datetime 		format_datetime_friendly(object.actual_start_datetime)  
 	json.actual_end_datetime 			format_datetime_friendly(object.actual_end_datetime)
+	json.discount 			object.discount 
 	
 	
 	

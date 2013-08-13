@@ -15,7 +15,7 @@ Ext.define('AM.view.Navigation', {
 				action : "switchCalendar",
 				listeners: {
 					click: function() {
-						console.log("Inside the listener of calendar");
+						// console.log("Inside the listener of calendar");
 					}
 				},
 				toggleGroup: this.id+'-nav-views'

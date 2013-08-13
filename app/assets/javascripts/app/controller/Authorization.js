@@ -268,9 +268,9 @@ Ext.define("AM.controller.Authorization", {
 	},
 	
 	onActiveProtectedContent: function( panel, options) {
-		console.log("Inside onActiveProtectedContent");
-		console.log("The panel (Authorization)");
-		console.log( panel ) ;
+		// console.log("Inside onActiveProtectedContent");
+		// console.log("The panel (Authorization)");
+		// console.log( panel ) ;
 		var me  = this; 
 		var currentUser = Ext.decode( localStorage.getItem('currentUser'));
 		var email = currentUser['email'];
@@ -283,7 +283,7 @@ Ext.define("AM.controller.Authorization", {
 		var treeStore = processList.getStore();
 		treeStore.removeAll(); 
 		
-		console.log("Gonna build navigation");
+		// console.log("Gonna build navigation");
 		treeStore.setRootNode( this.buildNavigation(currentUser) );
 		processList.setLoading(false);
 		
@@ -292,8 +292,8 @@ Ext.define("AM.controller.Authorization", {
 		var userMenu = me.getUserMenu();
 
 		userMenu.setText( email );
-		console.log("==================>>>>>>>Done with navigation building");
-		console.log("END\n\n");
+		// console.log("==================>>>>>>>Done with navigation building");
+		// console.log("END\n\n");
 	},
 	
 	buildNavigation: function( currentUser ) {
@@ -306,12 +306,12 @@ Ext.define("AM.controller.Authorization", {
 			// this.paymentFolder 
 		];
 		
-		console.log("The length of folderList: " + folderList.length );
+		// console.log("The length of folderList: " + folderList.length );
 		var composedFolders = []; 
 		for(var i = 0 ; i < folderList.length ; i++){
 			var folder = folderList[i];
 			
-			console.log("Gonna build the folder");
+			// console.log("Gonna build the folder");
 			var composedFolder = me.buildFolder( currentUser, folder ); 
 			if( composedFolder !== null ){
 				composedFolders.push( composedFolder );
@@ -328,9 +328,9 @@ Ext.define("AM.controller.Authorization", {
 	
 	buildFolder : function( currentUser, folder ){
 		var me = this; 
-		console.log("Inside the build folder");
+		// console.log("Inside the build folder");
 		var processList = [];
-		console.log("The length of folder['children']: " + folder['children'].length );
+		// console.log("The length of folder['children']: " + folder['children'].length );
 		for( var i =0 ; i < folder['children'].length; i++ ){
 			var processTemplate = folder['children'][i];
 			var process = me.buildProcess( currentUser, processTemplate );
@@ -339,10 +339,10 @@ Ext.define("AM.controller.Authorization", {
 			}
 		}
 		
-		console.log("The processList length: "   + processList.length);
-		for(var i = 0 ; i < processList.length; i++ ) {
-			console.log(processList[i]);
-		}
+		// console.log("The processList length: "   + processList.length);
+		// for(var i = 0 ; i < processList.length; i++ ) {
+		// 	console.log(processList[i]);
+		// }
 		
 		if( processList.length !== 0 ){
 			return {
@@ -369,8 +369,8 @@ Ext.define("AM.controller.Authorization", {
 			leaf 			: processTemplate['leaf'],
 			iconCls 	: processTemplate['iconCls']
 		}
-		console.log("Inside buildProcess");
-		console.log( process );
+		// console.log("Inside buildProcess");
+		// console.log( process );
 		
 		for( var i =0 ; i < processTemplate['conditions'].length; i++ ){
 			var condition = processTemplate['conditions'][i];

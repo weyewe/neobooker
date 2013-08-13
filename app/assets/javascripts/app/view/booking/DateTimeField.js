@@ -417,7 +417,7 @@ Ext.define('AM.view.booking.DateTimeField', {
      * @return {Array} The array of return values
      */
     getValue: function(){
-				console.log("Get value is called");
+				// console.log("Get value is called");
         return [
             this.getDT('start'), 
             // this.getDT('end'),
@@ -457,7 +457,7 @@ Ext.define('AM.view.booking.DateTimeField', {
      * as defined in {@link Extensible.calendar.data.EventMappings}.</div></li><ul></div>
      */
     setValue: function(v){
-				console.log("setValue is called");
+				// console.log("setValue is called");
         if(!v) {
             return;
         }

@@ -57,7 +57,7 @@ Ext.define("AM.view.Constants",{
 
 
 Ext.onReady(function(){
-	console.log("ext onReady");
+	// console.log("ext onReady");
 	AM.view.Constants['moron'] = 'Awesome';
 	// update the logo 
 	
@@ -91,8 +91,8 @@ Ext.onReady(function(){
 		// 
 		var responseText=  response.responseText; 
 		var data = Ext.decode(responseText ); 
-		console.log("The data");
-		console.log( data ) ;
+		// console.log("The data");
+		// console.log( data ) ;
 		
 	
 		if( data['auth_token_invalid'] !== undefined && data['auth_token_invalid'] === true ){
@@ -101,6 +101,12 @@ Ext.onReady(function(){
 		
 		if( data['access_denied'] ){
 			Ext.Msg.alert("Tidak Berizin",  data['access_denied']);
+		}
+		
+		console.log("Form app.js.erb, onRequestComplete, we shall bypass the generic_errors from here");
+		console.log( data ) ;
+		if( data['message'] && data['message']['errors']  && data['message']['errors']['generic_errors']){
+			Ext.Msg.alert("Gagal",  data['message']['errors']['generic_errors']);
 		}
 	});
 	

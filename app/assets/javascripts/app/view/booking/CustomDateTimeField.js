@@ -87,11 +87,11 @@ Ext.define('AM.view.booking.CustomDateTimeField', {
 			
 			date_array = date_array.split("-");
 			time_array = time_array.split(":");
-			console.log("The date_array");
-			console.log( date_array ) ;
-			
-			console.log("The time_array");
-			console.log( time_array ) ;
+			// console.log("The date_array");
+			// 			console.log( date_array ) ;
+			// 			
+			// 			console.log("The time_array");
+			// 			console.log( time_array ) ;
 			
 			return new Date( parseInt( date_array[0] ) , 
 												parseInt( date_array[1] ) - 1,  // month is indexed from 0
@@ -103,18 +103,18 @@ Ext.define('AM.view.booking.CustomDateTimeField', {
 
     setValue: function (value) {
         var me = this;
-				console.log("The dateField");
-				console.log( me.dateField) ;
-				console.log( me.dateField.setValue ) ;
-				console.log("The value to be set to datetime");
-				console.log( value ) ;
+				// console.log("The dateField");
+				// console.log( me.dateField) ;
+				// console.log( me.dateField.setValue ) ;
+				// console.log("The value to be set to datetime");
+				// console.log( value ) ;
 				
 				var start = new Date() ; 
 				
 				value = me.parseDate( value ) ;
-				console.log("Proposed value into the timeField: " + value ) ;
-				console.log("Proposed value into the dateField: " + value ) ;
-				
+				// console.log("Proposed value into the timeField: " + value ) ;
+				// console.log("Proposed value into the dateField: " + value ) ;
+				// 
 				// new Date(year, month, day, hours, minutes, seconds, milliseconds)
 				 // 07/08/2013 00:24:59 
 				
@@ -122,9 +122,9 @@ Ext.define('AM.view.booking.CustomDateTimeField', {
 				me.timeField.setValue(value);
         me.dateField.setValue(value);
 				
-				console.log("The value set into timeField: " + me.timeField.getValue() );
-				console.log("The value set into dateField: " + me.dateField.getValue () );
-        
+				// console.log("The value set into timeField: " + me.timeField.getValue() );
+				// console.log("The value set into dateField: " + me.dateField.getValue () );
+				//         
     },
 
     getSubmitData: function () {

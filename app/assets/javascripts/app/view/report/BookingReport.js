@@ -58,8 +58,8 @@ Ext.define('AM.view.report.BookingReport', {
 			});
 			
 			
-			console.log("=======> The generateData()");
-			console.log( me.generateData() );
+			// console.log("=======> The generateData()");
+			// console.log( me.generateData() );
 			me.store1 = Ext.create(Ext.data.JsonStore, {
 				storeId : 'role_search',
 				fields	: [
@@ -179,18 +179,20 @@ Ext.define('AM.view.report.BookingReport', {
 		// Handling the butons 
 		// private
     onThisWeekClick: function(){
+		// console.log("onThisWeekClick");
+			var me = this; 
 			me.currentFocusDate = new Date(); 
 			me.loadStore();
     },
     
     // private
     onJumpClick: function(){
-			console.log("onJumpClck");
+			// console.log("onJumpClck");
         var dt = Ext.getCmp(this.id+'-tb-jump-dt').getValue();
 				var me = this; 
 				
 				if( dt === null || dt==='') {
-					console.log("THE date is null");
+					// console.log("THE date is null");
 				}else{
 					me.currentFocusDate = dt; 
 					me.loadStore(); 

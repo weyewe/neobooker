@@ -36,9 +36,9 @@ Ext.define("AM.controller.BasicCalendarWrappers", {
 	 
 	 
 	init : function( application ) {
-		console.log("[INIT Controller]");
+		// console.log("[INIT Controller]");
 		
-		console.log("The constant's content is : " + AM.view.Constants['moron'] ) ;
+		// console.log("The constant's content is : " + AM.view.Constants['moron'] ) ;
 		var me = this; 
 		me.control({
 		 
@@ -66,20 +66,20 @@ Ext.define("AM.controller.BasicCalendarWrappers", {
 			
 		});
 		
-		console.log("[init controller] Init is finished");
+		// console.log("[init controller] Init is finished");
 	},
 	
 	onViewportLoaded: function(){
-		console.log("============> The onViewportLoaded is not working");
+		// console.log("============> The onViewportLoaded is not working");
 		var datepicker = this.getTheDatePicker();
-		console.log("The datepicker: " + datepicker);
+		// console.log("The datepicker: " + datepicker);
 		
 		var calendarPanel = this.getTheCalendarPanel();
-		console.log("The calendar Panel: " + calendarPanel);
+		// console.log("The calendar Panel: " + calendarPanel);
 		
-		console.log("The calendar wrapper");
+		// console.log("The calendar wrapper");
 		var basicCal = this.getBasicCal(); 
-		console.log(basicCal);
+		// console.log(basicCal);
 		
 		
 		// Ext.ComponentQuery.query("basicCalendarWrapper extensible.calendarpanel")
@@ -95,14 +95,14 @@ Ext.define("AM.controller.BasicCalendarWrappers", {
 	},
 	
 	onDatePickerSelected: function(dp, dt){
-		console.log("On date picker selected");
+		// console.log("On date picker selected");
 		// Ext.getCmp only works by ID 
 		var calPanel = Ext.getCmp("extensibleCalendarPanel");
 		calPanel.setStartDate(dt); 
   },
   
 	alertViewChange: function(cPanel, view, object){
-		console.log("View Change")
+		// console.log("View Change")
 		cPanel.setLoading = true; 
 		var me = this; 
 		// alert("The view is changed");

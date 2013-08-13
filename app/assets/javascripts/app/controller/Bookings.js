@@ -106,8 +106,8 @@ Ext.define('AM.controller.Bookings', {
     var view = Ext.widget('bookingform');
 
 
-		console.log("Gonna load record");
-		console.log( record  ) ;
+		// console.log("Gonna load record");
+		// console.log( record  ) ;
     view.down('form').loadRecord(record);
 		view.setComboBoxData(record); 
   },
@@ -120,8 +120,8 @@ Ext.define('AM.controller.Bookings', {
     var record = form.getRecord();
     var values = form.getValues();
 
-		console.log("The values: " ) 
-		console.log( values ) ;
+		// console.log("The values: " ) 
+		// console.log( values ) ;
 		
 		if( record ){
 			record.set( values );
@@ -305,11 +305,11 @@ Ext.define('AM.controller.Bookings', {
     // var record = form.getRecord();
     var values = form.getValues();
 
-		console.log("The record");
-		console.log( record ) ;
-		
-		console.log("The values");
-		console.log( values ) ;
+		// console.log("The record");
+		// console.log( record ) ;
+		// 
+		// console.log("The values");
+		// console.log( values ) ;
 
 		form.setLoading( true ) ;
  
@@ -329,7 +329,7 @@ Ext.define('AM.controller.Bookings', {
 					update_actual_start_datetime: true 
 				},
 				success : function(record){
-					console.log("SUccess update");
+					// console.log("SUccess update");
 					form.setLoading(false);
 					//  since the grid is backed by store, if store changes, it will be updated
 					// form.fireEvent('item_quantity_changed');
@@ -342,7 +342,7 @@ Ext.define('AM.controller.Bookings', {
 					win.close();
 				},
 				failure : function(record,op ){
-					console.log("Fail update");
+					// console.log("Fail update");
 					form.setLoading(false);
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
@@ -373,11 +373,11 @@ Ext.define('AM.controller.Bookings', {
     // var record = form.getRecord();
     var values = form.getValues();
 
-		console.log("The record");
-		console.log( record ) ;
-		
-		console.log("The values");
-		console.log( values ) ;
+		// console.log("The record");
+		// console.log( record ) ;
+		// 
+		// console.log("The values");
+		// console.log( values ) ;
 
 		form.setLoading( true ) ;
  
@@ -397,7 +397,7 @@ Ext.define('AM.controller.Bookings', {
 					update_actual_end_datetime: true 
 				},
 				success : function(record){
-					console.log("SUccess update");
+					// console.log("SUccess update");
 					form.setLoading(false);
 					//  since the grid is backed by store, if store changes, it will be updated
 					// form.fireEvent('item_quantity_changed');
@@ -410,7 +410,7 @@ Ext.define('AM.controller.Bookings', {
 					win.close();
 				},
 				failure : function(record,op ){
-					console.log("Fail update");
+					// console.log("Fail update");
 					form.setLoading(false);
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
@@ -448,7 +448,21 @@ Ext.define('AM.controller.Bookings', {
 		    },
 		    jsonData: {},
 		    success: function(result, request ) {
-						me.getViewport().setLoading( false );
+					// console.log("Supposed to be failing");
+					console.log( result ) ;
+					
+					var responseText=  result.responseText; 
+					var data = Ext.decode(responseText );
+					
+					if( data['success'] !== true ){
+						var message =  data['message']['errors']['generic_errors']; 
+						Ext.MessageBox.show({
+						           title: 'FAIL',
+						           msg: message,
+						           buttons: Ext.MessageBox.OK, 
+						           icon: Ext.MessageBox.ERROR
+						       });
+					}else{
 						list.getStore().load({
 							callback : function(records, options, success){
 								// this => refers to a store 
@@ -457,16 +471,19 @@ Ext.define('AM.controller.Bookings', {
 								list.fireEvent('confirmed', record);
 							}
 						});
+					}
+					
+					
+						me.getViewport().setLoading( false );
+						
 						win.close();
 						
 		    },
-		    // failure: function(result, request ) {
-		    // 						me.getViewport().setLoading( false ) ;
-		    // 						
-		    // 						
-		    // }
 				failure : function(record,op ){
+					// fail case if the internal server error
+					// not the tag success : false 
 					list.setLoading(false);
+					
 					
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];

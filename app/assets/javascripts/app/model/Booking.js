@@ -17,6 +17,7 @@ Ext.define('AM.model.Booking', {
     	{ name: 'end_datetime', type: 'string' } ,
 			{ name: 'number_of_hours', type: 'int' },
 			{ name: 'total_price', type: 'string' },
+			{ name: 'discount', type: 'string' },
 
 			{ name: 'title', type: 'string' } ,
 			

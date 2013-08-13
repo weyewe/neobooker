@@ -54,7 +54,7 @@ Ext.define("AM.controller.Navigation", {
 		var me = this; 
 		
 		var activeItem = AM.view.Constants[ btn.action ] ;
-		console.log("The activeItem : " + activeItem);
+		// console.log("The activeItem : " + activeItem);
 		me.getContent().layout.setActiveItem( AM.view.Constants[ btn.action ] )
 		
 	 if(btn.action ==='switchCalendar'){

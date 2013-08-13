@@ -18,7 +18,7 @@ Ext.define("AM.controller.Authentication", {
 	 
 	
 	onLaunch : function(){
-		console.log("onLaunch");
+		// console.log("onLaunch");
 		var me = this; 
 		var currentUser = Ext.decode( localStorage.getItem('currentUser'));
 		
@@ -49,7 +49,7 @@ Ext.define("AM.controller.Authentication", {
 	
 	
 	onViewportLoaded: function(){
-		console.log("onViewportLoaded");
+		// console.log("onViewportLoaded");
 		var me = this;
 		var currentUserBase = localStorage.getItem('currentUser');
 		if( currentUserBase === null){
@@ -65,7 +65,7 @@ Ext.define("AM.controller.Authentication", {
 		var me = this; 
 		
 		
-		console.log("INSIDE INIT of Authentication.js");
+		// console.log("INSIDE INIT of Authentication.js");
 		me.control({
 			"button#loginBtn" : {
 				click : this.onLoginClick
@@ -82,7 +82,7 @@ Ext.define("AM.controller.Authentication", {
  
 	
 	onLoginClick: function( button ){
-		console.log("inside onLoginClick");
+		// console.log("inside onLoginClick");
 		var me = this; 
 		
 		var fieldset = button.up('fieldset');
@@ -167,8 +167,8 @@ Ext.define("AM.controller.Authentication", {
 				 
 						localStorage.setItem('currentUser', Ext.encode( currentUserObject ));
 						
-						console.log("The currentUserObject");
-						console.log( currentUserObject );
+						// console.log("The currentUserObject");
+						// console.log( currentUserObject );
 						me.currentUser = currentUserObject;
 						me.showProtectedArea(); 
 		    },

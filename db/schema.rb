@@ -14,7 +14,6 @@
 ActiveRecord::Schema.define(version: 20130813025057) do
 
   create_table "bookings", force: true do |t|
-    t.string   "title"
     t.integer  "calendar_id"
     t.integer  "customer_id"
     t.integer  "price_id"

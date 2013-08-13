@@ -9,12 +9,12 @@ Ext.define('AM.view.ProtectedContent', {
 		},
     
     items: [
-        {
-            xtype : 'container',
-						html : "Congrats, you are inside. Wanna play around?",
-						height: '50px'
-						// flex : 1 
-        },
+						//         {
+						//             xtype : 'container',
+						// html : "Congrats, you are inside. Wanna play around?",
+						// height: '50px'
+						// // flex : 1 
+						//         },
         
 				{
 					xtype : 'navigation',

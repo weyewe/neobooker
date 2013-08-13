@@ -26,7 +26,8 @@ Ext.define('AM.view.booking.booking.List' ,{
 				tpl : 'Fasilitas:<br /> <b>{facility_title}</b>' + '<br />' + '<br />' +
 				 			'Start:<br /> <b>{start_datetime}</b>' + '<br />' + '<br />' +
 							'Durasi(jam):<br /> <b>{number_of_hours}</b>'  + '<br />' + '<br />' +
-							"Harga: <br /><b>{total_price}</b>"
+							"Harga: <br /><b>{total_price}</b>" + '<br />' + 
+							'Discount(%):<br /> <b>{discount}</b>'  
 			},
 			
 			{

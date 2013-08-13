@@ -148,7 +148,7 @@ Ext.define("AM.controller.BookingCalendars", {
 	
 	
 	onDatePickerSelected: function(dp, dt){
-		console.log("The date picker is selected");
+		// console.log("The date picker is selected");
 			var calendarPanel = this.getCalendarPanel();
 			calendarPanel.setStartDate(dt); 
   },

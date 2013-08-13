@@ -84,10 +84,14 @@ class Api::CalendarsController < Api::BaseApiController
     @object = Calendar.find(params[:id])
     @object.delete_object
 
-    if ( not @object.persisted? )   or @object.is_deleted
+    if (( not @object.persisted? )   or @object.is_deleted ) and @object.errors.size == 0
       render :json => { :success => true, :total => Calendar.active_objects.count }  
     else
-      render :json => { :success => false, :total => Calendar.active_objects.count }  
+      render :json => { :success => false, :total => Calendar.active_objects.count, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        } 
+      }  
     end
   end
   

@@ -12,18 +12,18 @@ Ext.define('AM.view.master.CustomColorPicker', {
 
 		// private
     handleClick : function(e, t){
-		console.log("YEAH BUUDDDY, we are in");
-		console.log("The e: " ) ;
-		console.log( e ) ;
-		console.log("\n The t:");
-		console.log( t  );
+		// console.log("YEAH BUUDDDY, we are in");
+		// console.log("The e: " ) ;
+		// console.log( e ) ;
+		// console.log("\n The t:");
+		// console.log( t  );
 		
 		e.preventDefault();
     
     var colorId = t.className.split('x-cal-')[1];
 
-		console.log("The colorID");
-		console.log( colorId);
+		// console.log("The colorID");
+		// console.log( colorId);
 			this.fireEvent('colorSelected', colorId, this );
 			this.select(colorId);
         // e.preventDefault();

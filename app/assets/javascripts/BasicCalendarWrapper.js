@@ -11,7 +11,7 @@ Ext.define('AM.view.calendar.BasicCalendarWrapper', {
 
 		initComponent: function(){ 
 			
-			console.log("Init component basic calendar wrapper");
+			// console.log("Init component basic calendar wrapper");
 			
 			var me = this; 
 			var calendar = this;  
@@ -29,7 +29,7 @@ Ext.define('AM.view.calendar.BasicCalendarWrapper', {
 		},
 		
 		buildSidePanel: function(){
-			console.log("[START] building side panel");
+			// console.log("[START] building side panel");
 			
 			var me = this; 
 			me.sidePanel = {
@@ -50,15 +50,15 @@ Ext.define('AM.view.calendar.BasicCalendarWrapper', {
 				]
 			}
 			
-			console.log("[Tue]THEEE calendar store: " + me.calendarStore);
-			console.log(  me.calendarStore);
-			console.log("[END] building side panel");
+			// console.log("[Tue]THEEE calendar store: " + me.calendarStore);
+			// console.log(  me.calendarStore);
+			// console.log("[END] building side panel");
 		},
 		
 		
 		
 		buildMainPanel: function(){
-			console.log("[START] building main panel");
+			// console.log("[START] building main panel");
 			var me = this; 
 			me.mainPanel = {
 				xtype : 'extensible.calendarpanel',
@@ -69,7 +69,7 @@ Ext.define('AM.view.calendar.BasicCalendarWrapper', {
 				readOnly : true, 
 			}
 			
-			console.log("[END] building main panel");
+			// console.log("[END] building main panel");
 		},
 		
 		

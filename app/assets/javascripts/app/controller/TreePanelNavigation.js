@@ -31,20 +31,20 @@ Ext.define("AM.controller.TreePanelNavigation", {
 	},
 	
 	onTreeRecordSelected : function( me, record, item, index, e ){
-		console.log("onTreeRecordSelected. hahaha");
-		console.log("the me: " ) ;
-		console.log(me);
-		console.log("The record:"  ) ;
-		console.log( record ) ;
-		console.log("The item: " );
-		console.log( item ) ;
+		// console.log("onTreeRecordSelected. hahaha");
+		// console.log("the me: " ) ;
+		// console.log(me);
+		// console.log("The record:"  ) ;
+		// console.log( record ) ;
+		// console.log("The item: " );
+		// console.log( item ) ;
 		if (!record.isLeaf()) {
 		        return;
 		    }
 		
-		console.log("The record");
-		console.log( record ) ;
-		console.log("the className: " + record.get('viewClass') );
+		// console.log("The record");
+		// console.log( record ) ;
+		// console.log("the className: " + record.get('viewClass') );
 		this.setActiveExample( record.get('viewClass'), record.get('text'));
 	},
 	setActiveExample: function(className, title) {

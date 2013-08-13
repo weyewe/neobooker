@@ -58,7 +58,7 @@ class Api::BookingsController < Api::BaseApiController
     params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
     
     # puts "\nThe end_datetime ********"
-    params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
+    # params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
     @object = Booking.create_object(params[:booking])
  
     if @object.errors.size  == 0
@@ -68,7 +68,7 @@ class Api::BookingsController < Api::BaseApiController
                               :id 						 =>	@object.id,                                               
                             	:start_datetime  =>	format_datetime_friendly(@object.start_datetime),
                             	:end_datetime 	 =>	format_datetime_friendly(@object.end_datetime)  ,
-                            	:number_of_hours => number_of_hours, 
+                            	:number_of_hours => @object.number_of_hours, 
                             	:title 					 =>	@object.title,
                             	:calendar_id 		 =>	@object.calendar_id
                             }
@@ -119,7 +119,7 @@ class Api::BookingsController < Api::BaseApiController
         end
       end
       params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
-      params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
+      # params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
       @object.update_object(params[:booking])
     end
     

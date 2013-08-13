@@ -56,12 +56,12 @@ Ext.define('AM.controller.Facilities', {
 		var colorField = form.getForm().findField('color'); 
 		
 		
-		console.log("the colorId in onColorPickerSelect:");
-		console.log( colorId);
+		// console.log("the colorId in onColorPickerSelect:");
+		// console.log( colorId);
 		colorField.setValue( colorId );
 		
-		console.log("The colorField.getValue()");
-		console.log( colorField.getValue() );
+		// console.log("The colorField.getValue()");
+		// console.log( colorField.getValue() );
 	
 	},
 
@@ -103,9 +103,9 @@ Ext.define('AM.controller.Facilities', {
     var record = form.getRecord();
     var values = form.getValues();
 
-		console.log("Inside updateObject");
-		console.log("The values");
-		console.log(values);
+		// console.log("Inside updateObject");
+		// console.log("The values");
+		// console.log(values);
 		if( record ){
 			record.set( values );
 			 
@@ -160,10 +160,10 @@ Ext.define('AM.controller.Facilities', {
 
     if (record) {
       var store = this.getFacilitiesStore();
-      store.remove(record);
-      store.sync();
-// to do refresh programmatically
-		this.getList().query('pagingtoolbar')[0].doRefresh();
+			store.remove(record);
+			store.sync( );
+ 
+			this.getList().query('pagingtoolbar')[0].doRefresh();
     }
 
   },
