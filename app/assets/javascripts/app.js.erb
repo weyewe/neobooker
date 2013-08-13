@@ -94,11 +94,7 @@ Ext.onReady(function(){
 		console.log("The data");
 		console.log( data ) ;
 		
-		
-		
-		
-		
-		
+	
 		if( data['auth_token_invalid'] !== undefined && data['auth_token_invalid'] === true ){
 			Ext.Msg.alert("Login Error", "The authentication token is expired. Please retry login");
 		}

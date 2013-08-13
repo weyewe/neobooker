@@ -62,22 +62,21 @@ class Api::CalendarsController < Api::BaseApiController
 
   def update
     @object = Calendar.find(params[:id])
-    
-    if @object.update_object(params[:calendar])
+    @object.update_object(params[:calendar])
+    if @object.errors.size == 0 
       render :json => { :success => true,   
                         :calendars => [@object],
                         :total => Calendar.active_objects.count  } 
     else
+      
       msg = {
         :success => false, 
         :message => {
-          :errors => {
-            :name => "Nama tidak boleh kosong"
-          }
+          :errors => extjs_error_format( @object.errors )  
         }
       }
       
-      render :json => msg 
+      render :json => msg
     end
   end
 

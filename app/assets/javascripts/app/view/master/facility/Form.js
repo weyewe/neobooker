@@ -29,16 +29,45 @@ Ext.define('AM.view.master.facility.Form', {
 	        xtype: 'textfield',
 	        name : 'title',
 	        fieldLabel: ' Nama Fasilitas'
-				},{
-	        xtype: 'textfield',
-	        name : 'color',
-	        fieldLabel: ' Indicator Warna'
 				},
 				{
 					xtype: 'textarea',
 					name : 'description',
 					fieldLabel: 'Deskripsi Fasilitas'
 				},
+				{
+					xtype: 'textfield',
+					name : 'amount',
+					fieldLabel: 'Harga Per Jam'
+				},
+				{
+					xtype: 'numberfield',
+					name : 'downpayment_percentage',
+					fieldLabel: 'Besar Downpayment (%)'
+				},
+				
+				{
+					xtype: 'hidden',
+	        name : 'color',
+	        fieldLabel: ' Indicator Warna'
+				},
+				{
+					xtype: 'container',
+					layout : 'vbox',
+					items : [
+						{
+			        xtype: 'container',
+			        html : 'Pilih Indicator Warna',
+						},
+						
+						{
+			        xtype: 'customcolorpicker',
+			        name : 'color_picker',
+			        fieldLabel: ' Indicator Warna'
+						},
+					]
+				}
+				
 				 
 			]
     }];
@@ -53,5 +82,13 @@ Ext.define('AM.view.master.facility.Form', {
     }];
 
     this.callParent(arguments);
-  }
+  },
+
+	setColorPickerData: function( record ) {
+		var colorId =  record.get("color")
+		if(!colorId){
+			colorId = 0 ;
+		}
+		this.down('customcolorpicker').select(colorId);
+	}
 });

@@ -31,11 +31,22 @@ class Calendar < ActiveRecord::Base
     new_object.downpayment_percentage = BigDecimal( params[:downpayment_percentage] || 0 )
     new_object.save
     
+    
+    
     if new_object.errors.size  == 0 
       new_object.update_price 
+      new_object.adjust_color
     end
     
     return new_object 
+  end
+  
+  def adjust_color
+    if color < 1 or color > 32 
+      self.color = 5 
+    end
+    
+    self.save
   end
   
   def update_object( params  ) 
@@ -54,6 +65,7 @@ class Calendar < ActiveRecord::Base
     
     if is_price_changed
       self.update_price
+      self.adjust_color 
     end
   end
 

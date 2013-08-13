@@ -235,4 +235,6 @@ Ext.define('AM.view.booking.booking.Form', {
 		me.setSelectedCalendar( record.get("calendar_id")  ) ;
 	 
 	}
+	
+	
 });

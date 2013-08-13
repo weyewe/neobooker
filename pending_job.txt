@@ -31,3 +31,14 @@ That's it.. stop working on the UI.
 	
 	
 Use the after request callback.. If found that no access
+
+
+
+Done with RBAC..
+
+Now, what else? 
+1. Printing receipt. Create Facility, add color picker   => Perfecto
+
+2. All other reports 
+
+# ok, gonna do color picker

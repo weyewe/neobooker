@@ -13,7 +13,11 @@ Ext.define('AM.controller.Facilities', {
 		{
 			ref: 'list',
 			selector: 'facilitylist'
-		} 
+		},
+		{
+			ref : 'form',
+			selector : 'facilityform'
+		}
 	],
 
   init: function() {
@@ -26,6 +30,10 @@ Ext.define('AM.controller.Facilities', {
       'facilityform button[action=save]': {
         click: this.updateObject
       },
+			'facilityform customcolorpicker' : {
+				'colorSelected' : this.onColorPickerSelect
+			},
+
       'facilitylist button[action=addObject]': {
         click: this.addObject
       },
@@ -41,6 +49,21 @@ Ext.define('AM.controller.Facilities', {
 		
     });
   },
+
+	onColorPickerSelect: function(colorId, theColorPicker){
+		var win = theColorPicker.up('window');
+    var form = win.down('form');
+		var colorField = form.getForm().findField('color'); 
+		
+		
+		console.log("the colorId in onColorPickerSelect:");
+		console.log( colorId);
+		colorField.setValue( colorId );
+		
+		console.log("The colorField.getValue()");
+		console.log( colorField.getValue() );
+	
+	},
 
 	liveSearch : function(grid, newValue, oldValue, options){
 		var me = this;
@@ -68,7 +91,8 @@ Ext.define('AM.controller.Facilities', {
     var view = Ext.widget('facilityform');
 
     view.down('form').loadRecord(record);
-		view.setComboBoxData(record); 
+		// view.setComboBoxData(record); 
+		view.setColorPickerData(record)
   },
 
   updateObject: function(button) {
@@ -79,7 +103,9 @@ Ext.define('AM.controller.Facilities', {
     var record = form.getRecord();
     var values = form.getValues();
 
-		
+		console.log("Inside updateObject");
+		console.log("The values");
+		console.log(values);
 		if( record ){
 			record.set( values );
 			 
