@@ -40,7 +40,7 @@ class Api::IncomesController < Api::BaseApiController
       (1..7).each do |diff|
          
         projected_start_datetime = starting_date + (diff-1).days 
-        projected_end_datetime = ending_date + diff.days 
+        projected_end_datetime = starting_date + diff.days 
         
         name  = projected_start_datetime + UTC_OFFSET.hours
         record = {}
@@ -49,7 +49,7 @@ class Api::IncomesController < Api::BaseApiController
         record[:data1] = bookings.where{
           (start_datetime.gte projected_start_datetime) & 
           (end_datetime.lt projected_end_datetime )
-        }.sum('received_amount')
+        }.sum('amount')
         
         records << record 
       end
@@ -73,7 +73,7 @@ class Api::IncomesController < Api::BaseApiController
       (1..days_in_month).each do |diff|
          
         projected_start_datetime = starting_date + (diff-1).days 
-        projected_end_datetime = ending_date + diff.days 
+        projected_end_datetime = starting_date + diff.days 
         
         name  = projected_start_datetime + UTC_OFFSET.hours
         record = {}
@@ -82,42 +82,10 @@ class Api::IncomesController < Api::BaseApiController
         record[:data1] = bookings.where{
           (start_datetime.gte projected_start_datetime) & 
           (end_datetime.lt projected_end_datetime )
-        }.sum('received_amount')
+        }.sum('amount')
         
         records << record 
       end
-      
-      
-    elsif view_value == VIEW_VALUE[:year]
-      starting_date = date - date.mday.days 
-      
-      days_in_month = Time.days_in_month(date.month, date.year)
-      ending_date = starting_date + days_in_month.days
-   
-      bookings = Booking.where{
-        (start_datetime.gte starting_date) & 
-        (end_datetime.lt ending_date )
-      }
-      
-      
-      
-      (1..days_in_month).each do |diff|
-         
-        projected_start_datetime = starting_date + (diff-1).days 
-        projected_end_datetime = ending_date + diff.days 
-        
-        name  = projected_start_datetime + UTC_OFFSET.hours
-        record = {}
-        record[:name] = "#{name.year}/#{name.month}/#{name.day}"
-        
-        record[:data1] = bookings.where{
-          (start_datetime.gte projected_start_datetime) & 
-          (end_datetime.lt projected_end_datetime )
-        }.sum('received_amount')
-        
-        records << record 
-      end
-      
     end
   
     

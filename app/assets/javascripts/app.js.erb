@@ -86,11 +86,12 @@ Ext.onReady(function(){
 	  }, this);
 
 	Ext.Ajax.on('requestcomplete', function(conn, response, options, eOpts){
-		console.log("on request complete");
-		console.log(response);
-		
+		// console.log("on request complete");
+		// console.log(response);
+		// 
 		var responseText=  response.responseText; 
 		var data = Ext.decode(responseText ); 
+		console.log("The data");
 		console.log( data ) ;
 		
 		
@@ -100,6 +101,10 @@ Ext.onReady(function(){
 		
 		if( data['auth_token_invalid'] !== undefined && data['auth_token_invalid'] === true ){
 			Ext.Msg.alert("Login Error", "The authentication token is expired. Please retry login");
+		}
+		
+		if( data['access_denied'] ){
+			Ext.Msg.alert("Tidak Berizin",  data['access_denied']);
 		}
 	});
 	

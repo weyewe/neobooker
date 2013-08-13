@@ -103,7 +103,7 @@ class Api::CalendarsController < Api::BaseApiController
     # on PostGre SQL, it is ignoring lower case or upper case 
     
     if  selected_id.nil?  
-      @objects = Calendar.where{  (name =~ query)   & 
+      @objects = Calendar.where{  (title =~ query)   & 
                                 (is_deleted.eq false )
                               }.
                         page(params[:page]).

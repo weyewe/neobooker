@@ -16,7 +16,7 @@ class Api::EventsController < Api::BaseApiController
       puts "startDate.to_time : #{startDate.to_time.to_s}"
       puts "endDate.to_time : #{endDate.to_time.to_s}"
       
-      @objects = Booking.bookings_in_between(startDate, endDate)
+      @objects = Booking.active_objects.bookings_in_between(startDate, endDate)
       @total = @objects.count 
       puts "Total count: #{@total}"
       

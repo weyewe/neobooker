@@ -7,7 +7,7 @@ class Api::BookingsController < Api::BaseApiController
     # livesearch
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
-      @objects = Booking.where{
+      @objects = Booking.active_objects.where{
         (is_deleted.eq false) & 
         (
           (name =~  livesearch )
@@ -15,8 +15,7 @@ class Api::BookingsController < Api::BaseApiController
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
-      @total = Booking.where{
-        (is_deleted.eq false) & 
+      @total = Booking.active_objects.where{
         (
           (name =~  livesearch )
         )
@@ -24,27 +23,27 @@ class Api::BookingsController < Api::BaseApiController
       
       # calendar 
     elsif params[:startDate].present? 
-      puts "This is the shite\n"*5
+      # puts "This is the shite\n"*5
       
       # 2013-06-30
       startDate = extract_extensible_date( params[:startDate])
       endDate = ( extract_extensible_date(params[:endDate]) + 1.day ).to_date.to_datetime
-      puts "The class : #{startDate.class.to_s}"
-      puts "The startDate: #{startDate.year}, #{startDate.month}, #{startDate.day}"
-      puts "The endDate : #{endDate.year}, #{endDate.month}, #{endDate.day}"
+      # puts "The class : #{startDate.class.to_s}"
+      # puts "The startDate: #{startDate.year}, #{startDate.month}, #{startDate.day}"
+      # puts "The endDate : #{endDate.year}, #{endDate.month}, #{endDate.day}"
+      # 
+      # puts "startDate: #{startDate}"
+      # puts "endDate : #{endDate}"
+      # puts "startDate.to_time : #{startDate.to_time.to_s}"
+      # puts "endDate.to_time : #{endDate.to_time.to_s}"
       
-      puts "startDate: #{startDate}"
-      puts "endDate : #{endDate}"
-      puts "startDate.to_time : #{startDate.to_time.to_s}"
-      puts "endDate.to_time : #{endDate.to_time.to_s}"
-      
-      @objects = Booking.joins(:customer).bookings_in_between(startDate, endDate)
+      @objects = Booking.active_objects.joins(:customer).bookings_in_between(startDate, endDate)
       @total = @objects.count 
-      puts "Total count: #{@total}"
+      # puts "Total count: #{@total}"
       
       # the base grid 
     else
-      @objects = Booking.joins(:customer, :calendar).active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+      @objects = Booking.active_objects.joins(:customer, :calendar).page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Booking.active_objects.count
     end
     
@@ -55,10 +54,10 @@ class Api::BookingsController < Api::BaseApiController
     
     # parse_datetime_from_client
     
-    puts "\nThe start_datetime ********"
+    # puts "\nThe start_datetime ********"
     params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
     
-    puts "\nThe end_datetime ********"
+    # puts "\nThe end_datetime ********"
     params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
     @object = Booking.create_object(params[:booking])
  
@@ -111,6 +110,14 @@ class Api::BookingsController < Api::BaseApiController
       params[:booking][:actual_end_datetime] =  parse_datetime_from_client_booking( params[:booking][:actual_end_datetime] ) 
       @object.update_actual_end_datetime(   params[:booking][:actual_end_datetime ] )
     else
+      
+      if @object.is_confirmed? 
+        if not current_user.has_role?(:bookings , :post_confirm_update)
+          puts "Doesn't have the role for post confirm delete"
+          render :json => {:success => false, :access_denied => "Sudah Konfirmasi. Tidak bisa diganti kecuali oleh manager atau admin"}
+          return 
+        end
+      end
       params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
       params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
       @object.update_object(params[:booking])
@@ -141,6 +148,18 @@ class Api::BookingsController < Api::BaseApiController
 
   def destroy
     @object = Booking.find(params[:id])
+    puts "Gonna destroy "
+    if @object.is_confirmed? 
+      puts "The object is confirmed"
+      if not current_user.has_role?(:bookings , :post_confirm_delete)
+        puts "Doesn't have the role for post confirm delete"
+        render :json => {:success => false, :access_denied => "Sudah Konfirmasi. Hanya dapat di hapus manager atau admin"}
+        return 
+      end
+    end
+    
+    puts "it has the role for post confirm delete"
+    
     @object.delete_object
 
     if not @object.persisted? or @object.is_deleted?
@@ -181,7 +200,7 @@ class Api::BookingsController < Api::BaseApiController
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @object.pay   
     
-    if @object.errors.size == 0  and @object.is_confirmed? 
+    if @object.errors.size == 0  and @object.is_confirmed?  and @object.is_paid? 
       render :json => { :success => true, :total => Booking.active_objects.count }  
     else
       # render :json => { :success => false, :total => Delivery.active_objects.count } 
@@ -260,7 +279,7 @@ class Api::BookingsController < Api::BaseApiController
     if view_value == VIEW_VALUE[:week]
       starting_date = date - date.wday.days 
       ending_date = starting_date + 7.days 
-      bookings = Booking.where{
+      bookings = Booking.active_objects.where{
         (start_datetime.gte starting_date) & 
         (start_datetime.lt ending_date )
       }
@@ -294,7 +313,7 @@ class Api::BookingsController < Api::BaseApiController
       days_in_month = Time.days_in_month(date.month, date.year)
       ending_date = starting_date + days_in_month.days
    
-      bookings = Booking.where{
+      bookings = Booking.active_objects.where{
         (start_datetime.gte starting_date) & 
         (start_datetime.lt ending_date )
       }
@@ -303,7 +322,6 @@ class Api::BookingsController < Api::BaseApiController
       
       (1..days_in_month).each do |diff|
          
-        puts "The diff: #{diff}"
         projected_start_datetime = starting_date + (diff-1).days 
         projected_end_datetime = starting_date + diff.days 
         
@@ -316,147 +334,11 @@ class Api::BookingsController < Api::BaseApiController
           (start_datetime.lt projected_end_datetime )
         }.sum('number_of_hours')
         
-        puts "==== days_in_month: #{days_in_month}"
-        puts "number of hours : #{record[:data1]}, start_date: #{projected_start_datetime}, end_date: #{projected_end_datetime}"
         records << record 
       end
      
     end
     render :json => { :records => records , :total => records.count, :success => true }
   end
-  # 
-  # 
-  # def sales_amount_reports
-  #   if params[:viewValue].nil? or params[:focusDate].nil?
-  #     render :json => { :error => "Invalid params"}
-  #     return 
-  #   end
-  #   
-  #   
-  #   view_value = params[:viewValue].to_i  
-  #   date = parse_datetime_from_client_booking( params[:focusDate])
-  #   date =   DateTime.new( date.year , 
-  #                             date.month, 
-  #                             date.day, 
-  #                             0, 
-  #                             0, 
-  #                             0,
-  #                 Rational( UTC_OFFSET , 24) )
-  #                 
-  #   
-  #   
-  #   # SOP; 1 SQL query.. use ruby code to distribute the data..
-  #   # for 1 year query, it is gonna be a big sQL query. hahaha. banzai 
-  #   # display logic can be done in the client. but, fuck it . 
-  #   
-  #   records = [] 
-  #   if view_value == VIEW_VALUE[:week]
-  #     starting_date = date - date.wday.days 
-  #     ending_date = starting_date + 7.days 
-  #     bookings = Booking.where{
-  #       (start_datetime.gte starting_date) & 
-  #       (end_datetime.lt ending_date )
-  #     }
-  #     
-  #     
-  #     
-  #     (1..7).each do |diff|
-  #        
-  #       projected_start_datetime = starting_date + (diff-1).days 
-  #       projected_end_datetime = ending_date + diff.days 
-  #       
-  #       name  = projected_start_datetime + UTC_OFFSET.hours
-  #       record = {}
-  #       record[:name] = "#{name.year}/#{name.month}/#{name.day}"
-  #       
-  #       record[:data1] = bookings.where{
-  #         (start_datetime.gte projected_start_datetime) & 
-  #         (end_datetime.lt projected_end_datetime )
-  #       }.sum('received_amount')
-  #       
-  #       records << record 
-  #     end
-  #     
-  #     
-  #     
-  #     
-  #   elsif view_value == VIEW_VALUE[:month]
-  #     starting_date = date - date.mday.days 
-  #     
-  #     days_in_month = Time.days_in_month(date.month, date.year)
-  #     ending_date = starting_date + days_in_month.days
-  #  
-  #     bookings = Booking.where{
-  #       (start_datetime.gte starting_date) & 
-  #       (end_datetime.lt ending_date )
-  #     }
-  #     
-  #     
-  #     
-  #     (1..days_in_month).each do |diff|
-  #        
-  #       projected_start_datetime = starting_date + (diff-1).days 
-  #       projected_end_datetime = ending_date + diff.days 
-  #       
-  #       name  = projected_start_datetime + UTC_OFFSET.hours
-  #       record = {}
-  #       record[:name] = "#{name.year}/#{name.month}/#{name.day}"
-  #       
-  #       record[:data1] = bookings.where{
-  #         (start_datetime.gte projected_start_datetime) & 
-  #         (end_datetime.lt projected_end_datetime )
-  #       }.sum('received_amount')
-  #       
-  #       records << record 
-  #     end
-  #     
-  #     
-  #   elsif view_value == VIEW_VALUE[:year]
-  #     starting_date = date - date.mday.days 
-  #     
-  #     days_in_month = Time.days_in_month(date.month, date.year)
-  #     ending_date = starting_date + days_in_month.days
-  #  
-  #     bookings = Booking.where{
-  #       (start_datetime.gte starting_date) & 
-  #       (end_datetime.lt ending_date )
-  #     }
-  #     
-  #     
-  #     
-  #     (1..days_in_month).each do |diff|
-  #        
-  #       projected_start_datetime = starting_date + (diff-1).days 
-  #       projected_end_datetime = ending_date + diff.days 
-  #       
-  #       name  = projected_start_datetime + UTC_OFFSET.hours
-  #       record = {}
-  #       record[:name] = "#{name.year}/#{name.month}/#{name.day}"
-  #       
-  #       record[:data1] = bookings.where{
-  #         (start_datetime.gte projected_start_datetime) & 
-  #         (end_datetime.lt projected_end_datetime )
-  #       }.sum('received_amount')
-  #       
-  #       records << record 
-  #     end
-  #     
-  #   end
-  # 
-  #   
-  #   render :json => { :records => records , :total => records.count, :success => true }
-  # end
-  
-=begin
-  Sunday is the day 0 of the week 
-  
-  now = DateTime.now => if today is Tuesday , 
-  now.wday # => will produce 2 .. means 2 days from sunday.. how can we get the first sunday?
-  sunday = now - now.wday.days  => will give the sunday. 
-  next_sunday = sunday + 7.days    => will produce next sunday, 1 second before sunday 
-  
-  get all bookings between today and next sunday 
-  sunday <= bookings <= next_sunday 
-    
-=end
+
 end

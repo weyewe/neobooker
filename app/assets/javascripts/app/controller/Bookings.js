@@ -109,7 +109,7 @@ Ext.define('AM.controller.Bookings', {
 		console.log("Gonna load record");
 		console.log( record  ) ;
     view.down('form').loadRecord(record);
-		// view.setComboBoxData(record); 
+		view.setComboBoxData(record); 
   },
 
   updateObject: function(button) {
@@ -179,8 +179,29 @@ Ext.define('AM.controller.Bookings', {
       var store = this.getBookingsStore();
       store.remove(record);
       store.sync();
-// to do refresh programmatically
-		this.getList().query('pagingtoolbar')[0].doRefresh();
+
+			// 		
+			// record.destroy({
+			//     scope: this,
+			//     success: function(record, operation) {
+			//         var response = operation.response;
+			//         // do what you need to do...
+			// 				alert("success destroying");
+			//     },
+			//     failure: function(record, operation) {
+			//         // ...
+			// 				alert("Fail in estroying the record");
+			// 				console.log("\n The record");
+			// 				console.log(record);
+			// 				console.log("\n The operation");
+			// 				console.log( operation );
+			//     }
+			// });
+			
+			// to do refresh programmatically
+			this.getList().query('pagingtoolbar')[0].doRefresh();
+			
+			
     }
 
   },

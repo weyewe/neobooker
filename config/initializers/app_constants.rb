@@ -1,5 +1,6 @@
 ROLE_NAME = {
   :admin => "admin",
+  :manager => "manager",
   :data_entry => "dataentry"
 }
 

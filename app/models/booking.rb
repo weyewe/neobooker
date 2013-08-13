@@ -38,7 +38,7 @@ class Booking < ActiveRecord::Base
   end
   
   def self.active_objects
-    self
+    self.where(:is_deleted => false ) 
   end
   
   
@@ -209,6 +209,11 @@ class Booking < ActiveRecord::Base
   
   def pay
     return if self.is_paid? 
+    return if self.is_deleted? 
+    if not self.is_confirmed?
+      self.errors.add(:generic_errors, "Harus konfirmasi terlebih dahulu")
+      return self 
+    end
     
     self.is_paid = true 
     self.paid_datetime  = DateTime.now 

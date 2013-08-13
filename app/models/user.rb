@@ -27,10 +27,11 @@ class User < ActiveRecord::Base
     end
   end
   
-  def self.create_main_user(new_user_params) 
-    new_user = User.new( :email => new_user_params[:email], 
-                            :password => new_user_params[:password],
-                            :password => new_user_params[:password_confirmation] )
+  def self.create_main_user(params) 
+    new_user = User.new( :email => params[:email], 
+                            :password => params[:password],
+                            :password => params[:password_confirmation] ,
+                            :name => params[:name])
                       
   
     admin_role = Role.find_by_name ROLE_NAME[:admin]
@@ -56,6 +57,35 @@ class User < ActiveRecord::Base
     
   end
   
+  def User.create_object(params)
+    
+    
+    new_object                        = User.new 
+    password                         = UUIDTools::UUID.timestamp_create.to_s[0..7]
+    new_object.name                  = params[:name]
+    new_object.email                 = params[:email] 
+    new_object.role_id               =   params[:role_id]
+    
+    new_object.password              = password
+    new_object.password_confirmation = password 
+    
+    new_object.save
+
+    
+     
+    
+    if new_object.valid? and Rails.env.production? 
+      UserMailer.notify_new_user_registration( new_object , password    ).deliver
+      # if Rails.env.production?
+      #   UserMailer.notify_new_user_registration( new_object , password    ).deliver
+      # end
+       
+      
+    end
+    return new_object
+    
+  end
+  
   def User.create_by_employee( employee, params)
     return nil if employee.nil? 
     
@@ -75,7 +105,7 @@ class User < ActiveRecord::Base
     
      
     
-    if new_object.valid?
+    if new_object.valid? and Rails.env.production? 
       UserMailer.notify_new_user_registration( new_object , password    ).deliver
       # if Rails.env.production?
       #   UserMailer.notify_new_user_registration( new_object , password    ).deliver

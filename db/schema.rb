@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 20130813025057) do
     t.datetime "actual_start_datetime"
     t.datetime "actual_end_datetime"
     t.boolean  "is_confirmed",                                   default: false
-    t.datetime "confirmation_datetime"
+    t.datetime "confirmed_datetime"
     t.decimal  "discount",              precision: 5,  scale: 2, default: 0.0
     t.boolean  "is_started",                                     default: false
     t.boolean  "is_finished",                                    default: false
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 20130813025057) do
     t.boolean  "is_deleted",                                     default: false
     t.decimal  "received_amount",       precision: 12, scale: 2, default: 0.0
     t.boolean  "is_paid",                                        default: false
+    t.datetime "paid_datetime"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -61,8 +62,9 @@ ActiveRecord::Schema.define(version: 20130813025057) do
   create_table "incomes", force: true do |t|
     t.integer  "income_source_id"
     t.string   "income_source_type"
-    t.decimal  "amount",             precision: 11, scale: 2, default: 0.0
+    t.decimal  "amount",               precision: 11, scale: 2, default: 0.0
     t.integer  "case"
+    t.datetime "transaction_datetime"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

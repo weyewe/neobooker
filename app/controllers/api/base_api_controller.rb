@@ -3,6 +3,13 @@ class Api::BaseApiController < ApplicationController
   
   before_filter :authenticate_auth_token
   
+  
+  def access_denied
+    return render( :json => {:access_denied => "Requires appropriate role"} )
+  end
+  
+  
+  
   def authenticate_auth_token
     puts "Inside the authenticate_auth_token\n"*10
     puts "The auth_token: #{params[:auth_token]}"

@@ -1,0 +1,33 @@
+Pending Job: 
+
+1. Reporting 
+2. Role Enforcement:
+	1. Admin
+		1. Create User
+		2. Create Facility 
+		3. See Report 
+	2. Manager
+		1. Update booking post confirm/post payment 
+		2. Delete Booking post confirm 
+		3. Add Discount 
+	3. Data Entry 
+		1. Create Booking
+		2. Edit booking 
+		3. Confirm Booking
+		4. Pay Booking 
+		5. Start Date
+		6. End Date 
+		7. Delete Booking pre Confirm 
+		
+		
+Role based access control: 
+1. User/Facilty CRUD :
+	White Listing on user, facility creation/update/destroy => Exclusive for Admin 
+	
+2. Update/Delete booking post confirm => admin/manager 
+
+
+That's it.. stop working on the UI. 
+	
+	
+Use the after request callback.. If found that no access

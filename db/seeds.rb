@@ -19,7 +19,8 @@ data_entry_role = {
     :create => true, 
     :edit => true, 
     :update_customer => true ,
-    :delete_customer => true  
+    :delete_customer => true  ,
+    :index => true 
   },
   :bookings => {
     :new => true,
@@ -27,10 +28,10 @@ data_entry_role = {
     :edit => true, 
     :update_booking => true ,
     :delete_booking => true ,
-    :confirm_booking => true 
+    :confirm_booking => true,
+    :index => true 
   }
 }
-
 
 data_entry_role = Role.create!(
 :name        => ROLE_NAME[:data_entry],
@@ -41,9 +42,63 @@ data_entry_role = Role.create!(
 
 
 
-admin = User.create_main_user(   :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
+
+manager_role = {
+  :customers => {
+    :new => true,
+    :create => true, 
+    :edit => true, 
+    :update_customer => true ,
+    :delete_customer => true  ,
+    :index => true 
+  },
+  :bookings => {
+    :new => true,
+    :create => true, 
+    :edit => true, 
+    :update_booking => true ,
+    :delete_booking => true ,
+    :confirm_booking => true,
+    :index => true ,
+    :post_confirm_delete => true,
+    :post_confirm_update => true, 
+    :add_discount => true 
+  }
+}
+
+ 
+
+
+
+manager_role = Role.create!(
+  :name => ROLE_NAME[:manager],
+  :title => "Manager",
+  :description => "Role for manager: post confirm update",
+  :the_role => manager_role.to_json 
+)
+
+
+admin = User.create_main_user(  :name => "Admin", :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
 
 admin.set_as_main_user
+
+manager = User.create_object(:name => "Manager", :email => "manager@gmail.com", 
+              :password => 'willy1234', 
+              :password_confirmation => 'willy1234',
+              :role_id => manager_role.id ) 
+              
+manager.password = 'willy1234'
+manager.password_confirmation = 'willy1234'
+manager.save 
+
+data_entry = User.create_object(:name => "Data Entry", :email => "data_entry@gmail.com", 
+              :password => 'willy1234', 
+              :password_confirmation => 'willy1234',
+              :role_id => data_entry_role.id )
+              
+data_entry.password = 'willy1234'
+data_entry.password_confirmation = 'willy1234'
+data_entry.save
 
 customer = Customer.create_object({
   :name => "Andy"
@@ -165,88 +220,4 @@ customer_array = [cust_1, cust_2, cust_3, cust_4 ]
     booking.pay 
   end
 end
-# 
-# booking_list = [{
-#     "calendar_id"     => c1.id ,
-#     "title"  => "Vacation",
-#     "start_datetime"   =>   make_date(-20, 10),
-#     "end_datetime"     => make_date(-20, 13) 
-# },{
-#     "calendar_id"     => c2.id ,
-#     "title"  => "Lunch with Matt",
-#     "start_datetime"   =>   make_date(0, 11, 30),
-#     "end_datetime"     => make_date(0, 13) 
-# },{
-#     "calendar_id"     => c3.id ,
-#     "title"  => "Project due",
-#     "start_datetime"   =>   make_date(0, 15),
-#     "end_datetime"     => make_date(0, 15) 
-# },{
-#     "calendar_id"     => c1.id ,
-#     "title"  => "Sarah's birthday",
-#     "start_datetime"   =>   make_date(0),
-#     "end_datetime"     => make_date(0)
-# },{
-#     "calendar_id"     => c2.id ,
-#     "title"  => "A long one...",
-#     "start_datetime"   =>   make_date(-12),
-#     "end_datetime"     => make_date(10, 0, 0, -1) 
-# },{
-#     "calendar_id"     => c3.id ,
-#     "title"  => "School holiday",
-#     "start_datetime"   =>   make_date(5),
-#     "end_datetime"     => make_date(5) 
-# },{
-#     "calendar_id"     => c1.id ,
-#     "title"  => "Haircut",
-#     "start_datetime"   =>   make_date(0, 9),
-#     "end_datetime"     => make_date(0, 9, 0, 30) 
-# },{
-#     "calendar_id"     => c3.id ,
-#     "title"  => "An old event",
-#     "start_datetime"   =>   make_date(-30),
-#     "end_datetime"     => make_date(-28) 
-# },{
-#     "calendar_id"     => c2.id ,
-#     "title"  => "Board meeting",
-#     "start_datetime"   =>   make_date(-2, 13),
-#     "end_datetime"     => make_date(-2, 18),
-#     "location"   => "ABC Inc.",
-#     "reminder"   => "60",
-#     "created_by" => "Brian"
-# },{
-#     "calendar_id"     => c3.id ,
-#     "title"  => "Jenny's final exams",
-#     "start_datetime"   =>   make_date(-2),
-#     "end_datetime"     => make_date(3, 0, 0, -1) 
-# },{
-#     "calendar_id"     =>c1.id ,
-#     "title"  => "Movie night",
-#     "start_datetime"   =>   make_date(2, 19),
-#     "end_datetime"     => make_date(2, 23) 
-# },{
-#     "calendar_id"     => c4.id,
-#     "title"  => "Gina's basketball tournament",
-#     "start_datetime"   =>   make_date(8, 8),
-#     "end_datetime"     => make_date(10, 17) 
-# },{
-#     "calendar_id"     => c4.id,
-#     "title"  => "Toby's soccer game",
-#     "start_datetime"   =>   make_date(5, 10),
-#     "end_datetime"     => make_date(5, 12) 
-# }]
-# 
-# booking_list.each do |booking|
-#   hash = {}
-#   booking.each do |key,value|
-#     hash[key.to_sym] = value 
-#   end
-#   
-#   hash[:customer_id] = customer.id
-#   number_of_hours = rand(1..10)
-#   hash[:number_of_hours] =    (hash[:end_datetime].to_time - hash[:start_datetime].to_time)/3600
-#   next if hash[:number_of_hours] == 0 
-#   puts "number_of_hours: #{hash[:number_of_hours]}"
-#   puts hash 
-#   Booking.create_object hash 
-# end
+ 
