@@ -32,9 +32,9 @@ class Api::CalendarsController < Api::BaseApiController
   end
 
   def create
-    @object = Calendar.new(params[:calendar])
+    @object = Calendar.create_object( params[:calendar])
  
-    if @object.save
+    if @object.errors.size == 0 
       render :json => { :success => true, 
                         :calendars => [@object] , 
                         :total => Calendar.active_objects.count }  

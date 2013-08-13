@@ -27,6 +27,10 @@ class Calendar < ActiveRecord::Base
     new_object.title = params[:title]
     new_object.description = params[:description]
     new_object.color = params[:color]
+    puts "==============\n"*10
+    puts "Inside create object (calendar)"
+    puts "The amount: #{params[:amount]}"
+    puts "The DP percentage: #{params[:downpayment_percentage]}"
     new_object.amount = BigDecimal( params[:amount])
     new_object.downpayment_percentage = BigDecimal( params[:downpayment_percentage] || 0 )
     new_object.save

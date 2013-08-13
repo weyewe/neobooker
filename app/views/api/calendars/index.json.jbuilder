@@ -7,5 +7,6 @@ json.calendars @objects do |object|
 	json.color 			object.color
 	
 	json.downpayment_percentage object.downpayment_percentage.to_s
-	json.amount object.amount.to_s    
+	json.amount object.amount.to_s 
+	json.description object.description    
 end
