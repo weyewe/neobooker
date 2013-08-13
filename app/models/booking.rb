@@ -193,12 +193,15 @@ class Booking < ActiveRecord::Base
     return if self.is_confirmed? 
     
     self.is_confirmed = true 
+    self.confirmed_datetime = DateTime.now 
     self.save 
+    
     
     Income.create :income_source_type => self.class.to_s , 
                   :income_source_id => self.id ,
                   :amount => self.downpayment_amount ,
-                  :case => INCOME_CASE[:downpayment]
+                  :case => INCOME_CASE[:downpayment],
+                  :transaction_datetime => self.confirmed_datetime
     
     # gonna ignore this shite 
     self.update_received_amount 
@@ -208,12 +211,15 @@ class Booking < ActiveRecord::Base
     return if self.is_paid? 
     
     self.is_paid = true 
+    self.paid_datetime  = DateTime.now 
     self.save 
+    
     
     Income.create :income_source_type => self.class.to_s , 
                   :income_source_id => self.id ,
                   :amount => self.remaining_amount,
-                  :case => INCOME_CASE[:remaining_payment]
+                  :case => INCOME_CASE[:remaining_payment],
+                  :transaction_datetime =>  self.paid_datetime
     
     self.update_received_amount
   end

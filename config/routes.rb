@@ -17,11 +17,16 @@ PortCalendar::Application.routes.draw do
      put 'update_booking_end_datetime' => 'bookings#update_end_datetime' , :as => :update_booking_end_datetime 
      put 'confirm_booking_payment' => 'bookings#confirm_booking_payment' , :as => :confirm_booking_payment 
      
-     get 'sales_amount_reports' => 'bookings#sales_amount_reports', :as => :sales_amount_reports
+     # get 'sales_amount_reports' => 'bookings#sales_amount_reports', :as => :sales_amount_reports
+     get 'booking_reports' => 'bookings#booking_reports', :as => :booking_reports
      
      resources :calendars
      resources :customers
      resources :app_users
+     
+     
+     resources :incomes 
+     
      
      resources :events 
    end

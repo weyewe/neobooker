@@ -6,6 +6,7 @@ class CreateIncomes < ActiveRecord::Migration
       
       t.decimal :amount , :default        => 0,  :precision => 11, :scale => 2
       t.integer :case 
+      t.datetime :transaction_datetime 
       
       t.timestamps
     end

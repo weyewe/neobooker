@@ -1,6 +1,6 @@
-Ext.define('AM.view.report.SalesReport', {
+Ext.define('AM.view.report.BookingReport', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.salesReport',
+    alias: 'widget.bookingReport',
 
 		currentFocusDate : new Date(),
 		currentViewType : 'week',
@@ -68,7 +68,7 @@ Ext.define('AM.view.report.SalesReport', {
 				],
 				proxy  	: {
 					type : 'ajax',
-					url : 'api/sales_amount_reports',
+					url : 'api/booking_reports',
 					reader : {
 						type : 'json',
 						root : 'records', 
@@ -98,7 +98,7 @@ Ext.define('AM.view.report.SalesReport', {
 	            label: {
 	                renderer: Ext.util.Format.numberRenderer('0,0')
 	            },
-	            title: 'Sales',
+	            title: 'Booking Count (hours)',
 	            grid: true,
 	            minimum: 0
 	        }, {
@@ -156,8 +156,8 @@ Ext.define('AM.view.report.SalesReport', {
       });
 
 			this.tbar.items.push({
-          id: this.id+'-tb-month', text: this.monthText, handler: this.onMonthNavClick, scope: this, toggleGroup: this.id+'-sr-tb-views'
-      });
+				id: this.id+'-tb-month', text: this.monthText, handler: this.onMonthNavClick, scope: this, toggleGroup: this.id+'-sr-tb-views'
+			});
 
 			// this.tbar.items.push({
 			//           id: this.id+'-tb-year', text: this.yearText, handler: this.onYearNavClick, scope: this, toggleGroup: this.id+'-sr-tb-views'

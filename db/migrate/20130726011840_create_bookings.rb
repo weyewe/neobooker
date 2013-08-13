@@ -20,7 +20,7 @@ class CreateBookings < ActiveRecord::Migration
       t.datetime :actual_end_datetime 
       
       t.boolean :is_confirmed , :default => false 
-      t.datetime :confirmation_datetime 
+      t.datetime :confirmed_datetime 
       
       t.decimal :discount, :default        => 0,  :precision => 5, :scale => 2 # 999% max.. but it is limited to 100%
       # A field with precision 5, scale 2 must round to an absolute value less than 10^3.
@@ -37,6 +37,7 @@ class CreateBookings < ActiveRecord::Migration
       
       t.decimal :received_amount , :default => 0,  :precision => 12, :scale => 2
       t.boolean :is_paid, :default => false 
+      t.datetime :paid_datetime 
       
       
       

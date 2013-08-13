@@ -233,8 +233,7 @@ class Api::BookingsController < Api::BaseApiController
   FOR REPORTING PURPOSES 
 =end
 
-
-  def sales_amount_reports
+  def booking_reports
     if params[:viewValue].nil? or params[:focusDate].nil?
       render :json => { :error => "Invalid params"}
       return 
@@ -263,15 +262,16 @@ class Api::BookingsController < Api::BaseApiController
       ending_date = starting_date + 7.days 
       bookings = Booking.where{
         (start_datetime.gte starting_date) & 
-        (end_datetime.lt ending_date )
+        (start_datetime.lt ending_date )
       }
+      
       
       
       
       (1..7).each do |diff|
          
         projected_start_datetime = starting_date + (diff-1).days 
-        projected_end_datetime = ending_date + diff.days 
+        projected_end_datetime = starting_date + diff.days 
         
         name  = projected_start_datetime + UTC_OFFSET.hours
         record = {}
@@ -279,8 +279,8 @@ class Api::BookingsController < Api::BaseApiController
         
         record[:data1] = bookings.where{
           (start_datetime.gte projected_start_datetime) & 
-          (end_datetime.lt projected_end_datetime )
-        }.sum('received_amount')
+          (start_datetime.lt projected_end_datetime )
+        }.sum('number_of_hours')
         
         records << record 
       end
@@ -296,15 +296,16 @@ class Api::BookingsController < Api::BaseApiController
    
       bookings = Booking.where{
         (start_datetime.gte starting_date) & 
-        (end_datetime.lt ending_date )
+        (start_datetime.lt ending_date )
       }
       
       
       
       (1..days_in_month).each do |diff|
          
+        puts "The diff: #{diff}"
         projected_start_datetime = starting_date + (diff-1).days 
-        projected_end_datetime = ending_date + diff.days 
+        projected_end_datetime = starting_date + diff.days 
         
         name  = projected_start_datetime + UTC_OFFSET.hours
         record = {}
@@ -312,48 +313,139 @@ class Api::BookingsController < Api::BaseApiController
         
         record[:data1] = bookings.where{
           (start_datetime.gte projected_start_datetime) & 
-          (end_datetime.lt projected_end_datetime )
-        }.sum('received_amount')
+          (start_datetime.lt projected_end_datetime )
+        }.sum('number_of_hours')
         
+        puts "==== days_in_month: #{days_in_month}"
+        puts "number of hours : #{record[:data1]}, start_date: #{projected_start_datetime}, end_date: #{projected_end_datetime}"
         records << record 
       end
-      
-      
-    elsif view_value == VIEW_VALUE[:year]
-      starting_date = date - date.mday.days 
-      
-      days_in_month = Time.days_in_month(date.month, date.year)
-      ending_date = starting_date + days_in_month.days
-   
-      bookings = Booking.where{
-        (start_datetime.gte starting_date) & 
-        (end_datetime.lt ending_date )
-      }
-      
-      
-      
-      (1..days_in_month).each do |diff|
-         
-        projected_start_datetime = starting_date + (diff-1).days 
-        projected_end_datetime = ending_date + diff.days 
-        
-        name  = projected_start_datetime + UTC_OFFSET.hours
-        record = {}
-        record[:name] = "#{name.year}/#{name.month}/#{name.day}"
-        
-        record[:data1] = bookings.where{
-          (start_datetime.gte projected_start_datetime) & 
-          (end_datetime.lt projected_end_datetime )
-        }.sum('received_amount')
-        
-        records << record 
-      end
-      
+     
     end
-  
-    
     render :json => { :records => records , :total => records.count, :success => true }
   end
+  # 
+  # 
+  # def sales_amount_reports
+  #   if params[:viewValue].nil? or params[:focusDate].nil?
+  #     render :json => { :error => "Invalid params"}
+  #     return 
+  #   end
+  #   
+  #   
+  #   view_value = params[:viewValue].to_i  
+  #   date = parse_datetime_from_client_booking( params[:focusDate])
+  #   date =   DateTime.new( date.year , 
+  #                             date.month, 
+  #                             date.day, 
+  #                             0, 
+  #                             0, 
+  #                             0,
+  #                 Rational( UTC_OFFSET , 24) )
+  #                 
+  #   
+  #   
+  #   # SOP; 1 SQL query.. use ruby code to distribute the data..
+  #   # for 1 year query, it is gonna be a big sQL query. hahaha. banzai 
+  #   # display logic can be done in the client. but, fuck it . 
+  #   
+  #   records = [] 
+  #   if view_value == VIEW_VALUE[:week]
+  #     starting_date = date - date.wday.days 
+  #     ending_date = starting_date + 7.days 
+  #     bookings = Booking.where{
+  #       (start_datetime.gte starting_date) & 
+  #       (end_datetime.lt ending_date )
+  #     }
+  #     
+  #     
+  #     
+  #     (1..7).each do |diff|
+  #        
+  #       projected_start_datetime = starting_date + (diff-1).days 
+  #       projected_end_datetime = ending_date + diff.days 
+  #       
+  #       name  = projected_start_datetime + UTC_OFFSET.hours
+  #       record = {}
+  #       record[:name] = "#{name.year}/#{name.month}/#{name.day}"
+  #       
+  #       record[:data1] = bookings.where{
+  #         (start_datetime.gte projected_start_datetime) & 
+  #         (end_datetime.lt projected_end_datetime )
+  #       }.sum('received_amount')
+  #       
+  #       records << record 
+  #     end
+  #     
+  #     
+  #     
+  #     
+  #   elsif view_value == VIEW_VALUE[:month]
+  #     starting_date = date - date.mday.days 
+  #     
+  #     days_in_month = Time.days_in_month(date.month, date.year)
+  #     ending_date = starting_date + days_in_month.days
+  #  
+  #     bookings = Booking.where{
+  #       (start_datetime.gte starting_date) & 
+  #       (end_datetime.lt ending_date )
+  #     }
+  #     
+  #     
+  #     
+  #     (1..days_in_month).each do |diff|
+  #        
+  #       projected_start_datetime = starting_date + (diff-1).days 
+  #       projected_end_datetime = ending_date + diff.days 
+  #       
+  #       name  = projected_start_datetime + UTC_OFFSET.hours
+  #       record = {}
+  #       record[:name] = "#{name.year}/#{name.month}/#{name.day}"
+  #       
+  #       record[:data1] = bookings.where{
+  #         (start_datetime.gte projected_start_datetime) & 
+  #         (end_datetime.lt projected_end_datetime )
+  #       }.sum('received_amount')
+  #       
+  #       records << record 
+  #     end
+  #     
+  #     
+  #   elsif view_value == VIEW_VALUE[:year]
+  #     starting_date = date - date.mday.days 
+  #     
+  #     days_in_month = Time.days_in_month(date.month, date.year)
+  #     ending_date = starting_date + days_in_month.days
+  #  
+  #     bookings = Booking.where{
+  #       (start_datetime.gte starting_date) & 
+  #       (end_datetime.lt ending_date )
+  #     }
+  #     
+  #     
+  #     
+  #     (1..days_in_month).each do |diff|
+  #        
+  #       projected_start_datetime = starting_date + (diff-1).days 
+  #       projected_end_datetime = ending_date + diff.days 
+  #       
+  #       name  = projected_start_datetime + UTC_OFFSET.hours
+  #       record = {}
+  #       record[:name] = "#{name.year}/#{name.month}/#{name.day}"
+  #       
+  #       record[:data1] = bookings.where{
+  #         (start_datetime.gte projected_start_datetime) & 
+  #         (end_datetime.lt projected_end_datetime )
+  #       }.sum('received_amount')
+  #       
+  #       records << record 
+  #     end
+  #     
+  #   end
+  # 
+  #   
+  #   render :json => { :records => records , :total => records.count, :success => true }
+  # end
   
 =begin
   Sunday is the day 0 of the week 

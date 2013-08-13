@@ -113,13 +113,13 @@ Ext.define("AM.controller.Authorization", {
     expanded: true,
 		children : [
 			{ 
-          text:'Sales', 
-          viewClass:'AM.view.report.SalesReport', 
+          text:'Booking', 
+          viewClass:'AM.view.report.BookingReport', 
           leaf:true, 
           iconCls:'text' ,
 					conditions : [
 						{
-							controller : 'sales_reports',
+							controller : 'booking_reports',
 							action : 'index'
 						}
 						
