@@ -1,4 +1,6 @@
 class Booking < ActiveRecord::Base
+  has_many :incomes, :as => :income_source 
+  
   belongs_to :calendar 
   belongs_to :customer
   belongs_to :price 
@@ -63,6 +65,7 @@ class Booking < ActiveRecord::Base
     new_object.title = params[:title]
     new_object.calendar_id = params[:calendar_id]
     new_object.customer_id = params[:customer_id]
+    new_object.discount = BigDecimal( params[:discount] || 0) 
     
     if new_object.save 
       new_object.update_end_datetime 
@@ -72,17 +75,72 @@ class Booking < ActiveRecord::Base
   end
   
   def update_object(params)
+    if self.is_confirmed? or self.is_paid? 
+      self.update_post_confirm(params)
+      return self
+    end
     self.start_datetime = params[:start_datetime]
     self.number_of_hours = params[:number_of_hours]
     self.title = params[:title]
     self.calendar_id = params[:calendar_id]
     self.customer_id = params[:customer_id]
-    
+    self.discount = BigDecimal( params[:discount] || 0) 
    
     if self.save 
       self.update_end_datetime
     end
     return self
+  end
+  
+  def update_post_confirm(params)
+    is_number_of_hours_changed = false 
+    is_discount_changed = false 
+    if self.number_of_hours != params[:number_of_hours].to_i
+      is_number_of_hours_changed = true 
+    end
+    
+    if self.discount != BigDecimal( params[:discount])
+      is_discount_changed = true 
+    end
+    
+    
+    self.start_datetime = params[:start_datetime]
+    self.number_of_hours = params[:number_of_hours]
+    self.title = params[:title]
+    self.calendar_id = params[:calendar_id]
+    self.customer_id = params[:customer_id]
+    self.discount = BigDecimal( params[:discount] || 0) 
+    
+    if self.save 
+      if is_discount_changed or is_number_of_hours_changed
+        self.update_income 
+      end
+    end
+    
+  end
+  
+  def downpayment_income 
+    self.incomes.where(:case => INCOME_CASE[:downpayment]).first 
+  end
+  
+  def remaining_income
+    self.incomes.where(:case => INCOME_CASE[:remaining_payment]).first 
+  end
+  
+  def update_income
+    if self.is_confirmed?  
+      downpayment = self.downpayment_income 
+      downpayment.amount  = self.downpayment_amount
+      downpayment.save 
+    end
+    
+    
+    if self.is_paid? 
+      remaining = self.remaining_income 
+      remaining.amount = self.remaining_amount
+      remaining.save
+    end
+    
   end
   
   
@@ -118,25 +176,44 @@ class Booking < ActiveRecord::Base
     self.number_of_hours * self.price.amount 
   end
   
+  def discounted_total_price 
+    (( 100 - self.discount)/100.to_f) * self.total_price
+  end
+  
   def downpayment_amount 
-    (( 100 - self.discount)/100.to_f) * self.total_price * (self.calendar.downpayment_percentage/100.to_f)
+     self.discounted_total_price * (self.calendar.downpayment_percentage/100.to_f)
   end
   
   def remaining_amount 
-    self.total_price - self.downpayment_amount 
+    self.discounted_total_price - self.downpayment_amount 
   end
   
   
   def confirm
+    return if self.is_confirmed? 
+    
     self.is_confirmed = true 
     self.save 
     
+    Income.create :income_source_type => self.class.to_s , 
+                  :income_source_id => self.id ,
+                  :amount => self.downpayment_amount ,
+                  :case => INCOME_CASE[:downpayment]
+    
+    # gonna ignore this shite 
     self.update_received_amount 
   end
   
   def pay
+    return if self.is_paid? 
+    
     self.is_paid = true 
     self.save 
+    
+    Income.create :income_source_type => self.class.to_s , 
+                  :income_source_id => self.id ,
+                  :amount => self.remaining_amount,
+                  :case => INCOME_CASE[:remaining_payment]
     
     self.update_received_amount
   end
@@ -181,5 +258,15 @@ class Booking < ActiveRecord::Base
     
     self.actual_end_datetime = end_datetime
     self.save 
+  end
+  
+  def delete_object
+    if self.is_confirmed? or self.is_paid? 
+      self.incomes.each {|x| x.destroy }
+      self.is_deleted = true 
+      self.save 
+    else
+      self.destroy 
+    end
   end
 end

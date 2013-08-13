@@ -159,9 +159,9 @@ Ext.define('AM.view.report.SalesReport', {
           id: this.id+'-tb-month', text: this.monthText, handler: this.onMonthNavClick, scope: this, toggleGroup: this.id+'-sr-tb-views'
       });
 
-			this.tbar.items.push({
-          id: this.id+'-tb-year', text: this.yearText, handler: this.onYearNavClick, scope: this, toggleGroup: this.id+'-sr-tb-views'
-      });
+			// this.tbar.items.push({
+			//           id: this.id+'-tb-year', text: this.yearText, handler: this.onYearNavClick, scope: this, toggleGroup: this.id+'-sr-tb-views'
+			//       });
 
 		 
 
@@ -212,47 +212,59 @@ Ext.define('AM.view.report.SalesReport', {
     
     // private
     onPrevClick: function(){
-			console.log("on prev click");
-			if( currentViewType === 'week'){
-				me.currentFocusDate = me.currentFocusDate - 1 //week
+			var me = this; 
+			if( me.currentViewType === 'week'){
+				me.currentFocusDate.setDate( me.currentFocusDate.getDate() - 7 );
 			}else if( me.currentViewType ==='month'){
-				me.currentFocusDate = me.currentFocusDate  - 1 // month  
+				me.currentFocusDate.setMonth( me.currentFocusDate.getMonth() - 1 );
 			}else if( me.currentViewType ==='year'){
-				me.currentFocusDate = me.currentFocusDate - 1 // year 
+				me.currentFocusDate.setYear( me.currentFocusDate.getYear() - 1 );
 			}
-        // this.startDate = this.layout.activeItem.movePrev(true);
-        // this.updateNavState();
-        // this.fireViewChange();
+			me.loadStore() ; 
     },
     
     // private
     onNextClick: function(){
-	// get current view: week view, month view, or year view? 
-	// on clicking next: get next week/nextmonth/next year
-			console.log("on Next click");
-        // this.startDate = this.layout.activeItem.moveNext(true);
-        // this.updateNavState();
-        // this.fireViewChange();
+			var me = this; 
+			if( me.currentViewType === 'week'){
+				me.currentFocusDate.setDate( me.currentFocusDate.getDate() + 7 );
+			}else if( me.currentViewType ==='month'){
+				me.currentFocusDate.setMonth( me.currentFocusDate.getMonth() + 1 );
+			}else if( me.currentViewType ==='year'){
+				me.currentFocusDate.setYear( me.currentFocusDate.getYear() + 1 );
+			}
+      
+			me.loadStore() ;
     },
     
     // private
     onWeekNavClick: function(){
-	// get current Date. if it is empty, get today's week 
-			console.log("on WeekNav click")
+			var me = this; 
         // this.setActiveView(this.id+'-day');
+			if( me.currentViewType !== 'week'){
+				me.currentViewType = 'week';
+				me.loadStore();
+			}
     },
 
 		// private
     onMonthNavClick: function(){
-			// get current Date, if it is empty, get today's month
-			console.log("on MonthNav click")
+			var me = this; 
         // this.setActiveView(this.id+'-day');
+			if( me.currentViewType !== 'month'){
+				me.currentViewType = 'month';
+				me.loadStore();
+			}
     },
 
 		// private
     onYearNavClick: function(){
-			console.log("on YearNav click")
+			var me = this; 
         // this.setActiveView(this.id+'-day');
+			if( me.currentViewType !== 'year'){
+				me.currentViewType = 'year';
+				me.loadStore();
+			}
     },
 
 });

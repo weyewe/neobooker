@@ -143,7 +143,7 @@ class Api::BookingsController < Api::BaseApiController
     @object = Booking.find(params[:id])
     @object.delete_object
 
-    if @object.is_deleted
+    if not @object.persisted? or @object.is_deleted?
       render :json => { :success => true, :total => Booking.active_objects.count }  
     else
       render :json => { :success => false, :total => Booking.active_objects.count }  
@@ -293,62 +293,64 @@ class Api::BookingsController < Api::BaseApiController
       
       days_in_month = Time.days_in_month(date.month, date.year)
       ending_date = starting_date + days_in_month.days
+   
+      bookings = Booking.where{
+        (start_datetime.gte starting_date) & 
+        (end_datetime.lt ending_date )
+      }
+      
+      
+      
+      (1..days_in_month).each do |diff|
+         
+        projected_start_datetime = starting_date + (diff-1).days 
+        projected_end_datetime = ending_date + diff.days 
+        
+        name  = projected_start_datetime + UTC_OFFSET.hours
+        record = {}
+        record[:name] = "#{name.year}/#{name.month}/#{name.day}"
+        
+        record[:data1] = bookings.where{
+          (start_datetime.gte projected_start_datetime) & 
+          (end_datetime.lt projected_end_datetime )
+        }.sum('received_amount')
+        
+        records << record 
+      end
+      
+      
     elsif view_value == VIEW_VALUE[:year]
-      # get the sales for each month.. 
+      starting_date = date - date.mday.days 
+      
+      days_in_month = Time.days_in_month(date.month, date.year)
+      ending_date = starting_date + days_in_month.days
+   
+      bookings = Booking.where{
+        (start_datetime.gte starting_date) & 
+        (end_datetime.lt ending_date )
+      }
+      
+      
+      
+      (1..days_in_month).each do |diff|
+         
+        projected_start_datetime = starting_date + (diff-1).days 
+        projected_end_datetime = ending_date + diff.days 
+        
+        name  = projected_start_datetime + UTC_OFFSET.hours
+        record = {}
+        record[:name] = "#{name.year}/#{name.month}/#{name.day}"
+        
+        record[:data1] = bookings.where{
+          (start_datetime.gte projected_start_datetime) & 
+          (end_datetime.lt projected_end_datetime )
+        }.sum('received_amount')
+        
+        records << record 
+      end
       
     end
-    
-  # records = [
-  #   {
-  #     :name => "January",
-  #     :data1 => 30
-  #   },
-  #   {
-  #     :name  => "February",
-  #     :data1 => 40
-  #   },
-  #   {
-  #     :name  => "March",
-  #     :data1 =>  50
-  #   },
-  #   {
-  #     :name =>"April",
-  #     :data1=> 80
-  #   },
-  #   {
-  #     :name  => "May",
-  #     :data1 =>  80
-  #   },
-  #   {
-  #     :name  => "June",
-  #     :data1 =>  30
-  #   },
-  #   {
-  #     :name  => "July",
-  #     :data1 =>  80
-  #   },
-  #   {
-  #     :name  => "August",
-  #     :data1 =>  80
-  #   },
-  #   {
-  #     :name  => "Sept",
-  #     :data1 =>  20
-  #   },
-  #   {
-  #     :name  => "Oct",
-  #     :data1 =>  80
-  #   },
-  #   {
-  #     :name  => "Nov",
-  #     :data1 =>  90
-  #   },
-  #   {
-  #     :name  => "Dec",
-  #     :data1 =>  20
-  #   },
-  # ]
-    
+  
     
     render :json => { :records => records , :total => records.count, :success => true }
   end

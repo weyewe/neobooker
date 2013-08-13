@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130805101555) do
+ActiveRecord::Schema.define(version: 20130813025057) do
 
   create_table "bookings", force: true do |t|
     t.string   "title"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20130805101555) do
     t.boolean  "is_started",                                     default: false
     t.boolean  "is_finished",                                    default: false
     t.boolean  "is_canceled",                                    default: false
+    t.boolean  "is_deleted",                                     default: false
     t.decimal  "received_amount",       precision: 12, scale: 2, default: 0.0
     t.boolean  "is_paid",                                        default: false
     t.datetime "created_at"
@@ -53,6 +54,15 @@ ActiveRecord::Schema.define(version: 20130805101555) do
     t.string   "mobile_phone"
     t.string   "contact"
     t.boolean  "is_deleted",   default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "incomes", force: true do |t|
+    t.integer  "income_source_id"
+    t.string   "income_source_type"
+    t.decimal  "amount",             precision: 11, scale: 2, default: 0.0
+    t.integer  "case"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

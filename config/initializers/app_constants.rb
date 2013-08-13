@@ -18,3 +18,9 @@ VIEW_VALUE = {
   :month => 1, 
   :year => 2 
 }
+
+INCOME_CASE = {
+  # booking related 
+  :downpayment => 0 ,
+  :remaining_payment => 1  
+}
