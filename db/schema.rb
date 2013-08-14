@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20130813025057) do
     t.decimal  "amount",               precision: 11, scale: 2, default: 0.0
     t.integer  "case"
     t.datetime "transaction_datetime"
+    t.string   "code"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

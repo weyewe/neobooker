@@ -202,15 +202,16 @@ class Booking < ActiveRecord::Base
     self.save 
     
     
+    self.generate_code 
+    
     Income.create :income_source_type => self.class.to_s , 
                   :income_source_id => self.id ,
                   :amount => self.downpayment_amount ,
                   :case => INCOME_CASE[:downpayment],
-                  :transaction_datetime => self.confirmed_datetime
+                  :transaction_datetime => self.confirmed_datetime,
+                  :code => self.confirmation_code 
     
-    self.generate_code 
-    # gonna ignore this shite 
-    # self.update_received_amount 
+  
   end
   
   def pay
@@ -230,25 +231,10 @@ class Booking < ActiveRecord::Base
                   :income_source_id => self.id ,
                   :amount => self.remaining_amount,
                   :case => INCOME_CASE[:remaining_payment],
-                  :transaction_datetime =>  self.paid_datetime
+                  :transaction_datetime =>  self.paid_datetime,
+                  :code => self.remaining_payment_code
     
-    # self.update_received_amount
   end
-  # 
-  # def update_received_amount
-  #   
-  #   if self.is_confirmed? and not self.is_paid? 
-  #     self.received_amount = self.downpayment_amount
-  #     self.save 
-  #   end
-  #   
-  #   if self.is_paid? 
-  #     self.received_amount = self.total_price
-  #     self.save 
-  #   end
-  #   
-  #   
-  # end
   
   def update_actual_start_datetime( start_datetime )
     if start_datetime.nil?

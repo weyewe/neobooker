@@ -3,7 +3,8 @@ class Income < ActiveRecord::Base
                   :income_source_type,
                   :amount ,
                   :case ,
-                  :transaction_datetime 
+                  :transaction_datetime ,
+                  :code
                   
   belongs_to :income_source, :polymorphic => true 
 end

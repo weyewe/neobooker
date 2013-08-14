@@ -30,9 +30,6 @@ Ext.define('AM.view.report.IncomeReport', {
 				callback : function(records, options, success){
 					me.setLoading(false);
 					result = me.fireEvent('chartLoaded', Ext.Date.format( date, 'Y-m-d H:i:s'));
-					console.log("after fire Event");
-					console.log("fire event reuslt");
-					console.log(result);
 				}
 			});
 		},
@@ -61,7 +58,7 @@ Ext.define('AM.view.report.IncomeReport', {
 	
 			var chartConfig = {
 				xtype: 'chart',
-				flex : 2 ,
+				flex : 3 ,
         animate: true,
         store: me.store1,
         shadow: true,
@@ -90,9 +87,8 @@ Ext.define('AM.view.report.IncomeReport', {
             yField: 'data1',
 						listeners:{
 							itemmousedown : function(obj) {
-								console.log("The item mouse down event");
-								console.log(obj);
-								me.fireEvent('seriesClicked', obj);
+						
+								me.fireEvent('seriesClicked',  obj,  me.currentViewType  );
 							}
 						}
         }]
@@ -104,7 +100,7 @@ Ext.define('AM.view.report.IncomeReport', {
 		buildIncomeList: function(){
 			var listConfig = {
 				xtype: 'incomeReportList',
-				flex : 1
+				flex : 2
 			}
 			return listConfig; 
 		},

@@ -7,7 +7,7 @@ class Api::IncomesController < Api::BaseApiController
     # livesearch
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
-      @objects = Income.joins(:customer,:calendar).where{
+      @objects = Income.where{
         (is_deleted.eq false) & 
         (
           (customer.name =~  livesearch ) | 
@@ -16,7 +16,7 @@ class Api::IncomesController < Api::BaseApiController
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
-      @total = Income.joins(:customer,:calendar).where{
+      @total = Income.where{
         (is_deleted.eq false) & 
         (
           (customer.name =~  livesearch ) | 
@@ -28,11 +28,11 @@ class Api::IncomesController < Api::BaseApiController
     elsif params[:startDate].present? 
       startDate = extract_extensible_date( params[:startDate])
       endDate = ( extract_extensible_date(params[:endDate]) + 1.day ).to_date.to_datetime
-      @objects = Income.active_objects.joins(:customer).bookings_in_between(startDate, endDate)
+      @objects = Income.bookings_in_between(startDate, endDate)
       @total = @objects.count 
     else
-      @objects = Income.active_objects.joins(:customer, :calendar).page(params[:page]).per(params[:limit]).order("id DESC")
-      @total = Income.active_objects.count
+      @objects = Income.page(params[:page]).per(params[:limit]).order("id DESC")
+      @total = Income.count
     end
     
   end
