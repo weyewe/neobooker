@@ -10,7 +10,7 @@ Ext.define('AM.controller.IncomeReports', {
 		'Viewport'
   ],
 
-  	refs: [
+	refs: [
 		{
 			ref: 'list',
 			selector: 'incomeReportList'
@@ -20,16 +20,20 @@ Ext.define('AM.controller.IncomeReports', {
 			selector: 'vp'
 		},
 		{
-			ref : 'incomeReportPanel',
+			ref : 'incomeReport',
 			selector : 'incomeReport'
 		} 
 	],
 
   init: function() {
+ 
+	
     this.control({
-      'incomeReportPanel': {
+      'incomeReport': {
         'chartLoaded': this.clearList ,
-				'seriesClicked' : this.updateList
+				'seriesClicked' : this.updateList,
+				'activate' : this.onActivePanel,
+				'afterrender' : this.onAfterRender
       } 
 		
     });
@@ -41,6 +45,13 @@ Ext.define('AM.controller.IncomeReports', {
 	
 	updateList: function(){
 		console.log("Gonna update the list");
+	},
+	
+	onActivePanel: function(){
+		console.log("On active Panel");
+	},
+	onAfterRender: function(){
+		console.log("on after render");
 	}
 
 

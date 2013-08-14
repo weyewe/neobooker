@@ -25,7 +25,7 @@ Ext.define("AM.controller.Navigation", {
 		var me = this; 
 		
 		
-		console.log("INSIDE init of Navigation.js");
+		// console.log("INSIDE init of Navigation.js");
 		me.control({  
 			'	button[action=switchCalendar]' : {
 				click : me.switchScreen

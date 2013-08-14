@@ -90,6 +90,8 @@ Ext.define('AM.view.report.IncomeReport', {
             yField: 'data1',
 						listeners:{
 							itemmousedown : function(obj) {
+								console.log("The item mouse down event");
+								console.log(obj);
 								me.fireEvent('seriesClicked', obj);
 							}
 						}
