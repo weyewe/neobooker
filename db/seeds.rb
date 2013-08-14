@@ -14,21 +14,40 @@ Role.create!(
 
 
 data_entry_role = {
+  :passwords => {
+    :update => true 
+  },
+  :calendars => {
+    :search => true,
+    :index => true ,
+    # there are 2: update is hack for extensible.. 
+    # update details  => authorization to update discount, calendar name, etc
+    :update => true,
+    :update_details => false 
+  },
   :customers => {
     :new => true,
     :create => true, 
     :edit => true, 
-    :update_customer => true ,
-    :delete_customer => true  ,
-    :index => true 
+    :update => true ,
+    :destroy => true  ,
+    :index => true ,
+    :search => true 
   },
   :bookings => {
     :new => true,
     :create => true, 
     :edit => true, 
-    :update_booking => true ,
-    :delete_booking => true ,
-    :confirm_booking => true,
+    :update => true ,
+    :destroy => true ,
+    :confirm => true,
+    :pay => true, 
+    :index => true ,
+    :search => true,
+    :update_start_datetime => true, 
+    :update_end_datetime => true 
+  } ,
+  :events => {
     :index => true 
   }
 }
@@ -44,25 +63,42 @@ data_entry_role = Role.create!(
 
 
 manager_role = {
+  :passwords => {
+    :update => true 
+  },
+  :calendars => {
+    :search => true,
+    :index => true,
+    :update => true ,
+    :update_details => false 
+  },
   :customers => {
     :new => true,
     :create => true, 
     :edit => true, 
-    :update_customer => true ,
-    :delete_customer => true  ,
-    :index => true 
+    :update => true ,
+    :destroy => true  ,
+    :index => true,
+    :search => true 
   },
   :bookings => {
     :new => true,
     :create => true, 
     :edit => true, 
-    :update_booking => true ,
-    :delete_booking => true ,
-    :confirm_booking => true,
+    :update => true ,
+    :destroy => true ,
+    :confirm => true,
+    :pay => true, 
     :index => true ,
-    :post_confirm_delete => true,
+    :post_confirm_destroy => true,
     :post_confirm_update => true, 
-    :add_discount => true 
+    :add_discount => true ,
+    :search => true ,
+    :update_start_datetime => true, 
+    :update_end_datetime => true
+  },
+  :events => {
+    :index => true
   }
 }
 

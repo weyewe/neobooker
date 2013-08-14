@@ -1,7 +1,7 @@
 class Api::BaseApiController < ApplicationController
   respond_to :json
   
-  before_filter :authenticate_auth_token
+  before_filter :authenticate_auth_token, :ensure_authorized
   
   
   def access_denied
@@ -206,6 +206,18 @@ class Api::BaseApiController < ApplicationController
     
     return "#{year}-#{month}-#{day}" + " " + 
             "#{hour}:#{minute}:#{second}"
+  end
+  
+  def ensure_authorized
+    puts "===========>Inside ensure_authorized\n"
+    puts "The params: "
+    puts "#{params}"
+    current_controller_name = params[:controller].gsub("api/", "")
+    
+    if not current_user.has_role?(current_controller_name.to_sym, params[:action])
+      render :json => {:success => false, :access_denied => "Tidak punya authorisasi"}
+      return
+    end
   end
  
 end

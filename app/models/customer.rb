@@ -33,8 +33,13 @@ class Customer < ActiveRecord::Base
   end
   
   def delete_object
-    self.is_deleted= true
-    self.save
+    if self.bookings.active_objects.count != 0 
+      self.errors.add(:generic_errors, "Sudah ada booking")
+      return 
+    else
+      self.destroy 
+    end
+      
     
   end
 end

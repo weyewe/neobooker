@@ -79,10 +79,17 @@ class Api::CustomersController < Api::BaseApiController
     @object = Customer.find(params[:id])
     @object.delete_object 
 
-    if @object.is_deleted
+    if ( not @object.persisted?  or @object.is_deleted ) and @object.errors.size == 0 
       render :json => { :success => true, :total => Customer.active_objects.count }  
     else
-      render :json => { :success => false, :total => Customer.active_objects.count }  
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg
     end
   end
   

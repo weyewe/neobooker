@@ -66,9 +66,9 @@ Ext.define('AM.view.Navigation', {
 							}
 						}
 					},
-					{
-						text: "Ganti Profile"
-					}
+					// {
+					// 	text: "Ganti Profile"
+					// }
 				]
 			},
 			'-',

@@ -99,7 +99,7 @@ Ext.define("AM.controller.Authorization", {
 				conditions : [
 					{
 						controller : 'calendars',
-						action : 'index'
+						action : 'update_details'
 					}
 				]
 	     }

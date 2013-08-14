@@ -62,6 +62,15 @@ class Api::CalendarsController < Api::BaseApiController
 
   def update
     @object = Calendar.find(params[:id])
+    
+    # quick hack for ext-calendar 
+    if not current_user.has_role?(:calendars , :update_details)
+      # render :json => {:success => false, :access_denied => "Sudah Konfirmasi. Hanya dapat di hapus manager atau admin"}
+      render :json => {:success => true, :message => "Good"}
+      return 
+    end
+    
+    
     @object.update_object(params[:calendar])
     if @object.errors.size == 0 
       render :json => { :success => true,   

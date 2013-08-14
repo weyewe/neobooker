@@ -7,58 +7,40 @@ class Api::BookingsController < Api::BaseApiController
     # livesearch
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
-      @objects = Booking.active_objects.where{
+      @objects = Booking.joins(:customer,:calendar).where{
         (is_deleted.eq false) & 
         (
-          (name =~  livesearch )
+          (customer.name =~  livesearch ) | 
+          (calendar.title =~ livesearch)
         )
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
-      @total = Booking.active_objects.where{
+      @total = Booking.joins(:customer,:calendar).where{
+        (is_deleted.eq false) & 
         (
-          (name =~  livesearch )
+          (customer.name =~  livesearch ) | 
+          (calendar.title =~ livesearch)
         )
       }.count
       
       # calendar 
     elsif params[:startDate].present? 
-      # puts "This is the shite\n"*5
-      
-      # 2013-06-30
       startDate = extract_extensible_date( params[:startDate])
       endDate = ( extract_extensible_date(params[:endDate]) + 1.day ).to_date.to_datetime
-      # puts "The class : #{startDate.class.to_s}"
-      # puts "The startDate: #{startDate.year}, #{startDate.month}, #{startDate.day}"
-      # puts "The endDate : #{endDate.year}, #{endDate.month}, #{endDate.day}"
-      # 
-      # puts "startDate: #{startDate}"
-      # puts "endDate : #{endDate}"
-      # puts "startDate.to_time : #{startDate.to_time.to_s}"
-      # puts "endDate.to_time : #{endDate.to_time.to_s}"
-      
       @objects = Booking.active_objects.joins(:customer).bookings_in_between(startDate, endDate)
       @total = @objects.count 
-      # puts "Total count: #{@total}"
-      
-      # the base grid 
     else
       @objects = Booking.active_objects.joins(:customer, :calendar).page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Booking.active_objects.count
     end
     
-    # render :json => { :bookings => @objects , :total => @total , :success => true }
   end
 
   def create
     
-    # parse_datetime_from_client
-    
-    # puts "\nThe start_datetime ********"
     params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
     
-    # puts "\nThe end_datetime ********"
-    # params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
     @object = Booking.create_object(params[:booking])
  
     if @object.errors.size  == 0
@@ -119,7 +101,6 @@ class Api::BookingsController < Api::BaseApiController
         end
       end
       params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
-      # params[:booking][:end_datetime] =  parse_datetime_from_client_booking( params[:booking][:end_datetime] )
       @object.update_object(params[:booking])
     end
     
@@ -150,9 +131,7 @@ class Api::BookingsController < Api::BaseApiController
     @object = Booking.find(params[:id])
     puts "Gonna destroy "
     if @object.is_confirmed? 
-      puts "The object is confirmed"
       if not current_user.has_role?(:bookings , :post_confirm_delete)
-        puts "Doesn't have the role for post confirm delete"
         render :json => {:success => false, :access_denied => "Sudah Konfirmasi. Hanya dapat di hapus manager atau admin"}
         return 
       end
@@ -162,10 +141,18 @@ class Api::BookingsController < Api::BaseApiController
     
     @object.delete_object
 
-    if not @object.persisted? or @object.is_deleted?
+    if (not @object.persisted? or @object.is_deleted? ) and @object.errors.size == 0 
       render :json => { :success => true, :total => Booking.active_objects.count }  
     else
-      render :json => { :success => false, :total => Booking.active_objects.count }  
+      
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg
     end
   end
   
