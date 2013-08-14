@@ -21,6 +21,10 @@ Ext.define('AM.model.Booking', {
 
 			{ name: 'title', type: 'string' } ,
 			
+			{ name: 'booking_code', type: 'string' } ,
+			{ name: 'confirmation_code', type: 'string' } ,
+			{ name: 'remaining_payment_code', type: 'string' } ,
+			
 			
 			// Confirmation Details 
 			{ name: 'is_confirmed', type: 'boolean' } ,

@@ -8,6 +8,8 @@ class CreateIncomes < ActiveRecord::Migration
       t.integer :case 
       t.datetime :transaction_datetime 
       
+      t.string :code 
+      
       t.timestamps
     end
   end

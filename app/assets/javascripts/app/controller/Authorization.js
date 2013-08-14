@@ -124,6 +124,19 @@ Ext.define("AM.controller.Authorization", {
 						}
 						
 					]
+      },
+			{ 
+          text:'Income', 
+          viewClass:'AM.view.report.IncomeReport', 
+          leaf:true, 
+          iconCls:'text' ,
+					conditions : [
+						{
+							controller : 'incomes',
+							action : 'index'
+						}
+						
+					]
       }
 		]
 		

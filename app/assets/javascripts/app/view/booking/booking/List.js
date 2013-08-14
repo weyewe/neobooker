@@ -14,7 +14,8 @@ Ext.define('AM.view.booking.booking.List' ,{
 				text : "Customer",
 				flex : 1,
 				tpl : 'Name: <b>{customer_name}</b>' + '<br />' + '<br />' +
-							'Booking Date:<br /> <b>{booking_datetime}</b>'  
+							'Booking Date:<br /> <b>{booking_datetime}</b>'  + '<br />' + '<br />' +
+							'Booking Code: <b>{booking_code}</b>' 
 			},
 			
 			
@@ -35,7 +36,8 @@ Ext.define('AM.view.booking.booking.List' ,{
 				text : "Konfirmasi",
 				flex : 1,
 				tpl : 'Status: <b>{is_confirmed}</b>' + '<br />' + '<br />' +
-							'Jumlah: <b>{downpayment_amount}</b>'  
+							'Jumlah: <b>{downpayment_amount}</b>'  + '<br />' + '<br />' +
+							"Confirmation Code: <br /><b>{confirmation_code}</b>"  
 			},
 			
 			{
@@ -51,11 +53,9 @@ Ext.define('AM.view.booking.booking.List' ,{
 				text : "Pembayaran (minus DP)",
 				flex : 1,
 				tpl : 'Status: <b>{is_paid}</b>' + '<br />' + '<br />' +
-							'Jumlah: <b>{remaining_amount}</b>'  
+							'Jumlah: <b>{remaining_amount}</b>'  + '<br />' + '<br />' +
+							"Payment Code: <br /><b>{remaining_payment_code}</b>"
 			},
-			
-			 
-	
 		];
 
 		this.addObjectButton = new Ext.Button({

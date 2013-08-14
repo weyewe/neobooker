@@ -20,6 +20,7 @@ PortCalendar::Application.routes.draw do
      
      # get 'sales_amount_reports' => 'bookings#sales_amount_reports', :as => :sales_amount_reports
      get 'booking_reports' => 'bookings#booking_reports', :as => :booking_reports
+     get 'income_reports' => 'incomes#income_reports', :as => :income_reports
      
      resources :calendars
      resources :customers

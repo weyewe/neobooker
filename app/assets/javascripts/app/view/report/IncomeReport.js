@@ -1,37 +1,15 @@
-Ext.define('AM.view.report.BookingReport', {
+Ext.define('AM.view.report.IncomeReport', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.bookingReport',
+    alias: 'widget.incomeReport',
 
 		layout : {
 			type : 'hbox',
 			align : 'stretch'
 		},
-		
+
 		currentFocusDate : new Date(),
 		currentViewType : 'week',
-	 
-		generateData: function(n){
-		    var data = [],
-		        p = (Math.random() *  11) + 1,
-		        i;
-		    for (i = 0; i < (n || 12); i++) {
-		        data.push({
-		            name: Ext.Date.monthNames[i],
-		            data1: Math.floor(Math.max((Math.random() * 100), 20)),
-		            data2: Math.floor(Math.max((Math.random() * 100), 20)),
-		            data3: Math.floor(Math.max((Math.random() * 100), 20)),
-		            data4: Math.floor(Math.max((Math.random() * 100), 20)),
-		            data5: Math.floor(Math.max((Math.random() * 100), 20)),
-		            data6: Math.floor(Math.max((Math.random() * 100), 20)),
-		            data7: Math.floor(Math.max((Math.random() * 100), 20)),
-		            data8: Math.floor(Math.max((Math.random() * 100), 20)),
-		            data9: Math.floor(Math.max((Math.random() * 100), 20))
-		        });
-		    }
-		    return data;
-		},
-		
-		
+	  
 		loadStore: function(  ){
 			var me = this; 
 			var date = me.currentFocusDate; 
@@ -51,29 +29,25 @@ Ext.define('AM.view.report.BookingReport', {
 				},
 				callback : function(records, options, success){
 					me.setLoading(false);
+					result = me.fireEvent('chartLoaded', Ext.Date.format( date, 'Y-m-d H:i:s'));
+					console.log("after fire Event");
+					console.log("fire event reuslt");
+					console.log(result);
 				}
 			});
 		},
 		
-		buildSalesChart: function(){
+		buildIncomeChart: function(){
 			var me = this; 
-			me.store1 = new Ext.data.JsonStore({
-			    fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data9', 'data9'],
-			    data: me.generateData()
-			});
 			
-			
-			// console.log("=======> The generateData()");
-			// console.log( me.generateData() );
 			me.store1 = Ext.create(Ext.data.JsonStore, {
-				storeId : 'role_search',
 				fields	: [
 					'name',
 					'data1'
 				],
 				proxy  	: {
 					type : 'ajax',
-					url : 'api/booking_reports',
+					url : 'api/income_reports',
 					reader : {
 						type : 'json',
 						root : 'records', 
@@ -83,46 +57,54 @@ Ext.define('AM.view.report.BookingReport', {
 				autoLoad : false 
 			});
 			
-			// var date = new Date();
-			me.loadStore(   );
-			
-			
-			
-			
-			
-			var chart = new Ext.chart.Chart({
-	        // width: 800,
-	        // height: 400,
-					flex : 2 ,
-	        animate: true,
-	        store: me.store1,
-	        shadow: true,
-	        axes: [{
-	            type: 'Numeric',
-	            position: 'left',
-	            fields: ['data1'],
-	            label: {
-	                renderer: Ext.util.Format.numberRenderer('0,0')
-	            },
-	            title: 'Booking Count (hours)',
-	            grid: true,
-	            minimum: 0
-	        }, {
-	            type: 'Category',
-	            position: 'bottom',
-	            fields: ['name'],
-	            title: 'Time'
-	        }],
-	        series: [{
-	            type: 'column',
-	            axis: 'bottom',
-	            highlight: true,
-	            xField: 'name',
-	            yField: 'data1'
-	        }]
-	    });
+			me.loadStore();
 	
-			return chart ; 
+			var chartConfig = {
+				xtype: 'chart',
+				flex : 2 ,
+        animate: true,
+        store: me.store1,
+        shadow: true,
+        axes: [{
+            type: 'Numeric',
+            position: 'left',
+            fields: ['data1'],
+            label: {
+                renderer: Ext.util.Format.numberRenderer('0,0')
+            },
+            title: 'Income',
+            grid: true,
+            minimum: 0
+        }, {
+            type: 'Category',
+            position: 'bottom',
+            fields: ['name'],
+            title: 'Time'
+        }],
+        series: [{
+						id : 'superSeries',
+            type: 'column',
+            axis: 'bottom',
+            highlight: true,
+            xField: 'name',
+            yField: 'data1',
+						listeners:{
+							itemmousedown : function(obj) {
+								me.fireEvent('seriesClicked', obj);
+							}
+						}
+        }]
+			}
+	
+			return chartConfig ; 
+		},
+		
+		buildIncomeList: function(){
+			var listConfig = {
+				xtype: 'incomeReportList',
+				flex : 1
+			}
+			return listConfig; 
 		},
 		
 		thisWeekText : 'Minggu Ini',
@@ -173,10 +155,12 @@ Ext.define('AM.view.report.BookingReport', {
 
 		},
 		
+	 
 		initComponent: function(){
 			var me = this; 
 			me.buildToolbar();
-	    this.items = [  me.buildSalesChart() ];
+			
+	    this.items = [  me.buildIncomeChart(), me.buildIncomeList() ];
 	    this.callParent(arguments);
 		},
 		
@@ -185,7 +169,6 @@ Ext.define('AM.view.report.BookingReport', {
 		// Handling the butons 
 		// private
     onThisWeekClick: function(){
-		// console.log("onThisWeekClick");
 			var me = this; 
 			me.currentFocusDate = new Date(); 
 			me.loadStore();
@@ -193,29 +176,15 @@ Ext.define('AM.view.report.BookingReport', {
     
     // private
     onJumpClick: function(){
-			// console.log("onJumpClck");
         var dt = Ext.getCmp(this.id+'-tb-jump-dt').getValue();
 				var me = this; 
 				
 				if( dt === null || dt==='') {
-					// console.log("THE date is null");
 				}else{
 					me.currentFocusDate = dt; 
 					me.loadStore(); 
 				}
 				
-				
-
-				// console.log( dt ) ;
-				// var string = Ext.Date.format( dt, 'Y-m-d H:i:s');
-				// console.log("The string");
-				// console.log( string );
-        // if(dt !== ''){
-        //     this.startDate = this.layout.activeItem.moveTo(dt, true);
-        //     this.updateNavState();
-        //     // TODO: check that view actually changed:
-        //     this.fireViewChange();
-        // }
     },
     
     // private

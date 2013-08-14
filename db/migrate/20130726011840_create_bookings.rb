@@ -35,10 +35,15 @@ class CreateBookings < ActiveRecord::Migration
       t.boolean :is_canceled , :default => false 
       t.boolean :is_deleted , :default => false 
       
-      t.decimal :received_amount , :default => 0,  :precision => 12, :scale => 2
+      # t.decimal :received_amount , :default => 0,  :precision => 12, :scale => 2
       t.boolean :is_paid, :default => false 
       t.datetime :paid_datetime 
       
+      
+      # code to be printed @ receipt 
+      
+      t.string :code 
+      t.string :booking_code 
       
       
       t.timestamps

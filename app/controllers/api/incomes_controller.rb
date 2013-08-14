@@ -1,9 +1,44 @@
 class Api::IncomesController < Api::BaseApiController
   
-  
-
-
   def index
+    puts "The current user : #{current_user}"  
+    # sleep 5
+    
+    # livesearch
+    if params[:livesearch].present? 
+      livesearch = "%#{params[:livesearch]}%"
+      @objects = Income.joins(:customer,:calendar).where{
+        (is_deleted.eq false) & 
+        (
+          (customer.name =~  livesearch ) | 
+          (calendar.title =~ livesearch)
+        )
+        
+      }.page(params[:page]).per(params[:limit]).order("id DESC")
+      
+      @total = Income.joins(:customer,:calendar).where{
+        (is_deleted.eq false) & 
+        (
+          (customer.name =~  livesearch ) | 
+          (calendar.title =~ livesearch)
+        )
+      }.count
+      
+      # calendar 
+    elsif params[:startDate].present? 
+      startDate = extract_extensible_date( params[:startDate])
+      endDate = ( extract_extensible_date(params[:endDate]) + 1.day ).to_date.to_datetime
+      @objects = Income.active_objects.joins(:customer).bookings_in_between(startDate, endDate)
+      @total = @objects.count 
+    else
+      @objects = Income.active_objects.joins(:customer, :calendar).page(params[:page]).per(params[:limit]).order("id DESC")
+      @total = Income.active_objects.count
+    end
+    
+  end
+
+
+  def income_reports
     if params[:viewValue].nil? or params[:focusDate].nil?
       render :json => { :error => "Invalid params"}
       return 
@@ -30,10 +65,11 @@ class Api::IncomesController < Api::BaseApiController
     if view_value == VIEW_VALUE[:week]
       starting_date = date - date.wday.days 
       ending_date = starting_date + 7.days 
-      bookings = Booking.where{
-        (start_datetime.gte starting_date) & 
-        (end_datetime.lt ending_date )
+      bookings = Income.where{
+        (transaction_datetime.gte starting_date) & 
+        (transaction_datetime.lt ending_date )
       }
+      
       
       
       
@@ -47,8 +83,8 @@ class Api::IncomesController < Api::BaseApiController
         record[:name] = "#{name.year}/#{name.month}/#{name.day}"
         
         record[:data1] = bookings.where{
-          (start_datetime.gte projected_start_datetime) & 
-          (end_datetime.lt projected_end_datetime )
+          (transaction_datetime.gte projected_start_datetime) & 
+          (transaction_datetime.lt projected_end_datetime )
         }.sum('amount')
         
         records << record 
@@ -63,9 +99,9 @@ class Api::IncomesController < Api::BaseApiController
       days_in_month = Time.days_in_month(date.month, date.year)
       ending_date = starting_date + days_in_month.days
    
-      bookings = Booking.where{
-        (start_datetime.gte starting_date) & 
-        (end_datetime.lt ending_date )
+      bookings = Income.where{
+        (transaction_datetime.gte starting_date) & 
+        (transaction_datetime.lt ending_date )
       }
       
       
@@ -80,28 +116,15 @@ class Api::IncomesController < Api::BaseApiController
         record[:name] = "#{name.year}/#{name.month}/#{name.day}"
         
         record[:data1] = bookings.where{
-          (start_datetime.gte projected_start_datetime) & 
-          (end_datetime.lt projected_end_datetime )
+          (transaction_datetime.gte projected_start_datetime) & 
+          (transaction_datetime.lt projected_end_datetime )
         }.sum('amount')
         
         records << record 
       end
+     
     end
-  
     
     render :json => { :records => records , :total => records.count, :success => true }
   end
-  
-=begin
-  Sunday is the day 0 of the week 
-  
-  now = DateTime.now => if today is Tuesday , 
-  now.wday # => will produce 2 .. means 2 days from sunday.. how can we get the first sunday?
-  sunday = now - now.wday.days  => will give the sunday. 
-  next_sunday = sunday + 7.days    => will produce next sunday, 1 second before sunday 
-  
-  get all bookings between today and next sunday 
-  sunday <= bookings <= next_sunday 
-    
-=end
 end

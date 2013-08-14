@@ -55,7 +55,7 @@ class Booking < ActiveRecord::Base
   
   
   def title
-    "#{self.customer.name}, #{self.customer.bb_pin}"
+    "[#{self.booking_code}] #{self.customer.name}"
   end
   
   
@@ -74,6 +74,7 @@ class Booking < ActiveRecord::Base
     if new_object.save 
       new_object.update_end_datetime 
       new_object.update_price  
+      new_object.generate_booking_code
     end
     return new_object
   end
@@ -207,8 +208,9 @@ class Booking < ActiveRecord::Base
                   :case => INCOME_CASE[:downpayment],
                   :transaction_datetime => self.confirmed_datetime
     
+    self.generate_code 
     # gonna ignore this shite 
-    self.update_received_amount 
+    # self.update_received_amount 
   end
   
   def pay
@@ -230,23 +232,23 @@ class Booking < ActiveRecord::Base
                   :case => INCOME_CASE[:remaining_payment],
                   :transaction_datetime =>  self.paid_datetime
     
-    self.update_received_amount
+    # self.update_received_amount
   end
-  
-  def update_received_amount
-    
-    if self.is_confirmed? and not self.is_paid? 
-      self.received_amount = self.downpayment_amount
-      self.save 
-    end
-    
-    if self.is_paid? 
-      self.received_amount = self.total_price
-      self.save 
-    end
-    
-    
-  end
+  # 
+  # def update_received_amount
+  #   
+  #   if self.is_confirmed? and not self.is_paid? 
+  #     self.received_amount = self.downpayment_amount
+  #     self.save 
+  #   end
+  #   
+  #   if self.is_paid? 
+  #     self.received_amount = self.total_price
+  #     self.save 
+  #   end
+  #   
+  #   
+  # end
   
   def update_actual_start_datetime( start_datetime )
     if start_datetime.nil?
@@ -289,4 +291,63 @@ class Booking < ActiveRecord::Base
       self.destroy 
     end
   end
+  
+  def generate_booking_code
+    unique = false 
+    proposed_booking_code = ''
+    
+    while not unique  do
+      proposed_booking_code =  UUIDTools::UUID.timestamp_create.to_s[0..4]
+
+      start_datetime = Date.today.at_beginning_of_month.to_datetime
+      end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
+
+      counter = Booking.where{
+        (booking_code.eq proposed_booking_code) & 
+        (created_at.gte start_datetime)  & 
+        (created_at.lt end_datetime ) 
+      }.count
+      
+      unique = true if counter == 0 
+    end
+    
+    self.booking_code = proposed_booking_code
+    self.save 
+  end
+  
+  def generate_code
+    # get the total number of sales order created in that month 
+    
+    # total_sales_order = SalesOrder.where()
+    start_datetime = Date.today.at_beginning_of_month.to_datetime
+    end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
+  
+ 
+    counter = self.class.where{
+       (created_at >= start_datetime)  & 
+       (created_at < end_datetime ) & 
+       (is_confirmed.eq true )
+     }.count 
+    
+  
+    string = "BOOK" + "/" + 
+              self.created_at.year.to_s + '/' + 
+              self.created_at.month.to_s + '/' + 
+              counter.to_s
+              
+    self.code =  string 
+    self.save 
+  end
+  
+  def confirmation_code
+    "#{self.code}-CONFIRM"
+  end
+  
+  def remaining_payment_code
+    "#{self.code}-PAY"
+  end
 end
+
+=begin
+Booking.where
+=end

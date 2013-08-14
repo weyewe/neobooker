@@ -33,6 +33,11 @@ json.bookings @objects do |object|
 	json.actual_end_datetime 			format_datetime_friendly(object.actual_end_datetime)
 	json.discount 			object.discount 
 	
+	json.booking_code object.booking_code 
+	json.confirmation_code object.confirmation_code
+	json.remaining_payment_code object.remaining_payment_code 
+	
+	
 	
 	
 	
