@@ -271,6 +271,11 @@ class Booking < ActiveRecord::Base
       return self 
     end
     
+    if end_datetime < self.actual_start_datetime
+      self.errors.add(:actual_end_datetime, "Tidak boleh lebih awal dari jam mulai")
+      return self 
+    end
+    
     self.actual_end_datetime = end_datetime
     self.save 
   end
