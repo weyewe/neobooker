@@ -46,28 +46,8 @@ Ext.define('AM.controller.IncomeReports', {
 	},
 	
 	updateList: function( clickedPoint, viewType  ){
-		// console.log("Gonna update the list");
+		
 		var list = this.getList(); 
-		// console.log( list ) ;
-		// var store = list.store;
-		// console.log( store) ;
-		
-		// console.log("Inside the updateList");
-		// console.log( arguments );
-		// console.log("arguments length: " + arguments.length );
-		// for( var i =0 ; i< arguments.length; i++){
-		// 	console.log("i value is " + i );
-		// 	console.log( arguments[i]);
-		// }
-		
-		// console.log( "The clicked point: "  );
-		// console.log( clickedPoint);
-		// console.log("The clickedPoint[0]: " + clickedPoint.value[0]);
-		// console.log("The clickedPoint[1]: " + clickedPoint.value[1]);
-		// 
-		// 
-		// console.log("\nThe viewType: " ) ;
-		// console.log( viewType );
 		var selectedDateArray = clickedPoint.value[0].split('/');
 		var selectedDate = new Date(
 				selectedDateArray[0],
@@ -79,13 +59,6 @@ Ext.define('AM.controller.IncomeReports', {
 		if( viewType === 'month'){
 			viewValue = 1;
 		}
-		
-		// console.log("The clickedDateValue: " );
-		// console.log( clickedPoint.value[0] );
-		// console.log("The selectedDate: " );
-		// console.log( selectedDate);
-		// console.log("The viewValue");
-		// console.log( viewValue ) ;
 		
 		var viewport = this.getViewport();
 		viewport.setLoading(true);
