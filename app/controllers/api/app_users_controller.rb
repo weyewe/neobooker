@@ -28,7 +28,7 @@ class Api::AppUsersController < Api::BaseApiController
     
     
     
-    render :json => { :users => @objects , :total => @total, :success => true }
+    # render :json => { :users => @objects , :total => @total, :success => true }
   end
 
   def create

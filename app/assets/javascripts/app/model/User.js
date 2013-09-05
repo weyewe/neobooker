@@ -4,7 +4,8 @@ Ext.define('AM.model.User', {
     	{ name: 'id', type: 'int' },
 			{ name: 'role_id', type: 'int' },
     	{ name: 'name', type: 'string' } ,
-			'email' 
+			'email',
+			'role_name' 
   	],
 
 	 
