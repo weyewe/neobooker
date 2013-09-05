@@ -115,7 +115,7 @@ class Booking < ActiveRecord::Base
     
     self.start_datetime = params[:start_datetime]
     self.number_of_hours = params[:number_of_hours]
-    self.title = params[:title]
+    # self.title = params[:title]
     self.calendar_id = params[:calendar_id]
     self.customer_id = params[:customer_id]
     self.discount = BigDecimal( params[:discount] || 0) 
