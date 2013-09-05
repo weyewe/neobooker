@@ -330,10 +330,14 @@ class Booking < ActiveRecord::Base
   end
   
   def confirmation_code
+    return "" if not self.is_confirmed? 
+    
     "#{self.code}-CONFIRM"
   end
   
   def remaining_payment_code
+    return "" if not self.is_paid?
+    
     "#{self.code}-PAY"
   end
 end
