@@ -82,6 +82,14 @@ Ext.define('AM.view.booking.booking.List' ,{
 			action: 'confirmObject',
 			disabled: true
 		});
+		
+		this.confirmReceiptButton = new Ext.Button({
+			text: 'Confirm Receipt',
+			action: 'confirmReceipt',
+			disabled: true
+		});
+		
+		
 		this.startObjectButton = new Ext.Button({
 			text: 'Mulai',
 			action: 'startObject',
@@ -99,6 +107,12 @@ Ext.define('AM.view.booking.booking.List' ,{
 			disabled: true
 		});
 		
+		this.payReceiptButton = new Ext.Button({
+			text: 'Pay Receipt',
+			action: 'payReceipt',
+			disabled: true 
+		});
+		
 		this.searchField = new Ext.form.field.Text({
 			name: 'searchField',
 			hideLabel: true,
@@ -113,9 +127,11 @@ Ext.define('AM.view.booking.booking.List' ,{
 		// this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton, '->', this.searchObjectButton ];
 		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton, 
 			this.confirmObjectButton, 
+			this.confirmReceiptButton, 
 			this.startObjectButton,
 			this.endObjectButton,
 			this.payObjectButton,
+			this.payReceiptButton, 
 		 this.searchField ];
 		
 		
@@ -143,6 +159,14 @@ Ext.define('AM.view.booking.booking.List' ,{
 		this.endObjectButton.enable();
 		this.payObjectButton.enable();
 	},
+	
+	enableConfirmReceiptButton : function(){
+		this.confirmReceiptButton.enable();
+	},
+	
+	enablePayReceiptButton : function(){
+		this.payReceiptButton.enable();
+	},
 
 	disableRecordButtons: function() {
 		this.editObjectButton.disable();
@@ -151,5 +175,8 @@ Ext.define('AM.view.booking.booking.List' ,{
 		this.startObjectButton.disable();
 		this.endObjectButton.disable();
 		this.payObjectButton.disable();
+		
+		this.confirmReceiptButton.disable();
+		this.payReceiptButton.disable();
 	}
 });

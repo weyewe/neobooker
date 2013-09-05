@@ -60,6 +60,14 @@ Ext.define('AM.controller.Bookings', {
         click: this.payObject
 			}	,
 			
+			'bookinglist button[action=confirmReceipt]': {
+        click: this.downloadConfirmationReceipt
+			}	,
+			
+			'bookinglist button[action=payReceipt]': {
+        click: this.downloadPaymentReceipt
+			}	,
+			
 			'bookinglist textfield[name=searchField]': {
 				change: this.liveSearch
 			},
@@ -79,6 +87,23 @@ Ext.define('AM.controller.Bookings', {
 		
     });
   },
+
+	downloadConfirmationReceipt: function(){
+		var record = this.getList().getSelectedObject();
+		
+		if(!record){return;}
+		
+		window.open( '/bookings/confirmation_receipt/' + record.get('id') );
+	},
+	
+	downloadPaymentReceipt: function(){
+		var record = this.getList().getSelectedObject();
+		
+		if(!record){return;}
+		
+		window.open( '/bookings/payment_receipt/'+ record.get('id')  );
+	},
+	
 
 	liveSearch : function(grid, newValue, oldValue, options){
 		var me = this;
@@ -213,7 +238,15 @@ Ext.define('AM.controller.Bookings', {
 
     if (selections.length > 0) {
       grid.enableRecordButtons();
-
+			var record = this.getList().getSelectedObject();
+			
+			if( record.get("is_confirmed")){
+				grid.enableConfirmReceiptButton();
+			}
+			
+			if( record.get("is_paid")){
+				grid.enablePayReceiptButton();
+			}
 
     } else {
       grid.disableRecordButtons();

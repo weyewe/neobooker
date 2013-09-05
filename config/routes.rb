@@ -2,6 +2,10 @@ PortCalendar::Application.routes.draw do
   devise_for :users
    root :to => 'home#extjs' , :method => :get 
    
+   
+   get '/bookings/confirmation_receipt/:booking_id' => 'bookings#confirmation_receipt', :as => :confirmation_receipt 
+   get '/bookings/payment_receipt/:booking_id' => 'bookings#payment_receipt', :as => :payment_receipt
+   
    namespace :api do 
      devise_for :users
      

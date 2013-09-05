@@ -5,6 +5,10 @@ class Booking < ActiveRecord::Base
   belongs_to :customer
   belongs_to :price 
   
+  def facility
+    calendar 
+  end
+  
   attr_accessible :start_datetime, :number_of_hours,
           :title, :calendar_id , :customer_id, :price_id 
           
