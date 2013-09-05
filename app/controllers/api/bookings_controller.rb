@@ -11,7 +11,8 @@ class Api::BookingsController < Api::BaseApiController
         (is_deleted.eq false) & 
         (
           (customer.name =~  livesearch ) | 
-          (calendar.title =~ livesearch)
+          (calendar.title =~ livesearch) | 
+          (booking_code =~ livesearch )
         )
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
