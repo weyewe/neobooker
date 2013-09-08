@@ -68,11 +68,22 @@ Solution: get the PriceRule on that is active on the creation time
         ) & 
         (
           ( hour_start.lte datetime.hour ) & 
-          ( hour_end.gt datetime.hour )
+          ( hour_end.gte datetime.hour )
         )
       }.order("id ASC").last
       
       result_array << price_rule.id
+      
+      # corner case:
+      # rule 1 : 1300-1300
+      # rule 2 : 1300-1400 
+      # booking time: 13.30 .. which rule will be selected? 
+      # we have the ordering by id, ASC
+      # in this case: rule2 is created later.. rule2 will be selected. 
+      
+      # corner case
+      # rule1 : 2300-2300 
+      # it means it will only affect the time from 2300-2400 
       
     end
     

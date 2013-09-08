@@ -3,6 +3,37 @@ class PriceRule < ActiveRecord::Base
 
   has_many :price_details
   
+  validate :hour_start_is_earlier_than_hour_end
+  validate :valid_hour_start_and_hour_end
+  
+  def hour_start_is_earlier_than_hour_end
+    return if not hour_start.present? or not  hour_end.present? 
+     
+
+    if hour_start > hour_end 
+      self.errors.add(:hour_start, "Harus lebih kecil daripada waktu selesai")
+      self.errors.add(:hour_end, "Harus lebih besar daripada waktu mulai")
+      return self 
+    end
+
+      
+  end
+  
+  def valid_hour_start_and_hour_end
+    return if not hour_start.present? or not  hour_end.present? 
+    
+    if hour_start > 23 or hour_start < 0 
+      self.errors.add(:hour_start, "Harus diantara 0 sampai 23")
+      return self 
+    end
+    
+    if hour_end > 23 or hour_end < 0 
+      self.errors.add(:hour_end, "Harus diantara 0 sampai 23")
+      return self 
+    end
+  end
+  
+  
                   
   def self.create_object(params)
     new_object = self.new 
