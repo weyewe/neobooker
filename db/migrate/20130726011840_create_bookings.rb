@@ -14,7 +14,7 @@ class CreateBookings < ActiveRecord::Migration
       
       # t.datetime :end_datetime # end_datetime is derived value
       
-      t.integer :duration # (# of hours)
+      # t.integer :duration # (# of hours)
       
       t.datetime :actual_start_datetime
       t.datetime :actual_end_datetime 
@@ -38,6 +38,8 @@ class CreateBookings < ActiveRecord::Migration
       # t.decimal :received_amount , :default => 0,  :precision => 12, :scale => 2
       t.boolean :is_paid, :default => false 
       t.datetime :paid_datetime 
+      
+      t.decimal :amount,  :default        => 0,  :precision => 12, :scale => 2 
       
       
       # code to be printed @ receipt 

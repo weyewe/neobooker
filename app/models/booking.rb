@@ -5,6 +5,8 @@ class Booking < ActiveRecord::Base
   belongs_to :customer
   belongs_to :price 
   
+  has_many :price_details 
+  
   def facility
     calendar 
   end
@@ -14,9 +16,154 @@ class Booking < ActiveRecord::Base
           
   validates_presence_of :start_datetime, :number_of_hours ,  :customer_id , :calendar_id 
   
+  after_destroy :destroy_price_details
+  
   validate :valid_customer_id
   validate :valid_calendar_id
   validate :valid_number_of_hours
+  
+  def destroy_price_details
+    self.price_details.each {|x| x.destroy }
+  end
+  
+=begin
+Scenario
+In January,base  price == 400,000 
+Now, (september), base price == 500,000 
+
+Of course the January price has been expired. However, there is wrong data entry made in January. 
+It has to be fixed: add number_of_hours. 
+
+Solution: get the PriceRule on that is active on the creation time 
+=end
+
+  def price_rules 
+    local_datetime = start_datetime.in_time_zone("Jakarta") 
+    result_array = []
+    (1..number_of_hours).each do |x|
+      datetime = local_datetime + (x-1).hours 
+      booking_creation_datetime = self.created_at 
+      
+      price_rule = PriceRule.where{
+        #  to ensure that we are using the old price at the time of creation
+        (
+          (
+            ( is_active.eq true) & 
+            (created_at.lte booking_creation_datetime)
+          ) | 
+          (
+            ( is_active.eq false) & 
+            ( created_at.lte booking_creation_datetime) & 
+            ( deactivated_at.gt booking_creation_datetime)
+          )
+        )  & 
+        (
+          ( is_sunday   .eq datetime.sunday?  ) | 
+          ( is_monday   .eq datetime.monday? )  |
+          ( is_tuesday  .eq datetime.tuesday? ) | 
+          ( is_wednesday.eq datetime.wednesday? ) |
+          ( is_thursday .eq datetime.thursday? ) |
+          ( is_friday   .eq datetime.friday? ) |
+          ( is_saturday .eq datetime.saturday? ) 
+        ) & 
+        (
+          ( hour_start.lte datetime.hour ) & 
+          ( hour_end.gt datetime.hour )
+        )
+      }.order("id ASC").last
+      
+      result_array << price_rule.id
+      
+    end
+    
+    return result_array
+  end
+  
+  def create_price_details 
+    
+    
+    # puts "\n\n**************************** calling create price details"
+    
+    destroy_price_details
+    self.reload   # because we have deleted the price_details
+    
+    # example: booking from 16:00 to 18:00 .. 16 - 17 == 300k , 17-18 == 500k 
+
+    
+    
+    
+    # result_array = []
+    # (1..number_of_hours).each do |x|
+    #   datetime = local_datetime + (x-1).hours 
+    #   booking_creation_datetime = self.created_at 
+    #   
+    #   price_rule = PriceRule.where{
+    #     #  to ensure that we are using the old price at the time of creation
+    #     (
+    #       (
+    #         ( is_active.eq true) & 
+    #         (created_at.lte booking_creation_datetime)
+    #       ) | 
+    #       (
+    #         ( is_active.eq false) & 
+    #         ( created_at.lte booking_creation_datetime) & 
+    #         ( deactivated_at.gt booking_creation_datetime)
+    #       )
+    #     )  & 
+    #     (
+    #       ( is_sunday   .eq datetime.sunday?  ) | 
+    #       ( is_monday   .eq datetime.monday? )  |
+    #       ( is_tuesday  .eq datetime.tuesday? ) | 
+    #       ( is_wednesday.eq datetime.wednesday? ) |
+    #       ( is_thursday .eq datetime.thursday? ) |
+    #       ( is_friday   .eq datetime.friday? ) |
+    #       ( is_saturday .eq datetime.saturday? ) 
+    #     ) & 
+    #     (
+    #       ( hour_start.lte datetime.hour ) & 
+    #       ( hour_end.gt datetime.hour )
+    #     )
+    #   }.order("id ASC").last
+    #   
+    #   result_array << price_rule.id
+    #   
+    # end
+    
+    result_array = self.price_rules 
+    
+    # puts "The result array: #{result_array}"
+     
+    uniq_result_array = result_array.uniq 
+    # puts "The uniq result array = #{uniq_result_array}"
+    
+    final_result_array = [] 
+    
+    uniq_result_array.each do |x|
+      counter = 0 
+      result_array.each do |x2|
+        counter += 1 if x2 == x  
+      end
+      
+      final_result_array << [x, counter]
+    end
+    
+    # puts "final result array: #{final_result_array}"
+    
+    # puts "initial price_detail_count: #{self.price_details.count}"
+    
+    # puts "price_details_count : after reload: #{self.price_details.count}"
+    final_result_array.each do |pair|
+      # puts "create pairr"
+      PriceDetail.create_object(
+        :booking_id => self.id,
+        :price_rule_id => pair.first,
+        :number_of_hours => pair.last  
+      )
+    end
+    
+    self.amount = self.price_details.sum("amount")
+    self.save  
+  end
   
   def valid_customer_id
     return if not customer_id.present? 
@@ -53,8 +200,9 @@ class Booking < ActiveRecord::Base
   end
   
   def update_price
-    self.price_id = self.calendar.active_price.id  
-    self.save  
+    # self.price_id = self.calendar.active_price.id  
+    # self.save  
+    self.create_price_details
   end
   
   
@@ -88,6 +236,18 @@ class Booking < ActiveRecord::Base
       self.update_post_confirm(params)
       return self
     end
+    
+    is_start_datetime_changed = false 
+    is_number_of_hours_changed = false 
+    
+    if start_datetime != params[:start_datetime]
+      is_start_datetime_changed = true 
+    end
+    
+    if number_of_hours != params[:number_of_hours]
+      is_number_of_hours_changed = true 
+    end
+    
     self.start_datetime = params[:start_datetime]
     self.number_of_hours = params[:number_of_hours]
     # self.title = params[:title]
@@ -97,6 +257,10 @@ class Booking < ActiveRecord::Base
    
     if self.save 
       self.update_end_datetime
+      
+      if is_start_datetime_changed or is_number_of_hours_changed
+        self.create_price_details
+      end
     end
     return self
   end
@@ -182,7 +346,8 @@ class Booking < ActiveRecord::Base
   end
   
   def total_price
-    self.number_of_hours * self.price.amount 
+    # self.number_of_hours * self.price.amount 
+    self.amount 
   end
   
   def discounted_total_price 

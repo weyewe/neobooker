@@ -3,10 +3,32 @@ class Calendar < ActiveRecord::Base
   has_many :bookings 
   has_many :prices 
   
+  has_many :price_rules 
+  
   validates_presence_of :title, :color, :amount, :downpayment_percentage
   
   validate :amount_must_be_more_than_0
   validate :downpayment_percentage_must_be_logical
+  
+  after_create :create_catch_all_price_rule 
+  
+  def create_catch_all_price_rule
+    PriceRule.create_object(
+      :is_sunday         => true ,
+      :is_monday         => true ,
+      :is_tuesday        => true ,
+      :is_wednesday      => true ,
+      :is_thursday       => true ,
+      :is_friday         => true ,
+      :is_saturday       => true ,
+      :amount            => self.amount     ,
+      :rule_case         =>  PRICE_RULE_CASE[:catch_all]    ,
+      :calendar_id       => self.id ,
+      :hour_start => 0 , 
+      :hour_end => 23 
+    )
+  end
+  
   
   def amount_must_be_more_than_0
     return if not self.amount.present? 
@@ -32,13 +54,17 @@ class Calendar < ActiveRecord::Base
     self.prices.where(:is_active => true).order("id DESC").first 
   end
   
-  def update_price
-    self.prices.where(:is_active => true ).each do |price|
-      price.is_active = false
-      price.save 
+  def catch_all_price_rule
+    self.price_rules.where(:rule_case => PRICE_RULE_CASE[:catch_all], :is_active => true ).first
+  end
+  
+  def update_price 
+    if catch_all_price_rule.price_details.count != 0 
+      catch_all_price_rule.delete_catch_all_rule  
+      self.create_catch_all_price_rule 
+    else
+      self.catch_all_price_rule.amount = self.amount 
     end
-    
-    new_price = Price.create :calendar_id => self.id , :amount => self.amount  , :is_active => true 
   end
   
   def self.create_object( params ) 
@@ -46,15 +72,9 @@ class Calendar < ActiveRecord::Base
     new_object.title = params[:title]
     new_object.description = params[:description]
     new_object.color = params[:color]
-    # puts "==============\n"*10
-    # puts "Inside create object (calendar)"
-    # puts "The amount: #{params[:amount]}"
-    # puts "The DP percentage: #{params[:downpayment_percentage]}"
     new_object.amount = BigDecimal( params[:amount])
     new_object.downpayment_percentage = BigDecimal( params[:downpayment_percentage] || 0 )
     new_object.save
-    
-    
     
     if new_object.errors.size  == 0 
       new_object.update_price 
@@ -79,6 +99,7 @@ class Calendar < ActiveRecord::Base
     if new_price != old_price 
       is_price_changed = true 
     end
+    
     self.title = params[:title]
     self.description = params[:description]
     self.color = params[:color]

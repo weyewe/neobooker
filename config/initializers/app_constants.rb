@@ -83,3 +83,8 @@ IMAGE_ASSET_URL = {
   :zoom => 'http://s3.amazonaws.com/salmod/app_asset/app_application/zoom.png',
   :logo => 'http://s3.amazonaws.com/salmod/app_asset/app_application/logo.png' 
 }
+
+PRICE_RULE_CASE = {
+  :catch_all => 0 , 
+  :specific => 1 
+}

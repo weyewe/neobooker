@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130813025057) do
+ActiveRecord::Schema.define(version: 20130906035508) do
 
   create_table "bookings", force: true do |t|
     t.integer  "calendar_id"
@@ -20,18 +20,18 @@ ActiveRecord::Schema.define(version: 20130813025057) do
     t.datetime "start_datetime"
     t.datetime "end_datetime"
     t.integer  "number_of_hours"
-    t.integer  "duration"
     t.datetime "actual_start_datetime"
     t.datetime "actual_end_datetime"
-    t.boolean  "is_confirmed",                                  default: false
+    t.boolean  "is_confirmed",                                   default: false
     t.datetime "confirmed_datetime"
-    t.decimal  "discount",              precision: 5, scale: 2, default: 0.0
-    t.boolean  "is_started",                                    default: false
-    t.boolean  "is_finished",                                   default: false
-    t.boolean  "is_canceled",                                   default: false
-    t.boolean  "is_deleted",                                    default: false
-    t.boolean  "is_paid",                                       default: false
+    t.decimal  "discount",              precision: 5,  scale: 2, default: 0.0
+    t.boolean  "is_started",                                     default: false
+    t.boolean  "is_finished",                                    default: false
+    t.boolean  "is_canceled",                                    default: false
+    t.boolean  "is_deleted",                                     default: false
+    t.boolean  "is_paid",                                        default: false
     t.datetime "paid_datetime"
+    t.decimal  "amount",                precision: 12, scale: 2, default: 0.0
     t.string   "code"
     t.string   "booking_code"
     t.datetime "created_at"
@@ -66,6 +66,34 @@ ActiveRecord::Schema.define(version: 20130813025057) do
     t.integer  "case"
     t.datetime "transaction_datetime"
     t.string   "code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "price_details", force: true do |t|
+    t.integer  "booking_id"
+    t.integer  "price_rule_id"
+    t.decimal  "amount",          precision: 9, scale: 2, default: 0.0
+    t.integer  "number_of_hours"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "price_rules", force: true do |t|
+    t.integer  "hour_start"
+    t.integer  "hour_end"
+    t.boolean  "is_sunday",                               default: false
+    t.boolean  "is_monday",                               default: false
+    t.boolean  "is_tuesday",                              default: false
+    t.boolean  "is_wednesday",                            default: false
+    t.boolean  "is_thursday",                             default: false
+    t.boolean  "is_friday",                               default: false
+    t.boolean  "is_saturday",                             default: false
+    t.decimal  "amount",         precision: 12, scale: 2, default: 0.0
+    t.integer  "rule_case",                               default: 1
+    t.integer  "calendar_id"
+    t.boolean  "is_active",                               default: true
+    t.datetime "deactivated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
