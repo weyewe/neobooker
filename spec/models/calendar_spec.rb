@@ -135,6 +135,7 @@ describe Calendar do
             :amount => @new_calendar_amount,
             :downpayment_percentage => @new_downpayment_percentage
           )
+          @calendar.reload 
           @new_price_rule = @calendar.catch_all_price_rule
         end
         
@@ -156,6 +157,10 @@ describe Calendar do
           @price_rule.deactivated_at.should_not be_nil
           
           @price_rule.deactivated_at.should be > @booking.created_at 
+        end
+        
+        it 'should have the new amount to the newly created price rule' do
+          @new_price_rule.amount.should == @new_calendar_amount
         end
         
         

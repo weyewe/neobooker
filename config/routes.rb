@@ -35,6 +35,7 @@ PortCalendar::Application.routes.draw do
      
      
      resources :events 
+     resources :price_rules 
    end
 end
 

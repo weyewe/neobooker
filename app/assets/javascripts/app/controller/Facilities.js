@@ -6,7 +6,8 @@ Ext.define('AM.controller.Facilities', {
 
   views: [
     'master.facility.List',
-    'master.facility.Form'
+    'master.facility.Form',
+		'master.pricerule.List'
   ],
 
   	refs: [
@@ -14,6 +15,11 @@ Ext.define('AM.controller.Facilities', {
 			ref: 'list',
 			selector: 'facilitylist'
 		},
+		{
+			ref : 'priceRuleList',
+			selector : 'pricerulelist'
+		},
+		
 		{
 			ref : 'form',
 			selector : 'facilityform'
@@ -98,6 +104,7 @@ Ext.define('AM.controller.Facilities', {
   updateObject: function(button) {
     var win = button.up('window');
     var form = win.down('form');
+		var me = this; 
 
     var store = this.getFacilitiesStore();
     var record = form.getRecord();
@@ -116,13 +123,14 @@ Ext.define('AM.controller.Facilities', {
 					//  since the grid is backed by store, if store changes, it will be updated
 					store.load();
 					win.close();
+					me.updateChildGrid(record );
 				},
 				failure : function(record,op ){
 					form.setLoading(false);
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
-					this.reject();
+					me.reject();
 				}
 			});
 				
@@ -142,6 +150,8 @@ Ext.define('AM.controller.Facilities', {
 					store.load();
 					form.setLoading(false);
 					win.close();
+					
+					me.updateChildGrid(record );
 					
 				},
 				failure: function( record, op){
@@ -170,12 +180,47 @@ Ext.define('AM.controller.Facilities', {
 
   selectionChange: function(selectionModel, selections) {
     var grid = this.getList();
+		var me= this;
+		var record = this.getList().getSelectedObject();
+		if(!record){
+			return; 
+		}
+		
+		
+		me.updateChildGrid(record );
+		
+		
+		
 
     if (selections.length > 0) {
       grid.enableRecordButtons();
     } else {
       grid.disableRecordButtons();
     }
-  }
+  },
+
+	updateChildGrid: function(record){
+		var priceRuleGrid = this.getPriceRuleList();
+		// priceRuleGrid.setTitle("Purchase Order: " + record.get('code'));
+		priceRuleGrid.setObjectTitle( record ) ;
+		priceRuleGrid.getStore().load({
+			params : {
+				calendar_id : record.get('id')
+			},
+			callback : function(records, options, success){
+				
+				var totalObject  = records.length;
+				if( totalObject ===  0 ){
+					priceRuleGrid.enableRecordButtons(); 
+				}else{
+					priceRuleGrid.enableRecordButtons(); 
+				}
+			}
+		});
+		
+	}
+
+	
+
 
 });

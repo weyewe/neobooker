@@ -12,6 +12,11 @@ class Calendar < ActiveRecord::Base
   
   after_create :create_catch_all_price_rule 
   
+  
+  def active_price_rules
+    self.price_rules.where(:is_active => true).order("rule_case ASC, id ASC")
+  end
+  
   def create_catch_all_price_rule
     PriceRule.create_object(
       :is_sunday         => true ,
@@ -59,11 +64,15 @@ class Calendar < ActiveRecord::Base
   end
   
   def update_price 
+    puts "Inside update price"
     if catch_all_price_rule.price_details.count != 0 
+      puts "the price details is not 0"
       catch_all_price_rule.delete_catch_all_rule  
       self.create_catch_all_price_rule 
     else
-      self.catch_all_price_rule.amount = self.amount 
+      catch_all = self.catch_all_price_rule
+      catch_all.amount = self.amount
+      catch_all.save  
     end
   end
   
