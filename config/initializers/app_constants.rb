@@ -104,11 +104,14 @@ ACCOUNT_CLASSIFICATION = {
   # Debit normal balance
   :asset => 1, 
   :expense => 2 , 
+  :temporary_debit => 3,
   
   # Credit normal balance
-  :revenue => 3 , 
-  :liability => 4, 
-  :equity => 5 
+  :temporary_credit => 30,
+  :revenue => 31 , 
+  :liability => 32, 
+  :equity => 33 ,
+  
 }
 
 APP_SPECIFIC_ACCOUNT_CODE = {
@@ -119,6 +122,9 @@ APP_SPECIFIC_ACCOUNT_CODE = {
   :cash_drawer => 'cash_drawer',
   :unearned_revenue_booking_downpayment => 'unearned_revenue_booking_downpayment',
   :field_usage_revenue => 'field_usage_revenue',
-  :salvaged_downpayment_revenue => 'salvaged_downpayment_revenue'
+  :salvaged_downpayment_revenue => 'salvaged_downpayment_revenue',
+  
+  :temporary_debit_account => "temporary_debit_account",
+  :temporary_credit_account => "temporary_credit_account"
 }
  

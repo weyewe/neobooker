@@ -466,6 +466,29 @@ class Account < ActiveRecord::Base
   end
   
   
+  def self.create_temporary_migration_objects
+    
+  
+    new_object = self.new
+    new_object.name = "Temporary Debit Account"
+    new_object.normal_balance = NORMAL_BALANCE[:debit]
+    new_object.account_case = ACCOUNT_CASE[:ledger]
+    new_object.classification = ACCOUNT_CLASSIFICATION[:temporary_debit]
+    new_object.is_base_account = true 
+    new_object.is_temporary_account = true 
+    new_object.save 
+    
+    new_object = self.new
+    new_object.name = "Temporary Credit Account"
+    new_object.normal_balance = NORMAL_BALANCE[:credit]
+    new_object.account_case = ACCOUNT_CASE[:ledger]
+    new_object.classification = ACCOUNT_CLASSIFICATION[:temporary_credit]
+    new_object.is_base_account = true 
+    new_object.is_temporary_account = true 
+    new_object.save  
+  end
+  
+  
   def self.create_business_specific_objects 
     cash_account = self.create_cash_account
     self.create_object({
@@ -519,5 +542,75 @@ class Account < ActiveRecord::Base
   def self.setup_business
     self.create_base_objects
     self.create_business_specific_objects
+    self.create_temporary_migration_objects 
+  end
+  
+  def self.temporary_account_id_list
+    self.where(:is_temporary_account => true).map{|x| x.id }
+  end
+  
+  def has_created_initial_amount?
+    self.transaction_activity_entries.
+          where(:account_id => self.class.temporary_account_id_list).count != 0 
+  end
+  
+  def initial_amount_transaction_activity_entry
+    self.transaction_activity_entries.
+          where(:account_id => self.class.temporary_account_id_list).first 
+  end
+  
+  def initial_amount_transaction_activity
+    TransactionActivity.where(
+      :transaction_source_id => self.id, 
+      :transaction_source_type => self.class.to_s 
+    ).first
+  end
+  
+  def self.temporary_credit_account
+    Account.where(:classification => ACCOUNT_CLASSIFICATION[:temporary_credit]).first
+  end
+  
+  def self.temporary_debit_account
+    Account.where(:classification => ACCOUNT_CLASSIFICATION[:temporary_debit]).first
+  end
+  
+  def temporary_account
+    if self.normal_balance == NORMAL_BALANCE[:debit]
+      return self.class.temporary_credit_account
+    else
+      return self.class.temporary_debit_account
+    end
+  end
+  
+  def create_initial_amount(params)
+    if not self.leaf? 
+      self.errors.add(:generic_errors, "Group Account tidak bisa setup jumlah awal. Gunakan Ledger Account!")
+      return self 
+    end
+    
+    
+    
+    self.initial_amount = BigDecimal( params[:initial_amount] || 0 ) 
+    if self.save 
+      if self.has_created_initial_amount?
+        # update the transaction_activity_entry
+        ta = initial_amount_transaction_activity
+        ta.unconfirm 
+        
+        
+        initial_amount_transaction_activity.transaction_activity_entries.each do |ta_entry|
+          ta_entry.amount = self.initial_amount
+          ta_entry.save 
+        end
+        ta.reload 
+        ta.confirm 
+      else
+        if initial_amount < BigDecimal('0')
+          
+        else
+        end
+      end
+      
+    end
   end
 end

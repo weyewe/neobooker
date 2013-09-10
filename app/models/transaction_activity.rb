@@ -18,6 +18,11 @@ class TransactionActivity < ActiveRecord::Base
       return self 
     end
     
+    if self.is_confirmed?
+      self.errors.add(:generic_errors, "Can't modify the  confirmed transaction")
+      return self 
+    end
+    
     self.transaction_datetime = params[:transaction_datetime]
     self.description = params[:description]
     self.save
@@ -27,6 +32,11 @@ class TransactionActivity < ActiveRecord::Base
   def delete_object( params ) 
     if not self.transaction_source_id.nil? 
       self.errors.add(:generic_errors, "Can't modify the automated generated transaction")
+      return self 
+    end
+    
+    if self.is_confirmed?
+      self.errors.add(:generic_errors, "Can't modify the  confirmed transaction")
       return self 
     end
     

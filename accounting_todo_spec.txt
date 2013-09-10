@@ -1,0 +1,10 @@
+todo
+1. migration of accounts (create temporary_asset_account), and (temporary_liability_account)
+
+=> give the initial value of it. 
+
+=> if it is debit account, create corresponding temporary_liability_accont
+=> if it is credit account, create corresponding temporary_asset_account
+
+# post migration, they will be the same. 
+

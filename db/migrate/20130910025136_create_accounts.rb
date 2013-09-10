@@ -16,6 +16,7 @@ class CreateAccounts < ActiveRecord::Migration
       # we need normal_balance  # debit or credit 
       
       t.decimal :amount , :default        => 0,  :precision => 14, :scale => 2 # 10*12 999 * 10^9
+      t.decimal :initial_amount , :default        => 0,  :precision => 14, :scale => 2 # 10*12 999 * 10^9
       t.integer :last_update_transaction_activity_entry_id 
       
       t.boolean :is_contra_account, :default => false 
@@ -31,6 +32,10 @@ class CreateAccounts < ActiveRecord::Migration
       
       t.boolean :is_base_account, :default => false 
       # contra account will take place @balance sheet 
+      
+      t.boolean :is_temporary_account , :default => false 
+      
+      
       t.string :code
       
       t.timestamps
