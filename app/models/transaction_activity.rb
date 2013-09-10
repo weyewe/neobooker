@@ -36,6 +36,20 @@ class TransactionActivity < ActiveRecord::Base
   
   
   
+  def update_affected_accounts_due_to_confirmation
+    self.transaction_activity_entries.each do |ta_entry|
+      account = ta_entry.account 
+      account.update_amount_from_posting_confirm(ta_entry)
+    end
+  end
+  
+  def update_affected_accounts_due_to_un_confirmation
+    self.transaction_activity_entries.each do |ta_entry|
+      account = ta_entry.account 
+      account.update_amount_from_posting_unconfirm(ta_entry)
+    end
+  end
+  
   def confirm
     if self.transaction_activity_entries.count == 0 
       self.errors.add(:generic_errors, "Tidak ada posting. Tidak bisa konfirmasi")
@@ -59,16 +73,24 @@ class TransactionActivity < ActiveRecord::Base
     
     self.is_confirmed = true
     self.amount = self.total_credit 
-    self.save 
+    if self.save 
+      self.update_affected_accounts_due_to_confirmation
+    end
+  end
+  
+  def unconfirm
+    self.is_confirmed = false 
+    if self.save
+      self.update_affected_accounts_due_to_un_confirmation
+    end
   end
   
   def total_debit
-    
-    self.transaction_activity_entries.where(:entry_case => TRANSACTION_ACTIVITY_ENTRY_CASE[:debit]).sum("amount")
+    self.transaction_activity_entries.where(:entry_case => NORMAL_BALANCE[:debit]).sum("amount")
   end
   
   def total_credit
-    self.transaction_activity_entries.where(:entry_case => TRANSACTION_ACTIVITY_ENTRY_CASE[:credit]).sum("amount")
+    self.transaction_activity_entries.where(:entry_case => NORMAL_BALANCE[:credit]).sum("amount")
   end 
   
   # can only be called from the business rule 

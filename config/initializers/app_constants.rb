@@ -121,8 +121,4 @@ APP_SPECIFIC_ACCOUNT_CODE = {
   :field_usage_revenue => 'field_usage_revenue',
   :salvaged_downpayment_revenue => 'salvaged_downpayment_revenue'
 }
-
-TRANSACTION_ACTIVITY_ENTRY_CASE = {
-  :debit => 1, 
-  :credit => 2
-}
+ 

@@ -38,10 +38,10 @@ describe Account do
       # 5. field_booking_downpayment 
       
       Account.cash_account.should be_valid 
-      Account.cash_drawer.should be_valid
-      Account.field_usage_revenue.should be_valid 
-      Account.salvaged_downpayment_revenue.should be_valid 
-      Account.field_booking_downpayment.should be_valid 
+      Account.cash_drawer_account.should be_valid
+      Account.field_usage_revenue_account.should be_valid 
+      Account.salvaged_downpayment_revenue_account.should be_valid 
+      Account.field_booking_downpayment_account.should be_valid 
     end
     
     it 'should give asset_account 2 children : cash_drawer and cash' do
@@ -74,14 +74,14 @@ same_scope?
       @liability_account = Account.liability_account 
       @liability_account.descendants.count.should == 1 
       
-      @downpayment_unearned_revenue_account = Account.field_booking_downpayment
+      @downpayment_unearned_revenue_account = Account.field_booking_downpayment_account
       
       @downpayment_unearned_revenue_account.is_descendant_of?(@liability_account).should be_true 
     end
     
     it 'should create 2 descendants of revenue account' do
-      @field_usage_revenue = Account.field_usage_revenue 
-      @salvaged_downpayment_revenue = Account.salvaged_downpayment_revenue 
+      @field_usage_revenue = Account.field_usage_revenue_account 
+      @salvaged_downpayment_revenue = Account.salvaged_downpayment_revenue_account 
       
       @revenue = Account.revenue_account
       @revenue.descendants.count.should == 2 

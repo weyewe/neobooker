@@ -4,10 +4,9 @@ class CreateTransactionActivityEntries < ActiveRecord::Migration
       t.integer :transaction_activity_id 
       t.integer :account_id
       
-      t.integer :entry_case # TRANSACTION_ACTIVITY_ENTRY_CASE[:debit] or [:credit]
+      t.integer :entry_case # NORMAL_BALANCE[:debit] or [:credit]
       t.decimal :amount, :default        => 0,  :precision => 14, :scale => 2
       
-      t.boolean :is_confirmed , :default => false 
       
       t.boolean :is_bank_transaction, :default => false 
       

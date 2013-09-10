@@ -6,6 +6,7 @@ class TransactionActivityEntry < ActiveRecord::Base
   validate :valid_transaction_activity_id 
   validate :valid_entry_case
   validate :valid_amount
+  validate :transaction_activity_must_not_be_confirmed 
   
   
   validates_presence_of :account_id, :entry_case, :amount, :transaction_activity_id 
@@ -42,8 +43,8 @@ class TransactionActivityEntry < ActiveRecord::Base
   
   def valid_entry_case
     return if not self.all_fields_present? 
-    if not [TRANSACTION_ACTIVITY_ENTRY_CASE[:debit],
-      TRANSACTION_ACTIVITY_ENTRY_CASE[:credit]].include?(entry_case)
+    if not [NORMAL_BALANCE[:debit],
+      NORMAL_BALANCE[:credit]].include?(entry_case)
       self.errors.add(:entry_case, "Harus memilih tipe posting: debit atau credit")
       return self 
     end
@@ -58,7 +59,26 @@ class TransactionActivityEntry < ActiveRecord::Base
     end
   end
   
-  def self.create_object( params)
+  def transaction_activity_must_not_be_confirmed
+    return if not self.all_fields_present?
+    return if self.persisted? 
+    
+    
+    
+    # try to do TransactionActivity.find 0 << will raise exception 
+    begin
+      transaction_activity = TransactionActivity.find transaction_activity_id 
+      if transaction_activity.is_confirmed?
+        self.errors.add(:generic_errors, "Transaction sudah di konfirmasi")
+      end
+    rescue 
+      return
+    end
+    
+  end
+  
+  def self.create_object( params) 
+    
     new_object = self.new 
     new_object.transaction_activity_id = params[:transaction_activity_id]
     new_object.account_id = params[:account_id]
@@ -70,7 +90,7 @@ class TransactionActivityEntry < ActiveRecord::Base
   end
   
   def update_object( params ) 
-    if not self.transaction_source_id.nil? 
+    if not self.transaction_activity.transaction_source_id.nil? 
       self.errors.add(:generic_errors, "Can't modify the automated generated transaction")
       return self 
     end
@@ -100,10 +120,7 @@ class TransactionActivityEntry < ActiveRecord::Base
     self.destroy  
   end
   
-  def confirm
-    self.is_confirmed = true 
-    self.save 
-  end
+   
   
   # can only be called from the business rule 
   

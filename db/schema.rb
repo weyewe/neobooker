@@ -19,13 +19,14 @@ ActiveRecord::Schema.define(version: 20130910025201) do
     t.integer  "lft"
     t.integer  "rgt"
     t.integer  "depth"
-    t.decimal  "amount",              precision: 14, scale: 2, default: 0.0
-    t.boolean  "is_contra_account",                            default: false
+    t.decimal  "amount",                                    precision: 14, scale: 2, default: 0.0
+    t.integer  "last_update_transaction_activity_entry_id"
+    t.boolean  "is_contra_account",                                                  default: false
     t.integer  "original_account_id"
-    t.integer  "normal_balance",                               default: 1
-    t.integer  "account_case",                                 default: 2
-    t.integer  "classification",                               default: 1
-    t.boolean  "is_base_account",                              default: false
+    t.integer  "normal_balance",                                                     default: 1
+    t.integer  "account_case",                                                       default: 2
+    t.integer  "classification",                                                     default: 1
+    t.boolean  "is_base_account",                                                    default: false
     t.string   "code"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -149,7 +150,7 @@ ActiveRecord::Schema.define(version: 20130910025201) do
     t.integer  "account_id"
     t.integer  "entry_case"
     t.decimal  "amount",                  precision: 14, scale: 2, default: 0.0
-    t.boolean  "is_confirmed",                                     default: false
+    t.boolean  "is_bank_transaction",                              default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

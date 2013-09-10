@@ -293,6 +293,91 @@ class Account < ActiveRecord::Base
   
   
 =begin
+  Update Amount logic
+=end
+
+  def update_parent_amount
+    return if self.parent_id.nil?
+    
+    parent_account = self.parent 
+    
+    parent_normal_balance = parent_account.normal_balance
+    # parent_account.amount += parent_account.children.where{
+    #   normal_balance.eq parent_normal_balance
+    # }.sum("amount")
+    
+    
+    # puts "\n Inside update parent amount"
+    # puts "current account :#{self.name}, current_parent_account :#{parent_account.name}"
+    # puts "=================> inspect where the child's normal balance == parent's normal balance"
+    addition_amount = parent_account.children.where{
+      normal_balance.eq parent_normal_balance
+    }.sum("amount")
+    
+    # parent_account.children.where{
+    #   normal_balance.eq parent_normal_balance
+    # }.each do |x|
+    #   puts "===> account #{x.name}, amount: #{x.amount}"
+    # end
+    
+    # puts "updateparent_account. account #{parent_account.name}, addition_amount: #{addition_amount} "
+    
+    # parent_account.amount -= parent_account.children.where{
+    #   normal_balance.not_eq parent_normal_balance
+    # }.sum("amount")
+    
+    deduction_amount = parent_account.children.where{
+      normal_balance.not_eq parent_normal_balance
+    }.sum("amount")
+    
+    parent_account.amount = addition_amount - deduction_amount 
+    parent_account.save
+    
+    # puts "final parent_account #{parent_account.name}, deduction_amount: #{deduction_amount}"
+    # puts "final parent_account amount : #{parent_account.amount}"
+    # parent_account.save 
+    parent_account.update_parent_amount
+    
+  end
+
+  def update_amount_from_posting_confirm(ta_entry)
+    # puts "inside the account: #{self.name}"
+    multiplicator = 1 
+    if ta_entry.entry_case != self.normal_balance 
+      multiplicator = -1
+    end
+    
+    self.amount +=  multiplicator * ta_entry.amount 
+    
+    if self.save 
+      # update parents
+      self.update_parent_amount
+    end
+  end
+  
+  def update_amount_from_posting_unconfirm(ta_entry) 
+    multiplicator = -1 
+    if ta_entry.entry_case != self.normal_balance 
+      multiplicator = 1
+    end
+    
+    self.amount +=  multiplicator * ta_entry.amount 
+    # puts "final amount for account: #{self.name} :: #{self.amount}. Addition: #{multiplicator * ta_entry.amount }"
+
+    if self.save 
+      # update parents
+      # puts "gonna update parent from leaf"
+      # puts "***The starter account: #{self.name}"
+      self.update_parent_amount
+    end
+  end
+  
+  
+  
+  
+  
+  
+=begin
   Create Cash Drawer account.. Asset > Cash > Cash Drawer 
 =end
   def self.asset_account
@@ -348,7 +433,7 @@ class Account < ActiveRecord::Base
     ).first
   end
   
-  def self.cash_drawer
+  def self.cash_drawer_account
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:asset],
       :is_base_account => false,
@@ -356,7 +441,7 @@ class Account < ActiveRecord::Base
     ).first
   end
   
-  def self.field_usage_revenue
+  def self.field_usage_revenue_account
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:revenue],
       :is_base_account => false,
@@ -364,7 +449,7 @@ class Account < ActiveRecord::Base
     ).first
   end
   
-  def self.salvaged_downpayment_revenue
+  def self.salvaged_downpayment_revenue_account
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:revenue],
       :is_base_account => false,
@@ -372,7 +457,7 @@ class Account < ActiveRecord::Base
     ).first
   end
   
-  def self.field_booking_downpayment
+  def self.field_booking_downpayment_account
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:liability],
       :is_base_account => false,
