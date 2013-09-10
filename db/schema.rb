@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20130910025201) do
     t.integer  "rgt"
     t.integer  "depth"
     t.decimal  "amount",                                    precision: 14, scale: 2, default: 0.0
+    t.decimal  "initial_amount",                            precision: 14, scale: 2, default: 0.0
     t.integer  "last_update_transaction_activity_entry_id"
     t.boolean  "is_contra_account",                                                  default: false
     t.integer  "original_account_id"
@@ -27,6 +28,7 @@ ActiveRecord::Schema.define(version: 20130910025201) do
     t.integer  "account_case",                                                       default: 2
     t.integer  "classification",                                                     default: 1
     t.boolean  "is_base_account",                                                    default: false
+    t.boolean  "is_temporary_account",                                               default: false
     t.string   "code"
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -401,29 +401,20 @@ class Account < ActiveRecord::Base
     ).first 
   end
   
-  def self.create_cash_account
-    new_object = self.new
-    new_object.name = "Cash"
-    new_object.parent_id = self.asset_account.id 
-    new_object.normal_balance = NORMAL_BALANCE[:debit]
-    new_object.account_case = ACCOUNT_CASE[:group]
-    new_object.classification = ACCOUNT_CLASSIFICATION[:asset]
-    new_object.code = APP_SPECIFIC_ACCOUNT_CODE[:cash]
-    new_object.save
-    return new_object 
+  def self.expense_account
+    self.where(
+      :classification => ACCOUNT_CLASSIFICATION[:expense],
+      :is_base_account => true 
+    ).first 
   end
   
-  def self.create_downpayment_account
-    new_object = self.new
-    new_object.name = "Downpayment"
-    new_object.parent_id = self.liability_account.id 
-    new_object.normal_balance = NORMAL_BALANCE[:credit]
-    new_object.account_case = ACCOUNT_CASE[:ledger]
-    new_object.classification = ACCOUNT_CLASSIFICATION[:liability]
-    new_object.code = APP_SPECIFIC_ACCOUNT_CODE[:unearned_revenue_booking_downpayment]
-    new_object.save
-    return new_object
+  def self.equity_account
+    self.where(
+      :classification => ACCOUNT_CLASSIFICATION[:equity],
+      :is_base_account => true 
+    ).first 
   end
+  
   
   def self.cash_account
     self.where(
@@ -466,27 +457,35 @@ class Account < ActiveRecord::Base
   end
   
   
-  def self.create_temporary_migration_objects
-    
   
+  def self.create_cash_account
     new_object = self.new
-    new_object.name = "Temporary Debit Account"
+    new_object.name = "Cash"
+    new_object.parent_id = self.asset_account.id 
     new_object.normal_balance = NORMAL_BALANCE[:debit]
-    new_object.account_case = ACCOUNT_CASE[:ledger]
-    new_object.classification = ACCOUNT_CLASSIFICATION[:temporary_debit]
-    new_object.is_base_account = true 
-    new_object.is_temporary_account = true 
-    new_object.save 
-    
+    new_object.account_case = ACCOUNT_CASE[:group]
+    new_object.classification = ACCOUNT_CLASSIFICATION[:asset]
+    new_object.code = APP_SPECIFIC_ACCOUNT_CODE[:cash]
+    new_object.save
+    return new_object 
+  end
+  
+  def self.create_downpayment_account
     new_object = self.new
-    new_object.name = "Temporary Credit Account"
+    new_object.name = "Downpayment"
+    new_object.parent_id = self.liability_account.id 
     new_object.normal_balance = NORMAL_BALANCE[:credit]
     new_object.account_case = ACCOUNT_CASE[:ledger]
-    new_object.classification = ACCOUNT_CLASSIFICATION[:temporary_credit]
-    new_object.is_base_account = true 
-    new_object.is_temporary_account = true 
-    new_object.save  
+    new_object.classification = ACCOUNT_CLASSIFICATION[:liability]
+    new_object.code = APP_SPECIFIC_ACCOUNT_CODE[:unearned_revenue_booking_downpayment]
+    new_object.save
+    return new_object
   end
+  
+  
+  
+  
+  
   
   
   def self.create_business_specific_objects 
@@ -539,25 +538,41 @@ class Account < ActiveRecord::Base
     )
   end
   
+  def self.create_temporary_migration_objects
+    
+  
+    new_object = self.new
+    new_object.name = "Temporary Debit Account"
+    new_object.normal_balance = NORMAL_BALANCE[:debit]
+    new_object.account_case = ACCOUNT_CASE[:ledger]
+    new_object.classification = ACCOUNT_CLASSIFICATION[:temporary_debit]
+    new_object.is_base_account = true 
+    new_object.is_temporary_account = true 
+    new_object.save 
+    
+    new_object = self.new
+    new_object.name = "Temporary Credit Account"
+    new_object.normal_balance = NORMAL_BALANCE[:credit]
+    new_object.account_case = ACCOUNT_CASE[:ledger]
+    new_object.classification = ACCOUNT_CLASSIFICATION[:temporary_credit]
+    new_object.is_base_account = true 
+    new_object.is_temporary_account = true 
+    new_object.save  
+  end
+  
   def self.setup_business
     self.create_base_objects
     self.create_business_specific_objects
     self.create_temporary_migration_objects 
   end
   
-  def self.temporary_account_id_list
-    self.where(:is_temporary_account => true).map{|x| x.id }
-  end
+  
   
   def has_created_initial_amount?
-    self.transaction_activity_entries.
-          where(:account_id => self.class.temporary_account_id_list).count != 0 
+    not self.initial_amount_transaction_activity.nil?
   end
   
-  def initial_amount_transaction_activity_entry
-    self.transaction_activity_entries.
-          where(:account_id => self.class.temporary_account_id_list).first 
-  end
+  
   
   def initial_amount_transaction_activity
     TransactionActivity.where(
@@ -573,6 +588,9 @@ class Account < ActiveRecord::Base
   def self.temporary_debit_account
     Account.where(:classification => ACCOUNT_CLASSIFICATION[:temporary_debit]).first
   end
+  
+  
+  # for migration 
   
   def temporary_account
     if self.normal_balance == NORMAL_BALANCE[:debit]
@@ -591,26 +609,37 @@ class Account < ActiveRecord::Base
     
     
     self.initial_amount = BigDecimal( params[:initial_amount] || 0 ) 
+    
+    transaction_activity = nil 
+    
     if self.save 
+      
       if self.has_created_initial_amount?
         # update the transaction_activity_entry
-        ta = initial_amount_transaction_activity
-        ta.unconfirm 
+        transaction_activity = initial_amount_transaction_activity
+        transaction_activity.unconfirm 
         
         
-        initial_amount_transaction_activity.transaction_activity_entries.each do |ta_entry|
-          ta_entry.amount = self.initial_amount
-          ta_entry.save 
+        transaction_activity.transaction_activity_entries.each do |ta_entry|
+          ta_entry.destroy 
         end
-        ta.reload 
-        ta.confirm 
       else
-        if initial_amount < BigDecimal('0')
-          
-        else
-        end
-      end
+        
+        transaction_activity = TransactionActivity.create_object(
+          :transaction_datetime => DateTime.now,
+          :description => "Migrasi Akun #{self.name}",
+          :transaction_source_id => self.id ,
+          :transaction_source_type => self.class.to_s
+        )
+         
+      end 
+      
+      transaction_activity.create_initial_migration 
+      
+      transaction_activity.reload 
+      transaction_activity.confirm
       
     end
+    return transaction_activity
   end
 end

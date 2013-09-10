@@ -7,6 +7,8 @@ class TransactionActivity < ActiveRecord::Base
     new_object = self.new 
     new_object.transaction_datetime = params[:transaction_datetime]
     new_object.description = params[:description]
+    new_object.transaction_source_id = params[:transaction_source_id]
+    new_object.transaction_source_type = params[:transaction_source_type]
     new_object.save 
     
     return new_object
@@ -109,6 +111,47 @@ class TransactionActivity < ActiveRecord::Base
   end
   
   def internal_object_destroy
+  end
+  
+=begin
+  FOR MIGRATION
+=end
+
+  def create_initial_migration
+    account = Account.find_by_id self.transaction_source_id 
+    
+    initial_amount = account.initial_amount
+    temporary_account = account.temporary_account
+    
+    entry_case = 0
+    migration_amount = initial_amount
+    temporary_entry_case = temporary_account.normal_balance
+    entry_case = account.normal_balance 
+     
+    if initial_amount < BigDecimal('0')
+      entry_case = NORMAL_BALANCE[:debit] if account.normal_balance == NORMAL_BALANCE[:credit]
+      entry_case = NORMAL_BALANCE[:credit] if account.normal_balance == NORMAL_BALANCE[:credit]
+      migration_amount = -1 * initial_amount 
+      
+      temporary_entry_case = NORMAL_BALANCE[:debit] if temporary_account.normal_balance == NORMAL_BALANCE[:credit]
+      temporary_entry_case = NORMAL_BALANCE[:credit] if temporary_account.normal_balance == NORMAL_BALANCE[:debit]
+    end
+    
+    current_account_migration = TransactionActivityEntry.create_object(
+      :transaction_activity_id =>  self.id,
+      :account_id => account.id ,
+      :entry_case => entry_case ,
+      :amount =>  migration_amount
+    
+    )
+    
+    temporary_account_migration = TransactionActivityEntry.create_object(
+      :transaction_activity_id =>  self.id,
+      :account_id => temporary_account.id ,
+      :entry_case => temporary_entry_case ,
+      :amount =>  migration_amount
+    )
+  
   end
   
 end

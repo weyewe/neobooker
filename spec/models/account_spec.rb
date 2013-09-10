@@ -24,10 +24,25 @@ describe Account do
   context "business accounts creation" do
     before(:each) do
       Account.setup_business
+      @asset_account     = Account.asset_account
+      @expense_account   = Account.expense_account
+      @revenue_account   = Account.revenue_account
+      @liability_account = Account.liability_account
+      @equity_account    = Account.equity_account
+      
     end
     
     it 'should create 5 base objects' do
-      Account.where(:is_base_account =>true ).count.should == 5
+      Account.where(:is_base_account =>true ).count.should == 7
+    end
+    
+    it 'should create 2 temporary accounts' do
+      Account.where(:is_temporary_account => true).count.should ==  2
+    end
+    
+    it "temporary_account of normal_balance debit account should be temporary_credit_account" do
+      @asset_account.temporary_account.normal_balance.should == NORMAL_BALANCE[:credit]
+      @liability_account.temporary_account.normal_balance.should == NORMAL_BALANCE[:debit]
     end
     
     it 'should create business objects' do
