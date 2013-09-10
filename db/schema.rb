@@ -11,7 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130906035508) do
+ActiveRecord::Schema.define(version: 20130910025201) do
+
+  create_table "accounts", force: true do |t|
+    t.string   "name"
+    t.integer  "parent_id"
+    t.integer  "lft"
+    t.integer  "rgt"
+    t.integer  "depth"
+    t.decimal  "amount",              precision: 14, scale: 2, default: 0.0
+    t.boolean  "is_contra_account",                            default: false
+    t.integer  "original_account_id"
+    t.integer  "normal_balance",                               default: 1
+    t.integer  "account_case",                                 default: 2
+    t.integer  "classification",                               default: 1
+    t.boolean  "is_base_account",                              default: false
+    t.string   "code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "bookings", force: true do |t|
     t.integer  "calendar_id"
@@ -111,6 +129,27 @@ ActiveRecord::Schema.define(version: 20130906035508) do
     t.string   "title",       null: false
     t.text     "description", null: false
     t.text     "the_role",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "transaction_activities", force: true do |t|
+    t.integer  "transaction_source_id"
+    t.string   "transaction_source_type"
+    t.datetime "transaction_datetime"
+    t.text     "description"
+    t.decimal  "amount",                  precision: 14, scale: 2, default: 0.0
+    t.boolean  "is_confirmed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "transaction_activity_entries", force: true do |t|
+    t.integer  "transaction_activity_id"
+    t.integer  "account_id"
+    t.integer  "entry_case"
+    t.decimal  "amount",                  precision: 14, scale: 2, default: 0.0
+    t.boolean  "is_confirmed",                                     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

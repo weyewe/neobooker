@@ -64,9 +64,9 @@ class Calendar < ActiveRecord::Base
   end
   
   def update_price 
-    puts "Inside update price"
+    # puts "Inside update price"
     if catch_all_price_rule.price_details.count != 0 
-      puts "the price details is not 0"
+      # puts "the price details is not 0"
       catch_all_price_rule.delete_catch_all_rule  
       self.create_catch_all_price_rule 
     else

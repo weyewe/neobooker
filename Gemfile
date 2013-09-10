@@ -31,6 +31,9 @@ gem 'devise'
 gem "kaminari"  
 gem 'uuidtools'
 
+# gem 'awesome_nested_set'
+gem "awesome_nested_set", "~> 3.0.0.rc.1"
+
 
 gem 'bootstrap-sass', '~> 2.3.1.0'
 gem 'the_role', '~> 2.0.0'

@@ -38,8 +38,8 @@ class PriceRule < ActiveRecord::Base
   def self.create_object(params)
     new_object = self.new 
     
-    puts "The params content:"
-    puts "#{params}"
+    # puts "The params content:"
+    # puts "#{params}"
     new_object.is_sunday      = params[:is_sunday   ] 
     new_object.is_monday      = params[:is_monday   ]
     new_object.is_tuesday     = params[:is_tuesday  ]

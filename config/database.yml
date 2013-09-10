@@ -15,7 +15,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: port_calendar_development
+  database: acn_booker_development
   pool: 5
   username: weyewe
 
@@ -40,13 +40,13 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: port_calendar_test
+  database: acn_booker_test
   pool: 5
   username: weyewe
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: port_calendar_production
+  database: acn_booker_production
   pool: 5
   username: weyewe
