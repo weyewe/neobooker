@@ -42,8 +42,18 @@ class TransactionActivity < ActiveRecord::Base
       return self 
     end
     
-    self.transaction_activity_entries.each {|x| x.destroy }
+    self.transaction_activity_entries.each {|x| x.delete_object }
     self.destroy  
+  end
+  
+  def internal_delete_object
+    if self.is_confirmed?
+      self.errors.add(:generic_errors, "Can't modify the  confirmed transaction")
+      return self
+    end
+    
+    self.transaction_activity_entries.each { |x| x.internal_delete_object}
+    self.destroy 
   end
   
   

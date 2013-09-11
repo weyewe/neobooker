@@ -16,6 +16,61 @@ class Income < ActiveRecord::Base
   
   # after_create :update_accounting
   
+  
+  def self.create_booking_confirmation_income( params ) 
+    income = Income.create(
+        :income_source_type   => params[:income_source_type  ],
+        :income_source_id     => params[:income_source_id    ],
+        :amount               => params[:amount              ],
+        :case                 => params[:case                ],
+        :transaction_datetime => params[:transaction_datetime],
+        :code                 => params[:code                ]
+    )            
+      
+      
+    # create unearned revenue  : credit
+    # create cash_drawer   : debit 
+    cash_drawer_account = Account.cash_drawer_account
+    unearned_revenue_booking_downpayment = Account.field_booking_downpayment_account
+    
+      
+    ta = TransactionActivity.create_object({
+      :transaction_datetime => DateTime.now  ,
+      :description => "Booking Downpayment" ,
+      :transaction_source_id => income.id , 
+      :transaction_source_type => income.class.to_s 
+    })
+     
+    transaction_1 = ta.transaction_activity_entries.where(
+      :account_id => unearned_revenue_booking_downpayment.id 
+    ).first
+    
+    transaction_3 = ta.transaction_activity_entries.where(
+      :account_id => cash_drawer_account.id 
+    ).first
+    
+    
+
+    self.create_update_or_delete_transaction_entry( 
+      ta, 
+      transaction_1,
+      self.income_source.downpayment_amount ,  
+      unearned_revenue_booking_downpayment_account, 
+      NORMAL_BALANCE[:credit]
+    )
+    
+    self.create_update_or_delete_transaction_entry( 
+      ta, 
+      transaction_3,
+      self.income_source.downpayment_amount ,  
+      unearned_revenue_booking_downpayment_account, 
+      NORMAL_BALANCE[:credit]
+    )
+      
+    
+    ta.confirm 
+    
+  end
  
   
   def self.create_remaining_payment_income(params)
@@ -36,7 +91,7 @@ class Income < ActiveRecord::Base
     # 2. credit the revenue for usage  ( unearned revenue + cash from remaining payment)
     # 3. debit the cash_drawer 
     
-    unearned_revenue_booking_downpayment = Account.field_booking_downpayment_account
+    unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account
     cash_drawer_account = Account.cash_drawer_account 
     field_usage_revenue_account = Account.field_usage_revenue_account
     
@@ -77,85 +132,35 @@ class Income < ActiveRecord::Base
     amount_transaction_2 += income_source.remaining_amount
     amount_transaction_3 += income_source.remaining_amount 
     
-    if amount_transaction_1 != BigDecimal('0')
-      TransactionActivityEntry.create_object(
-        :transaction_activity_id =>  ta.id,
-        :account_id => unearned_revenue_booking_downpayment.id ,
-        :entry_case => NORMAL_BALANCE[:debit] ,
-        :amount =>  amount_transaction_1
-      )
-    end
+    self.create_update_or_delete_transaction_entry( 
+      ta, 
+      transaction_1,
+      amount_transaction_1 ,  
+      unearned_revenue_booking_downpayment_account, 
+      NORMAL_BALANCE[:debit]
+    )
     
-    if amount_transaction_2 != BigDecimal('0')
-      TransactionActivityEntry.create_object(
-        :transaction_activity_id =>  ta.id,
-        :account_id => field_usage_revenue_account.id ,
-        :entry_case => NORMAL_BALANCE[:credit] ,
-        :amount =>  amount_transaction_2
-      )
-    end
+    self.create_update_or_delete_transaction_entry( 
+      ta, 
+      transaction_2,
+      amount_transaction_2 ,  
+      field_usage_revenue_account, 
+      NORMAL_BALANCE[:credit]
+    )
     
-    if amount_transaction_3 != BigDecimal('0')
-      TransactionActivityEntry.create_object(
-        :transaction_activity_id =>  ta.id,
-        :account_id => cash_drawer_account.id ,
-        :entry_case => NORMAL_BALANCE[:debit] ,
-        :amount =>  amount_transaction_3
-      )
-    end
-    
+    self.create_update_or_delete_transaction_entry( 
+      ta, 
+      transaction_3,
+      amount_transaction_3 ,  
+      cash_drawer_account, 
+      NORMAL_BALANCE[:debit]
+    ) 
   
-     
-    
     ta.confirm
     
   end
   
-  def self.create_booking_confirmation_income( params ) 
-    income = Income.create(
-        :income_source_type   => params[:income_source_type  ],
-        :income_source_id     => params[:income_source_id    ],
-        :amount               => params[:amount              ],
-        :case                 => params[:case                ],
-        :transaction_datetime => params[:transaction_datetime],
-        :code                 => params[:code                ]
-    )            
-      
-      
-    # create unearned revenue 
-    # create cash_drawer 
-    
-    
-    cash_drawer_account = Account.cash_drawer_account
-    unearned_revenue_booking_downpayment = Account.field_booking_downpayment_account
-    
-      
-    ta = TransactionActivity.create_object({
-      :transaction_datetime => DateTime.now  ,
-      :description => "Booking Downpayment" ,
-      :transaction_source_id => income.id , 
-      :transaction_source_type => income.class.to_s 
-    })
-
-
-    TransactionActivityEntry.create_object(
-      :transaction_activity_id =>  ta.id,
-      :account_id => cash_drawer_account.id ,
-      :entry_case => NORMAL_BALANCE[:debit] ,
-      :amount =>  income.amount 
-
-    )
-
-    TransactionActivityEntry.create_object(
-      :transaction_activity_id =>  ta.id,
-      :account_id => unearned_revenue_booking_downpayment.id ,
-      :entry_case => NORMAL_BALANCE[:credit] ,
-      :amount =>   income.amount 
-    )            
-    
-    ta.confirm 
-    
-  end
+  
   
   def update_amount( new_amount ) 
     self.amount = new_amount 
@@ -277,7 +282,7 @@ class Income < ActiveRecord::Base
   
   def create_update_or_delete_transaction_entry(  transaction_activity, transaction_activity_entry, amount , account, entry_case) 
     if amount == BigDecimal('0') 
-      transaction_activity_entry.delete_object if not transaction_activity_entry.nil?
+      transaction_activity_entry.internal_delete_object if not transaction_activity_entry.nil?
     else
       if transaction_activity_entry.nil? 
         TransactionActivityEntry.create_object(
@@ -305,7 +310,7 @@ class Income < ActiveRecord::Base
       
     
     ta.unconfirm
-    ta.delete_object  
+    ta.internal_delete_object  
     
     self.destroy 
   end

@@ -116,6 +116,11 @@ class TransactionActivityEntry < ActiveRecord::Base
       return self 
     end
     
+    if not self.transaction_activity.transaction_source_id.nil?
+      self.errors.add(:generic_errors, "Can't modify the automated generated transaction")
+      return self
+    end
+    
     # self.transaction_activity_entries.each {|x| x.destroy }
     self.destroy  
   end
@@ -127,6 +132,14 @@ class TransactionActivityEntry < ActiveRecord::Base
   def internal_object_update(params)
   end
   
-  def internal_object_destroy
+  
+  # for the automated transaction 
+  def internal_delete_object
+    if self.transaction_activity.is_confirmed?
+      self.errors.add(:generic_errors, "Transaction sudah di konfirmasi")
+      return self 
+    end
+    
+    self.destroy 
   end
 end
