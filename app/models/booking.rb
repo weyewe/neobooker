@@ -542,7 +542,8 @@ Solution: get the PriceRule on that is active on the creation time
   def is_salvaged?
     not self.salvage_booking.nil?
   end
-  def salvage_booking
+  
+  def execute_salvage
     if self.is_salvaged?
       self.errors.add(:generic_errors, "Booking sudah hangus. ")
       return self 
@@ -550,10 +551,6 @@ Solution: get the PriceRule on that is active on the creation time
     
     if self.is_confirmed? and not self.is_paid?
       SalvageBooking.create_object :booking_id => self.id, :salvaged_datetime => DateTime.now  
-      
- 
-      
-      
     else
       self.errors.add(:generic_errors, "Booking harus sudah dikonfirmasi dan belum dibayar sisanya")
       return self 

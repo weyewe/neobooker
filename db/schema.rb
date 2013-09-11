@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130910025201) do
+ActiveRecord::Schema.define(version: 20130911040545) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -132,6 +132,13 @@ ActiveRecord::Schema.define(version: 20130910025201) do
     t.string   "title",       null: false
     t.text     "description", null: false
     t.text     "the_role",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "salvage_bookings", force: true do |t|
+    t.integer  "booking_id"
+    t.datetime "salvaged_datetime"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

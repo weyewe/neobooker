@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Account do
+   
   
   context "base accounts creation" do
     before(:each) do

@@ -31,18 +31,18 @@ class Income < ActiveRecord::Base
     # create unearned revenue  : credit
     # create cash_drawer   : debit 
     cash_drawer_account = Account.cash_drawer_account
-    unearned_revenue_booking_downpayment = Account.field_booking_downpayment_account
+    unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account
     
       
     ta = TransactionActivity.create_object({
-      :transaction_datetime => income_source.confirmed_datetime ,
+      :transaction_datetime => income.income_source.confirmed_datetime ,
       :description => "Booking Downpayment" ,
       :transaction_source_id => income.id , 
       :transaction_source_type => income.class.to_s 
     })
      
     transaction_1 = ta.transaction_activity_entries.where(
-      :account_id => unearned_revenue_booking_downpayment.id 
+      :account_id => unearned_revenue_booking_downpayment_account.id 
     ).first
     
     transaction_3 = ta.transaction_activity_entries.where(
@@ -54,7 +54,7 @@ class Income < ActiveRecord::Base
     TransactionActivityEntry.create_update_or_delete_transaction_entry( 
       ta, 
       transaction_1,
-      self.income_source.downpayment_amount ,  
+      income.income_source.downpayment_amount ,  
       unearned_revenue_booking_downpayment_account, 
       NORMAL_BALANCE[:credit]
     )
@@ -62,15 +62,15 @@ class Income < ActiveRecord::Base
     TransactionActivityEntry.create_update_or_delete_transaction_entry( 
       ta, 
       transaction_3,
-      self.income_source.downpayment_amount ,  
-      unearned_revenue_booking_downpayment_account, 
-      NORMAL_BALANCE[:credit]
+      income.income_source.downpayment_amount ,  
+      cash_drawer_account, 
+      NORMAL_BALANCE[:debit]
     )
       
     
     ta.confirm 
     
-    return self
+    return income
     
   end
   
@@ -107,7 +107,7 @@ class Income < ActiveRecord::Base
     })
     
     transaction_1 = ta.transaction_activity_entries.where(
-      :account_id => unearned_revenue_booking_downpayment.id 
+      :account_id => unearned_revenue_booking_downpayment_account.id 
     ).first 
     
     transaction_2 = ta.transaction_activity_entries.where(
@@ -162,7 +162,7 @@ class Income < ActiveRecord::Base
   
     ta.confirm
     
-    return self 
+    return income 
   end
   
   
@@ -192,7 +192,7 @@ class Income < ActiveRecord::Base
       ta.reload 
       
       transaction_1 = ta.transaction_activity_entries.where(
-        :account_id => unearned_revenue_booking_downpayment.id 
+        :account_id => unearned_revenue_booking_downpayment_account.id 
       ).first
       
       transaction_3 = ta.transaction_activity_entries.where(

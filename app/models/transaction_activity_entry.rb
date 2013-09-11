@@ -155,7 +155,7 @@ class TransactionActivityEntry < ActiveRecord::Base
           :transaction_activity_id =>  transaction_activity.id,
           :account_id => account.id ,
           :entry_case => entry_case,
-          :amount =>  amount
+          :amount =>  amount.to_s
         )
       else
         transaction_activity_entry.amount = amount 

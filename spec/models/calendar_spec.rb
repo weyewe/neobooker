@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Calendar do
   before(:each) do
+    Account.setup_business
     @calendar_amount = BigDecimal('200000')
     @downpayment_percentage = BigDecimal( '20')
     @calendar =  Calendar.create_object({

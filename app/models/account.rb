@@ -613,7 +613,7 @@ class Account < ActiveRecord::Base
     
     
     
-    self.initial_amount = BigDecimal( params[:initial_amount] || 0 ) 
+    self.initial_amount = BigDecimal( params[:initial_amount]  || 0 ) 
     
     transaction_activity = nil 
     
