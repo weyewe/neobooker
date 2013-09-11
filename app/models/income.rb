@@ -35,7 +35,7 @@ class Income < ActiveRecord::Base
     
       
     ta = TransactionActivity.create_object({
-      :transaction_datetime => DateTime.now  ,
+      :transaction_datetime => income_source.confirmed_datetime ,
       :description => "Booking Downpayment" ,
       :transaction_source_id => income.id , 
       :transaction_source_type => income.class.to_s 
@@ -51,7 +51,7 @@ class Income < ActiveRecord::Base
     
     
 
-    self.create_update_or_delete_transaction_entry( 
+    TransactionActivityEntry.create_update_or_delete_transaction_entry( 
       ta, 
       transaction_1,
       self.income_source.downpayment_amount ,  
@@ -59,7 +59,7 @@ class Income < ActiveRecord::Base
       NORMAL_BALANCE[:credit]
     )
     
-    self.create_update_or_delete_transaction_entry( 
+    TransactionActivityEntry.create_update_or_delete_transaction_entry( 
       ta, 
       transaction_3,
       self.income_source.downpayment_amount ,  
@@ -70,7 +70,11 @@ class Income < ActiveRecord::Base
     
     ta.confirm 
     
+    return self
+    
   end
+  
+  
  
   
   def self.create_remaining_payment_income(params)
@@ -96,7 +100,7 @@ class Income < ActiveRecord::Base
     field_usage_revenue_account = Account.field_usage_revenue_account
     
     ta = TransactionActivity.create_object({
-      :transaction_datetime => DateTime.now  ,
+      :transaction_datetime => income_source.paid_datetime  ,
       :description => "Field Usage Payment" ,
       :transaction_source_id => income.id , 
       :transaction_source_type => income.class.to_s 
@@ -132,7 +136,7 @@ class Income < ActiveRecord::Base
     amount_transaction_2 += income_source.remaining_amount
     amount_transaction_3 += income_source.remaining_amount 
     
-    self.create_update_or_delete_transaction_entry( 
+    TransactionActivityEntry.create_update_or_delete_transaction_entry( 
       ta, 
       transaction_1,
       amount_transaction_1 ,  
@@ -140,7 +144,7 @@ class Income < ActiveRecord::Base
       NORMAL_BALANCE[:debit]
     )
     
-    self.create_update_or_delete_transaction_entry( 
+    TransactionActivityEntry.create_update_or_delete_transaction_entry( 
       ta, 
       transaction_2,
       amount_transaction_2 ,  
@@ -148,7 +152,7 @@ class Income < ActiveRecord::Base
       NORMAL_BALANCE[:credit]
     )
     
-    self.create_update_or_delete_transaction_entry( 
+    TransactionActivityEntry.create_update_or_delete_transaction_entry( 
       ta, 
       transaction_3,
       amount_transaction_3 ,  
@@ -158,6 +162,7 @@ class Income < ActiveRecord::Base
   
     ta.confirm
     
+    return self 
   end
   
   
@@ -195,7 +200,7 @@ class Income < ActiveRecord::Base
       ).first
       
       
-      self.create_update_or_delete_transaction_entry( 
+      TransactionActivityEntry.create_update_or_delete_transaction_entry( 
         ta, 
         transaction_1,
         self.income_source.downpayment_amount ,  
@@ -203,7 +208,7 @@ class Income < ActiveRecord::Base
         NORMAL_BALANCE[:debit]
       )
       
-      self.create_update_or_delete_transaction_entry( 
+      TransactionActivityEntry.create_update_or_delete_transaction_entry( 
         ta, 
         transaction_3,
         self.income_source.downpayment_amount ,  
@@ -250,7 +255,7 @@ class Income < ActiveRecord::Base
       
       
     
-      self.create_update_or_delete_transaction_entry( 
+      TransactionActivityEntry.create_update_or_delete_transaction_entry( 
         ta, 
         transaction_1,
         amount_transaction_1,  
@@ -258,7 +263,7 @@ class Income < ActiveRecord::Base
         NORMAL_BALANCE[:debit]
       )
       
-      self.create_update_or_delete_transaction_entry( 
+      TransactionActivityEntry.create_update_or_delete_transaction_entry( 
         ta, 
         transaction_2,
         amount_transaction_2,  
@@ -266,7 +271,7 @@ class Income < ActiveRecord::Base
         NORMAL_BALANCE[:debit]
       )
       
-      self.create_update_or_delete_transaction_entry( 
+      TransactionActivityEntry.create_update_or_delete_transaction_entry( 
         ta, 
         transaction_3,
         amount_transaction_3,  
@@ -280,23 +285,25 @@ class Income < ActiveRecord::Base
     ta.confirm 
   end
   
-  def create_update_or_delete_transaction_entry(  transaction_activity, transaction_activity_entry, amount , account, entry_case) 
-    if amount == BigDecimal('0') 
-      transaction_activity_entry.internal_delete_object if not transaction_activity_entry.nil?
-    else
-      if transaction_activity_entry.nil? 
-        TransactionActivityEntry.create_object(
-          :transaction_activity_id =>  transaction_activity.id,
-          :account_id => account.id ,
-          :entry_case => entry_case,
-          :amount =>  amount
-        )
-      else
-        transaction_activity_entry.amount = amount 
-        transaction_activity_entry.save 
-      end
-    end  
-  end
+  
+  
+  # def create_update_or_delete_transaction_entry(  transaction_activity, transaction_activity_entry, amount , account, entry_case) 
+  #   if amount == BigDecimal('0') 
+  #     transaction_activity_entry.internal_delete_object if not transaction_activity_entry.nil?
+  #   else
+  #     if transaction_activity_entry.nil? 
+  #       TransactionActivityEntry.create_object(
+  #         :transaction_activity_id =>  transaction_activity.id,
+  #         :account_id => account.id ,
+  #         :entry_case => entry_case,
+  #         :amount =>  amount
+  #       )
+  #     else
+  #       transaction_activity_entry.amount = amount 
+  #       transaction_activity_entry.save 
+  #     end
+  #   end  
+  # end
   
   
   

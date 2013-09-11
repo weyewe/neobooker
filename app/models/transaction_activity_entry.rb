@@ -126,6 +126,9 @@ class TransactionActivityEntry < ActiveRecord::Base
   end
   
    
+=begin
+  Internal Object Creation
+=end
   
   # can only be called from the business rule 
   
@@ -141,5 +144,23 @@ class TransactionActivityEntry < ActiveRecord::Base
     end
     
     self.destroy 
+  end
+  
+  def self.create_update_or_delete_transaction_entry(  transaction_activity, transaction_activity_entry, amount , account, entry_case) 
+    if amount == BigDecimal('0') 
+      transaction_activity_entry.internal_delete_object if not transaction_activity_entry.nil?
+    else
+      if transaction_activity_entry.nil? 
+        TransactionActivityEntry.create_object(
+          :transaction_activity_id =>  transaction_activity.id,
+          :account_id => account.id ,
+          :entry_case => entry_case,
+          :amount =>  amount
+        )
+      else
+        transaction_activity_entry.amount = amount 
+        transaction_activity_entry.save 
+      end
+    end  
   end
 end

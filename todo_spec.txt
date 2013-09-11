@@ -1,15 +1,2 @@
-Calendar Creation 
-	=> On create calendar, create one default PriceRule with rule_case = PRICE_RULE_CASE[:catch_all]
-	
-	
+# OK, let's do the accounting. 
 
-
-PriceRule Creation 
-
-
-
-Booking Creation 
-
-
-
-test the booking amount generation 

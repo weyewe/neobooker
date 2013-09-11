@@ -6,6 +6,7 @@ class Booking < ActiveRecord::Base
   belongs_to :price 
   
   has_many :price_details 
+  has_one :salvage_booking
   
   def facility
     calendar 
@@ -326,6 +327,20 @@ Solution: get the PriceRule on that is active on the creation time
     )
   end
   
+  def create_salvage_downpayment_amount_income
+    dp_income = self.downpayment_income 
+    
+    if dp_income.nil?
+      if self.downpayment_amount != BigDecimal('0')
+        dp_income = self.create_booking_income 
+      else
+        return 
+      end
+    end
+    
+    dp_income.salvage_booking_income 
+  end
+  
   def create_remaining_income
     Income.create_remaining_payment_income(
       :income_source_type => self.class.to_s , 
@@ -470,6 +485,11 @@ Solution: get the PriceRule on that is active on the creation time
       return self 
     end
     
+    if self.is_salvaged? 
+      self.errors.add(:generic_errors, "Sudah hangus")
+      return self
+    end
+    
     self.is_paid = true 
     self.paid_datetime  = DateTime.now 
     self.save 
@@ -518,9 +538,31 @@ Solution: get the PriceRule on that is active on the creation time
     self.save 
   end
   
+  
+  def is_salvaged?
+    not self.salvage_booking.nil?
+  end
+  def salvage_booking
+    if self.is_salvaged?
+      self.errors.add(:generic_errors, "Booking sudah hangus. ")
+      return self 
+    end
+    
+    if self.is_confirmed? and not self.is_paid?
+      SalvageBooking.create_object :booking_id => self.id, :salvaged_datetime => DateTime.now  
+      
+ 
+      
+      
+    else
+      self.errors.add(:generic_errors, "Booking harus sudah dikonfirmasi dan belum dibayar sisanya")
+      return self 
+    end
+  end
+  
   def delete_object
     if self.is_confirmed? or self.is_paid? 
-      self.incomes.each {|x| x.destroy }
+      self.incomes.each {|x| x.delete_object }
       self.is_deleted = true 
       self.save 
     else
