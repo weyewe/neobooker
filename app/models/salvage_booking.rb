@@ -1,8 +1,18 @@
 class SalvageBooking < ActiveRecord::Base
   belongs_to :booking
   
-  after_create :create_accounting_entry
+  # after_create :create_accounting_entry
   
+  
+  def self.create_object(params)
+    new_object = self.new
+    new_object.booking_id = params[:booking_id]
+    new_object.salvaged_datetime = params[:salvage_datetime]
+    if new_object.save 
+      new_object.create_accounting_entry
+    end
+    return new_object 
+  end
   
   def create_accounting_entry 
     
