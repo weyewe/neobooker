@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 20130911040545) do
     t.boolean  "is_paid",                                         default: false
     t.datetime "paid_datetime"
     t.decimal  "amount",                 precision: 12, scale: 2, default: 0.0
-    t.boolean  "is_downpayment_imposed"
+    t.boolean  "is_downpayment_imposed",                          default: true
     t.string   "code"
     t.string   "booking_code"
     t.datetime "created_at"

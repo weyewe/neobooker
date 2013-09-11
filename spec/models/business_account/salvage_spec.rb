@@ -152,19 +152,19 @@ describe Booking do
 @salvaged_downpayment_revenue_account = Account.salvaged_downpayment_revenue_account  
 @field_booking_downpayment_account = Account.field_booking_downpayment_account
 =end
-    # it 'should update the account.s amount ' do
-    #   @downpayment_amount = @booking.downpayment_amount 
-    #   @asset_account  .amount.should == @downpayment_amount
-    #   @expense_account.amount.should == BigDecimal('0')   
-    #   @revenue_account.amount.should == @downpayment_amount
-    #   @liability_account.amount.should ==  BigDecimal('0')
-    #   @equity_account  .amount.should == BigDecimal('0')  
-    #   @cash_account     .amount.should == @downpayment_amount                  
-    #   @cash_drawer_account  .amount.should == @downpayment_amount            
-    #   @field_usage_revenue_account   .amount.should == BigDecimal('0')       
-    #   @salvaged_downpayment_revenue_account .amount.should == @downpayment_amount 
-    #   @field_booking_downpayment_account    .amount.should == BigDecimal('0')
-    # end
+    it 'should update the account.s amount ' do
+      @downpayment_amount = @booking.downpayment_amount 
+      @asset_account  .amount.should == @downpayment_amount
+      @expense_account.amount.should == BigDecimal('0')   
+      @revenue_account.amount.should == @downpayment_amount
+      @liability_account.amount.should ==  BigDecimal('0')
+      @equity_account  .amount.should == BigDecimal('0')  
+      @cash_account     .amount.should == @downpayment_amount                  
+      @cash_drawer_account  .amount.should == @downpayment_amount            
+      @field_usage_revenue_account   .amount.should == BigDecimal('0')       
+      @salvaged_downpayment_revenue_account .amount.should == @downpayment_amount 
+      @field_booking_downpayment_account    .amount.should == BigDecimal('0')
+    end
     
     
   end

@@ -60,7 +60,7 @@ describe Booking do
     
     it 'should create 1 price details' do
       
-      puts "\n\nGonnnnaa inspect the booking\n"
+      # puts "\n\nGonnnnaa inspect the booking\n"
       @booking.price_details.count.should == 1 
       @price_detail.should be_valid 
     end

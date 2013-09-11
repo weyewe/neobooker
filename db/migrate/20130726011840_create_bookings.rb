@@ -43,7 +43,7 @@ class CreateBookings < ActiveRecord::Migration
       
       t.decimal :amount,  :default        => 0,  :precision => 12, :scale => 2 
       
-      t.boolean :is_downpayment_imposed , :default => nil 
+      t.boolean :is_downpayment_imposed , :default => true  
       
       
       # code to be printed @ receipt 

@@ -16,8 +16,7 @@ class Booking < ActiveRecord::Base
           :title, :calendar_id , :customer_id, :price_id 
           
   validates_presence_of :start_datetime, :number_of_hours ,  
-                        :customer_id , :calendar_id ,
-                        :is_downpayment_imposed
+                        :customer_id , :calendar_id  
   
   after_destroy :destroy_price_details
   
@@ -99,60 +98,14 @@ Solution: get the PriceRule on that is active on the creation time
   
   def create_price_details 
     
-    
-    # puts "\n\n**************************** calling create price details"
-    
     destroy_price_details
     self.reload   # because we have deleted the price_details
     
     # example: booking from 16:00 to 18:00 .. 16 - 17 == 300k , 17-18 == 500k 
-
-    
-    
-    
-    # result_array = []
-    # (1..number_of_hours).each do |x|
-    #   datetime = local_datetime + (x-1).hours 
-    #   booking_creation_datetime = self.created_at 
-    #   
-    #   price_rule = PriceRule.where{
-    #     #  to ensure that we are using the old price at the time of creation
-    #     (
-    #       (
-    #         ( is_active.eq true) & 
-    #         (created_at.lte booking_creation_datetime)
-    #       ) | 
-    #       (
-    #         ( is_active.eq false) & 
-    #         ( created_at.lte booking_creation_datetime) & 
-    #         ( deactivated_at.gt booking_creation_datetime)
-    #       )
-    #     )  & 
-    #     (
-    #       ( is_sunday   .eq datetime.sunday?  ) | 
-    #       ( is_monday   .eq datetime.monday? )  |
-    #       ( is_tuesday  .eq datetime.tuesday? ) | 
-    #       ( is_wednesday.eq datetime.wednesday? ) |
-    #       ( is_thursday .eq datetime.thursday? ) |
-    #       ( is_friday   .eq datetime.friday? ) |
-    #       ( is_saturday .eq datetime.saturday? ) 
-    #     ) & 
-    #     (
-    #       ( hour_start.lte datetime.hour ) & 
-    #       ( hour_end.gt datetime.hour )
-    #     )
-    #   }.order("id ASC").last
-    #   
-    #   result_array << price_rule.id
-    #   
-    # end
+ 
     
     result_array = self.price_rules 
-    
-    # puts "The result array: #{result_array}"
-     
     uniq_result_array = result_array.uniq 
-    # puts "The uniq result array = #{uniq_result_array}"
     
     final_result_array = [] 
     
@@ -165,13 +118,7 @@ Solution: get the PriceRule on that is active on the creation time
       final_result_array << [x, counter]
     end
     
-    # puts "final result array: #{final_result_array}"
-    
-    # puts "initial price_detail_count: #{self.price_details.count}"
-    
-    # puts "price_details_count : after reload: #{self.price_details.count}"
     final_result_array.each do |pair|
-      # puts "create pairr"
       PriceDetail.create_object(
         :booking_id => self.id,
         :price_rule_id => pair.first,
@@ -241,8 +188,8 @@ Solution: get the PriceRule on that is active on the creation time
     new_object.customer_id = params[:customer_id]
     new_object.discount = BigDecimal( params[:discount] || 0) 
     
-    # new_object.is_downpayment_imposed = params[:is_downpayment_imposed]   
-    new_object.is_downpayment_imposed = false 
+    new_object.is_downpayment_imposed = params[:is_downpayment_imposed]   
+    # new_object.is_downpayment_imposed = false 
     # if not new_object.is_downpayment_imposed.nil? and   new_object.is_downpayment_imposed == false 
     #   
     #   puts "\n332121323"
@@ -262,7 +209,7 @@ Solution: get the PriceRule on that is active on the creation time
    
     new_object.valid? 
     
-    puts "The errors: #{new_object.errors.size}"
+    # puts "The errors: #{new_object.errors.size}"
     
     if new_object.save 
       new_object.update_end_datetime 
@@ -273,10 +220,7 @@ Solution: get the PriceRule on that is active on the creation time
   end
   
   def update_object(params)
-    if self.is_confirmed? and self.is_downpayment_imposed != params[:is_downpayment_imposed]
-      self.errors.add(:is_downpayment_imposed, "Tidak boleh mengubah kondisi downpayment setelah konfirmasi")
-      return self 
-    end
+    
     
     if self.is_confirmed? or self.is_paid? 
       self.update_post_confirm(params)
@@ -324,6 +268,12 @@ Solution: get the PriceRule on that is active on the creation time
   end
   
   def update_post_confirm(params)
+    
+    if self.is_confirmed? and self.is_downpayment_imposed != params[:is_downpayment_imposed]
+      self.errors.add(:is_downpayment_imposed, "Tidak boleh mengubah kondisi downpayment setelah konfirmasi")
+      return self 
+    end
+    
     is_number_of_hours_changed = false 
     is_discount_changed = false 
     if self.number_of_hours != params[:number_of_hours].to_i
