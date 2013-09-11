@@ -39,4 +39,17 @@ class SalvageBooking < ActiveRecord::Base
     
     ta.confirm 
   end
+  
+  def delete_object
+    ta = TransactionActivity.where(
+      :transaction_source_id => self.id , 
+      :transaction_source_type => self.class.to_s
+    )
+    
+    return if ta.nil? 
+    
+    ta.unconfirm 
+    ta.internal_delete_object
+    
+  end
 end

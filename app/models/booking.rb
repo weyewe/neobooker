@@ -561,10 +561,13 @@ Solution: get the PriceRule on that is active on the creation time
   end
   
   def delete_object
-    if self.is_confirmed? or self.is_paid? 
+    if self.is_confirmed? or self.is_paid?  or self.is_salvaged? 
       self.incomes.each {|x| x.delete_object }
       self.is_deleted = true 
       self.save 
+      
+      self.salvaged_booking.delete_object 
+      
     else
       self.destroy 
     end
