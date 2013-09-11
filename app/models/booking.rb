@@ -15,7 +15,9 @@ class Booking < ActiveRecord::Base
   attr_accessible :start_datetime, :number_of_hours,
           :title, :calendar_id , :customer_id, :price_id 
           
-  validates_presence_of :start_datetime, :number_of_hours ,  :customer_id , :calendar_id 
+  validates_presence_of :start_datetime, :number_of_hours ,  
+                        :customer_id , :calendar_id ,
+                        :is_downpayment_imposed
   
   after_destroy :destroy_price_details
   
@@ -41,12 +43,16 @@ Solution: get the PriceRule on that is active on the creation time
   def price_rules 
     local_datetime = start_datetime.in_time_zone("Jakarta") 
     result_array = []
+    current_calendar_id = self.calendar_id
     (1..number_of_hours).each do |x|
       datetime = local_datetime + (x-1).hours 
       booking_creation_datetime = self.created_at 
       
       price_rule = PriceRule.where{
         #  to ensure that we are using the old price at the time of creation
+        (
+          calendar_id.eq current_calendar_id
+        ) & 
         (
           (
             ( is_active.eq true) & 
@@ -235,6 +241,29 @@ Solution: get the PriceRule on that is active on the creation time
     new_object.customer_id = params[:customer_id]
     new_object.discount = BigDecimal( params[:discount] || 0) 
     
+    # new_object.is_downpayment_imposed = params[:is_downpayment_imposed]   
+    new_object.is_downpayment_imposed = false 
+    # if not new_object.is_downpayment_imposed.nil? and   new_object.is_downpayment_imposed == false 
+    #   
+    #   puts "\n332121323"
+    #   puts "first channel"
+    #   puts "The is_downpayment_imposed value: false \n"
+    #   puts "The params[:is_downpayment_imposed] :: #{params[:is_downpayment_imposed]}"
+    #   new_object.is_downpayment_imposed = false 
+    # else
+    #   
+    #   puts "\n332121323"
+    #   puts "second channel"
+    #   puts "The is_downpayment_imposed value: true  \n"
+    #   puts "The params[:is_downpayment_imposed] :: #{params[:is_downpayment_imposed]}"
+    #   new_object.is_downpayment_imposed = true 
+    # end 
+      
+   
+    new_object.valid? 
+    
+    puts "The errors: #{new_object.errors.size}"
+    
     if new_object.save 
       new_object.update_end_datetime 
       new_object.update_price  
@@ -244,13 +273,19 @@ Solution: get the PriceRule on that is active on the creation time
   end
   
   def update_object(params)
+    if self.is_confirmed? and self.is_downpayment_imposed != params[:is_downpayment_imposed]
+      self.errors.add(:is_downpayment_imposed, "Tidak boleh mengubah kondisi downpayment setelah konfirmasi")
+      return self 
+    end
+    
     if self.is_confirmed? or self.is_paid? 
       self.update_post_confirm(params)
       return self
     end
     
     is_start_datetime_changed = false 
-    is_number_of_hours_changed = false 
+    is_number_of_hours_changed = false
+    is_calendar_id_changed = false 
     
     if start_datetime != params[:start_datetime]
       is_start_datetime_changed = true 
@@ -260,17 +295,28 @@ Solution: get the PriceRule on that is active on the creation time
       is_number_of_hours_changed = true 
     end
     
+    if is_downpayment_imposed != params[:is_downpayment_imposed]
+      is_downpayment_imposed_changed = true 
+    end
+    
+    if calendar_id != params[:calendar_id]
+      is_calendar_id_changed = true 
+    end
+    
+     
+    
     self.start_datetime = params[:start_datetime]
     self.number_of_hours = params[:number_of_hours]
     # self.title = params[:title]
     self.calendar_id = params[:calendar_id]
     self.customer_id = params[:customer_id]
     self.discount = BigDecimal( params[:discount] || 0) 
+    self.is_downpayment_imposed =  params[:is_downpayment_imposed]
    
     if self.save 
       self.update_end_datetime
       
-      if is_start_datetime_changed or is_number_of_hours_changed
+      if is_start_datetime_changed or is_number_of_hours_changed or is_calendar_id_changed
         self.create_price_details
       end
     end
@@ -451,12 +497,12 @@ Solution: get the PriceRule on that is active on the creation time
   end
   
   def downpayment_amount 
-     self.discounted_total_price * (self.calendar.downpayment_percentage/100.to_f)
+    if self.is_downpayment_imposed?
+      return self.discounted_total_price * (self.calendar.downpayment_percentage/100.to_f)
+    else
+      return BigDecimal('0')
+    end
   end
-  
-  
-  
-  
   
   def confirm
     return if self.is_confirmed? 
@@ -495,8 +541,10 @@ Solution: get the PriceRule on that is active on the creation time
     self.save 
     
     
+    if self.remaining_amount != BigDecimal("0")
+      self.create_remaining_income
+    end
     
-    self.create_remaining_income
     # Income.create :income_source_type => self.class.to_s , 
     #               :income_source_id => self.id ,
     #               :amount => self.remaining_amount,
@@ -546,6 +594,11 @@ Solution: get the PriceRule on that is active on the creation time
   def execute_salvage
     if self.is_salvaged?
       self.errors.add(:generic_errors, "Booking sudah hangus. ")
+      return self 
+    end
+    
+    if self.is_deleted?
+      self.errors.add(:generic_errors,"Sudah di hapus")
       return self 
     end
     

@@ -39,7 +39,8 @@ describe Booking do
       :title => "#{@customer.name} booking",
       :start_datetime => @start_datetime, 
       :number_of_hours => @number_of_hours ,
-      :customer_id => @customer.id 
+      :customer_id => @customer.id ,
+      :is_downpayment_imposed => true
     })
     
     @price_detail = PriceDetail.first 

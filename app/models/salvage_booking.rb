@@ -7,8 +7,11 @@ class SalvageBooking < ActiveRecord::Base
   def self.create_object(params)
     new_object = self.new
     new_object.booking_id = params[:booking_id]
-    new_object.salvaged_datetime = params[:salvage_datetime]
+    new_object.salvaged_datetime = params[:salvaged_datetime]
     if new_object.save 
+      
+      # puts "\n\n\n"
+      # puts "**** The salvaged is created"
       new_object.create_accounting_entry
     end
     return new_object 
@@ -21,6 +24,7 @@ class SalvageBooking < ActiveRecord::Base
     unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account
     salvaged_downpayment_revenue_account = Account.salvaged_downpayment_revenue_account
     
+    # puts "create transaction_activity"
     
     ta = TransactionActivity.create_object({
       :transaction_datetime => self.salvaged_datetime,
@@ -28,6 +32,9 @@ class SalvageBooking < ActiveRecord::Base
       :transaction_source_id => self.id , 
       :transaction_source_type => self.class.to_s 
     })
+    
+    # puts "The errors: #{ta.errors.size}"
+    # ta.errors.messages.each {|x| puts x }
     
     
     
