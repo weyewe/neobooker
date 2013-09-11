@@ -61,7 +61,7 @@ class SalvageBooking < ActiveRecord::Base
     ta = TransactionActivity.where(
       :transaction_source_id => self.id , 
       :transaction_source_type => self.class.to_s
-    )
+    ).first 
     
     return if ta.nil? 
     
