@@ -311,18 +311,88 @@ Solution: get the PriceRule on that is active on the creation time
     self.incomes.where(:case => INCOME_CASE[:remaining_payment]).first 
   end
   
+  def remaining_amount 
+    self.discounted_total_price - self.downpayment_amount 
+  end
+  
+  def create_booking_income
+    Income.create_booking_confirmation_income(
+      :income_source_type => self.class.to_s , 
+      :income_source_id => self.id ,                       
+      :amount => self.downpayment_amount ,                 
+      :case => INCOME_CASE[:downpayment],                  
+      :transaction_datetime => self.confirmed_datetime,    
+      :code => self.confirmation_code   
+    )
+  end
+  
+  def create_remaining_income
+    Income.create_remaining_payment_income(
+      :income_source_type => self.class.to_s , 
+      :income_source_id => self.id ,
+      :amount => self.remaining_amount,
+      :case => INCOME_CASE[:remaining_payment],
+      :transaction_datetime =>  self.paid_datetime,
+      :code => self.remaining_payment_code
+    )        
+  end
+  
+  def update_downpayment_income 
+    dp_income = self.downpayment_income 
+    
+    if dp_income.nil?
+      if new_amount == BigDecimal('0')
+        return 
+      else
+        self.create_booking_income
+      end
+    else
+      
+      if amount == BigDecimal('0')
+        dp_income.delete_object
+      else
+        dp_income.update_amount( self.downpayment_amount )
+      end
+      
+    end
+    
+  end
+  
+  def update_remaining_income 
+    rm_income = self.remaining_income 
+    
+    if rm_income.nil?
+      if new_amount == BigDecimal('0')
+        return 
+      else
+        self.create_remaining_income
+      end
+    else
+      
+      if amount == BigDecimal('0')
+        rm_income.delete_object
+      else
+        rm_income.update_amount( self.remaining_amount )
+      end
+      
+    end
+    
+  end
+  
+  
+  
   def update_income
     if self.is_confirmed?  
-      downpayment = self.downpayment_income 
-      downpayment.amount  = self.downpayment_amount
-      downpayment.save 
+      self.update_downpayment_income  
     end
     
     
     if self.is_paid? 
-      remaining = self.remaining_income 
-      remaining.amount = self.remaining_amount
-      remaining.save
+      # self.update_remaining_income 
+      self.update_remaining_income
+      # remaining_income = self.remaining_income 
+      # remaining_income.amount = self.remaining_amount
+      # remaining_income.save
     end
     
   end
@@ -369,9 +439,8 @@ Solution: get the PriceRule on that is active on the creation time
      self.discounted_total_price * (self.calendar.downpayment_percentage/100.to_f)
   end
   
-  def remaining_amount 
-    self.discounted_total_price - self.downpayment_amount 
-  end
+  
+  
   
   
   def confirm
@@ -384,15 +453,14 @@ Solution: get the PriceRule on that is active on the creation time
     
     self.generate_code 
     
-    Income.create :income_source_type => self.class.to_s , 
-                  :income_source_id => self.id ,
-                  :amount => self.downpayment_amount ,
-                  :case => INCOME_CASE[:downpayment],
-                  :transaction_datetime => self.confirmed_datetime,
-                  :code => self.confirmation_code 
+    if self.downpayment_amount != BigDecimal('0')
+      self.create_booking_income  
+    end
     
-  
+     
   end
+  
+  
   
   def pay
     return if self.is_paid? 
@@ -407,12 +475,14 @@ Solution: get the PriceRule on that is active on the creation time
     self.save 
     
     
-    Income.create :income_source_type => self.class.to_s , 
-                  :income_source_id => self.id ,
-                  :amount => self.remaining_amount,
-                  :case => INCOME_CASE[:remaining_payment],
-                  :transaction_datetime =>  self.paid_datetime,
-                  :code => self.remaining_payment_code
+    
+    self.create_remaining_income
+    # Income.create :income_source_type => self.class.to_s , 
+    #               :income_source_id => self.id ,
+    #               :amount => self.remaining_amount,
+    #               :case => INCOME_CASE[:remaining_payment],
+    #               :transaction_datetime =>  self.paid_datetime,
+    #               :code => self.remaining_payment_code
     
   end
   

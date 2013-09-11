@@ -195,6 +195,11 @@ class Account < ActiveRecord::Base
       return self 
     end
     
+    if self.code.present? and self.code.length != 0
+      self.errors.add(:generic_errors, "Account ini digunakan oleh system")
+      return self 
+    end
+    
     if self.has_children_of_business_objects_account?
       self.errors.add(:generic_errors, "Tidak dapat menghapus account ini")
       return self 

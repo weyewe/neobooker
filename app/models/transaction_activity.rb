@@ -31,7 +31,7 @@ class TransactionActivity < ActiveRecord::Base
     return self 
   end
   
-  def delete_object( params ) 
+  def delete_object 
     if not self.transaction_source_id.nil? 
       self.errors.add(:generic_errors, "Can't modify the automated generated transaction")
       return self 
