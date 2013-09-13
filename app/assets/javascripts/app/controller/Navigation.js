@@ -36,7 +36,7 @@ Ext.define("AM.controller.Navigation", {
 			'	button[action=switchReport]' : {
 				click : me.switchScreen
 			},
-			'	button[action=switchMaster]' : {
+			'	button[action=switchAccounting]' : {
 				click : me.switchScreen
 			}
 			
@@ -46,27 +46,16 @@ Ext.define("AM.controller.Navigation", {
  
 
 	switchScreen: function(btn){
-		// console.log('the button is clicked');
-		// console.log("The constant: " + AM.view.Constants['GET_USERS_URL']);
-		// console.log(btn);
-		// console.log(btn.action);
-		// 
 		var me = this; 
 		
 		var activeItem = AM.view.Constants[ btn.action ] ;
 		// console.log("The activeItem : " + activeItem);
 		me.getContent().layout.setActiveItem( AM.view.Constants[ btn.action ] )
 		
-	 if(btn.action ==='switchCalendar'){
-		me.getViewport().fireEvent("loadCalendar");
-	}
-		
-		// if( btn.action === 'switchCalendar'){
-		// 	me.getContent().layout.setActiveItem(0)
-		// }else{
-		// 	console.log("It is the other thing");
-		// 	me.getContent().layout.setActiveItem(2 );
-		// }
+		if(btn.action ==='switchCalendar'){
+			me.getViewport().fireEvent("loadCalendar");
+		}
+ 
 	}
 	 
 	   

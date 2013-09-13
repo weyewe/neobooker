@@ -1,0 +1,13 @@
+Account.leaves => return all account that is a leaf
+
+Account.children_of => ?
+
+Account.each_with_level
+
+
+account.leaves  # all children that are leaves 
+account.descendants # all children 
+account.self_and_descendants
+account.level
+account.root
+account.children   # direct child 

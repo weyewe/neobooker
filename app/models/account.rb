@@ -17,6 +17,9 @@ class Account < ActiveRecord::Base
   
   
   
+  def self.active_accounts
+    self.where(:is_temporary_account => false )
+  end
   
   def all_base_fields_present? 
     name.present? and

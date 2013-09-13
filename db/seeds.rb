@@ -1,3 +1,5 @@
+Account.setup_business
+
 role = {
   :system => {
     :administrator => true

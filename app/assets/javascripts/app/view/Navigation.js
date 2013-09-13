@@ -33,13 +33,15 @@ Ext.define('AM.view.Navigation', {
 				toggleGroup: this.id+'-nav-views'
 			},
 			// {
-			// 	iconCls: 'tasks-mark-active',
-			// 	id: 'mark-active-btn',
+			// 	iconCls: 'tasks-mark-complete',
+			// 	id: 'accounting-btn',
 			// 	disabled: false,
-			// 	tooltip: 'Master Data',
+			// 	tooltip: 'Accounting',
 			// 	xtype: 'button',
-			// 	text : "Master Data",
-			// 	action : "switchReport"
+			// 	text : "Accounting",
+			// 	action : "switchAccounting",
+			// 	pressed : false,
+			// 	toggleGroup: this.id+'-nav-views'
 			// },
 			// {
 			// 	iconCls: 'tasks-mark-active',

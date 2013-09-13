@@ -247,15 +247,15 @@ Ext.define("AM.controller.Authorization", {
 		
 	},
 	
-	paymentFolder : {
-		text:'Payment', 
+	accountingFolder : {
+		text:'Accounting', 
     viewClass:'Will', 
     iconCls:'text-folder', 
     expanded: true,
 		children : [
 			{ 
-				text:'Invoice', 
-				viewClass:'AM.view.payment.Invoice', 
+				text:'Chart of Accounts', 
+				viewClass:'AM.view.accounting.ChartOfAccounts', 
 				leaf:true, 
 				iconCls:'text' ,
 				conditions : [
@@ -315,7 +315,7 @@ Ext.define("AM.controller.Authorization", {
 			this.managementFolder,
 			this.inventoryFolder,
 			this.reportFolder, 
-			// this.salesFolder, 
+			this.accountingFolder, 
 			// this.paymentFolder 
 		];
 		

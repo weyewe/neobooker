@@ -21,7 +21,7 @@ Ext.define('AM.view.Content', {
 			},
 			{
 				// html : "Second",
-				html : "second",
+				html : "accounting",
 				xtype : 'container'
 			},
 			{

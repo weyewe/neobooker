@@ -1,10 +1,19 @@
-todo
-1. migration of accounts (create temporary_asset_account), and (temporary_liability_account)
+Create the UI
 
-=> give the initial value of it. 
 
-=> if it is debit account, create corresponding temporary_liability_accont
-=> if it is credit account, create corresponding temporary_asset_account
+1. Display the CoA tree 
+	=> You can edit, create, or delete 
+	=> Display the first 2 depth 
+	
+	=> Create the initial migration ( call to the server )
+	
+	
+2. Create TransactionActivity (hbox) => middle == the transaction-activity_list
+																				right == the details 
+																				
+																				
+That's it. 
 
-# post migration, they will be the same. 
+
+3. execute_salvage_booking  << HTTP post from the UI  (indicate the salvage on the ListView)
 
