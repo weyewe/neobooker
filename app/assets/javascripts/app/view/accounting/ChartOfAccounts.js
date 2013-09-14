@@ -49,6 +49,50 @@ Ext.define('AM.view.accounting.ChartOfAccounts', {
     initComponent: function() {
         var me = this;
             
+				// objective 1 : to select account_case, don't call the server 
+				// 
+				// var storeConfig = {
+				//     type: 'array',
+				//     fields: [ 'company', 'price' ],
+				//     data: [
+				//         ['3m Co',71.72],
+				//         ['Alcoa Inc',29.01],
+				//         ['Boeing Co.',75.43]
+				//     ]
+				// };
+				// 
+				// 
+				
+
+				// var remoteJsonStoreCustomer = Ext.create(Ext.data.JsonStore, {
+				// 	storeId : 'customer_search',
+				// 	fields	: [
+				// 	 				{
+				// 				name : 'customer_name',
+				// 				mapping : "name"
+				// 			},
+				// 			{
+				// 				name : 'customer_bb_pin',
+				// 				mapping : 'bb_pin'
+				// 			},
+				// 			{
+				// 				name : 'customer_id',
+				// 				mapping : 'id'
+				// 			}
+				// 	],
+				// 	proxy  	: {
+				// 		type : 'ajax',
+				// 		url : 'api/search_customers',
+				// 		reader : {
+				// 			type : 'json',
+				// 			root : 'records', 
+				// 			totalProperty  : 'total'
+				// 		}
+				// 	},
+				// 	autoLoad : false 
+				// });
+				
+				
         /**
          * This Tree Panel's cell editing plugin
          * @property cellEditingPlugin

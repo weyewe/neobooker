@@ -86,6 +86,7 @@ Ext.define('AM.controller.Accounts', {
 		if( record ) {
 			var view = Ext.widget('accountform');
 			view.down('form').loadRecord(record);
+			view.setComboBoxData(record); 
 		}
 
     
@@ -103,6 +104,11 @@ Ext.define('AM.controller.Accounts', {
 		
 		if( record ){
 			record.set( values );
+			
+			form.query('checkbox').forEach(function(checkbox){
+				record.set( checkbox['name']  ,checkbox['checked'] ) ;
+			});
+			
 			 
 			form.setLoading(true);
 			record.save({
@@ -131,6 +137,11 @@ Ext.define('AM.controller.Accounts', {
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
 			var newObject = new AM.model.Account( values ) ;
+			
+			form.query('checkbox').forEach(function(checkbox){
+				newObject.set( checkbox['name']  ,checkbox['checked'] ) ;
+			});
+			
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing

@@ -113,7 +113,7 @@ class Api::AccountsController < Api::BaseApiController
   end
   
   
-  def search
+  def search_ledger
     search_params = params[:query]
     selected_id = params[:selected_id]
     if params[:selected_id].nil?  or params[:selected_id].length == 0 
@@ -124,22 +124,29 @@ class Api::AccountsController < Api::BaseApiController
     # on PostGre SQL, it is ignoring lower case or upper case 
     
     if  selected_id.nil?
-      @objects = Account.where{ (name =~ query)   & 
-                                (is_deleted.eq false )
+      @objects = Account.active_accounts.where{ 
+                          (name =~ query)  & 
+                          (account_case.eq ACCOUNT_CASE[:ledger])
+        
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+                        
+      @total =  Account.active_accounts.where{ (name =~ query)                   & 
+                        (account_case.eq ACCOUNT_CASE[:ledger])  }.count
     else
-      @objects = Account.where{ (id.eq selected_id)  & 
-                                (is_deleted.eq false )
+      @objects = Account.active_accounts.where{ (id.eq selected_id)  & 
+                                  (account_case.eq ACCOUNT_CASE[:ledger])
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+      @total =  Account.active_accounts.where{ (id.eq selected_id)                   & 
+                        (account_case.eq ACCOUNT_CASE[:ledger])  }.count
     end
     
     
-    render :json => { :records => @objects , :total => @objects.count, :success => true }
+    # render :json => { :records => @objects , :total => @objects.count, :success => true }
   end
 end

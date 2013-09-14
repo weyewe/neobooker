@@ -35,6 +35,7 @@ json.accounts @objects do |object|
 	end
 	
 	json.is_contra_account object.is_contra_account
+	json.original_account_id object.original_account_id
 	
 	if object.is_contra_account  == true 
 		json.contra_account_text  "Contra Account"
@@ -43,5 +44,6 @@ json.accounts @objects do |object|
 	end
 	
 
+	
 	
 end

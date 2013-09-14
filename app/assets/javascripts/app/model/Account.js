@@ -16,7 +16,8 @@ Ext.define('AM.model.Account', {
 				{name : 'amount' , type : 'string'},
 				{name : 'normal_balance_text' , type : 'string'},
 				{name : 'contra_account_text' , type : 'string'},
-				{ name: 'is_contra_account', type:'boolean' }
+				{ name: 'is_contra_account', type:'boolean' },
+					{ name: 'original_account_id', type:'int' }
     ],
 
   	idProperty: 'id' ,proxy: {
