@@ -33,6 +33,7 @@ class Api::AccountsController < Api::BaseApiController
   def show
     @object = Account.find_by_id params[:id]
     
+    @parent = @object
     @objects = @object.children
     @total = @objects.count 
     
@@ -40,13 +41,17 @@ class Api::AccountsController < Api::BaseApiController
   end
 
   def create
-    # @object = Account.new(params[:account])
  
-    @object = Account.create_object( params[:account] )
+      # @object = Account.new(params[:account])
+ 
+    puts "\n\n============>"
+    
+    puts "The name is : #{params[:account][:name]}\n\n"
+    @object = Account.create_object( params[:account] , false  )
     if @object.errors.size == 0 
       render :json => { :success => true, 
                         :accounts => [@object] , 
-                        :total => Account.active_objects.count }  
+                        :total => Account.active_accounts.count }  
     else
       msg = {
         :success => false, 
@@ -65,18 +70,23 @@ class Api::AccountsController < Api::BaseApiController
   def update
     @object = Account.find(params[:id])
     
-    @object.update_object( params[:account] )
+    
+    # puts "\n\n============>"
+    
+    # puts "The name is : #{params[:account][:name]}\n\n"
+    
+    
+    @object.update_object( params[:account]  , false )
+    
     if @object.errors.size == 0 
       render :json => { :success => true,   
                         :accounts => [@object],
-                        :total => Account.active_objects.count  } 
+                        :total => Account.active_accounts.count  } 
     else
       msg = {
         :success => false, 
         :message => {
-          :errors => {
-            :name => "Nama tidak boleh kosong"
-          }
+          :errors => extjs_error_format( @object.errors ) 
         }
       }
       
@@ -88,8 +98,8 @@ class Api::AccountsController < Api::BaseApiController
     @object = Account.find(params[:id])
     @object.delete_object 
 
-    if ( not @object.persisted?  or @object.is_deleted ) and @object.errors.size == 0 
-      render :json => { :success => true, :total => Account.active_objects.count }  
+    if (not @object.persisted?) 
+      render :json => { :success => true, :total => Account.active_accounts.count }  
     else
       msg = {
         :success => false, 

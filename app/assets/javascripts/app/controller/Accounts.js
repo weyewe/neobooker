@@ -23,7 +23,7 @@ Ext.define('AM.controller.Accounts', {
         selectionchange: this.selectionChange,
 				afterrender : this.loadObjectList,
       },
-      'customerform button[action=save]': {
+      'accountform button[action=save]': {
         click: this.updateObject
       },
       'coalist button[action=addObject]': {
@@ -45,34 +45,50 @@ Ext.define('AM.controller.Accounts', {
 	liveSearch : function(grid, newValue, oldValue, options){
 		var me = this;
 
-		me.getCustomersStore().getProxy().extraParams = {
+		me.getAccountsStore().getProxy().extraParams = {
 		    livesearch: newValue
 		};
 	 
-		me.getCustomersStore().load();
+		me.getAccountsStore().load();
 	},
  
 
 	loadObjectList : function(me){
-		console.log("Gonna load object list");
+		// console.log("Gonna load object list");
 		me.getStore().load();
 		
-		console.log("Done loading object list");
+		// console.log("Done loading object list");
 	},
 
   addObject: function() {
-    var view = Ext.widget('customerform');
-    view.show();
+		
+		var sm = this.getList().getSelectionModel();
+		var sel = sm.getSelection();
+ 
+		var record = sel[0] ;  
+		
+		if( record){
+			var view = Ext.widget('accountform');
+			view.show();
+			view.setParentData(record);
+		}
   },
 
   editObject: function() {
-		var me = this; 
-    var record = this.getList().getSelectedObject();
-    var view = Ext.widget('customerform');
-
+		var me = this;  
 		
+    
+		var sm = me.getList().getSelectionModel();
+		var sel = sm.getSelection();
+ 
+		var record = sel[0] ;  
+		
+		if( record ) {
+			var view = Ext.widget('accountform');
+			view.down('form').loadRecord(record);
+		}
 
-    view.down('form').loadRecord(record);
+    
   },
 
   updateObject: function(button) {
@@ -80,7 +96,7 @@ Ext.define('AM.controller.Accounts', {
     var win = button.up('window');
     var form = win.down('form');
 
-    var store = this.getCustomersStore();
+    var store = this.getAccountsStore();
     var record = form.getRecord();
     var values = form.getValues();
 
@@ -114,7 +130,7 @@ Ext.define('AM.controller.Accounts', {
 		}else{
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
-			var newObject = new AM.model.Customer( values ) ;
+			var newObject = new AM.model.Account( values ) ;
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing
@@ -140,14 +156,20 @@ Ext.define('AM.controller.Accounts', {
   },
 
   deleteObject: function() {
-    var record = this.getList().getSelectedObject();
+    // var record = this.getList().getSelectedObject();
+		var sm = this.getList().getSelectionModel();
+		var sel = sm.getSelection();
+ 
+		var record = sel[0] ;
 
     if (record) {
-      var store = this.getCustomersStore();
-      store.remove(record);
-      store.sync();
+      var store = this.getAccountsStore();
+			record.remove(true);
+			// store.sync();
+      // store.remove(record);
+      // store.sync();
 // to do refresh programmatically
-			this.getList().query('pagingtoolbar')[0].doRefresh();
+			// this.getList().query('pagingtoolbar')[0].doRefresh();
     }
 
   },
@@ -155,8 +177,15 @@ Ext.define('AM.controller.Accounts', {
   selectionChange: function(selectionModel, selections) {
     var grid = this.getList();
 
-    if (selections.length > 0) {
-      grid.enableRecordButtons();
+		// console.log("on selection change.. show the record buttons");
+		var sm = this.getList().getSelectionModel();
+		var sel = sm.getSelection();
+ 
+		var record = sel[0] ;
+		
+		
+    if ( record ) {
+      grid.enableRecordButtons(record);
     } else {
       grid.disableRecordButtons();
     }

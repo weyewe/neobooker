@@ -13,6 +13,8 @@ class Account < ActiveRecord::Base
   validate :parent_id_present_for_non_base_account
   validate :contra_account_must_be_ledger_account 
   validate :original_account_id_must_present_in_contra_account
+  validate :original_account_id_must_be_ledger_account
+  validate :original_account_must_have_the_same_direct_ancestor
   validate :valid_account_case 
   
   
@@ -56,6 +58,33 @@ class Account < ActiveRecord::Base
     
     if is_contra_account? and not original_account_id.present? 
       self.errors.add(:original_account_id, "Harus ada account asli untuk membuat contra account")
+      return self 
+    end
+  end
+  
+  
+  def original_account_must_have_the_same_direct_ancestor
+    return if not all_base_fields_present?
+    parent_account = self.parent 
+    return if parent_account.nil?
+    return if original_account.nil?  
+    
+    if is_contra_account? and not parent.children.map{|x| x.id}.include?( original_account.id )
+      self.errors.add(:original_account_id, "Harus memiliki parent account yang sama: #{parent_account.name}")
+      return self 
+    end
+  end
+  
+  def original_account
+    Account.find_by_id original_account_id
+  end
+  
+  def original_account_id_must_be_ledger_account
+    return if not all_base_fields_present?
+     
+    if is_contra_account? and not  original_account.nil? and 
+        original_account.account_case != ACCOUNT_CASE[:ledger]
+      self.errors.add(:original_account_id, "Akun normal harus ledger account")
       return self 
     end
   end
@@ -155,10 +184,28 @@ class Account < ActiveRecord::Base
   end
   
   def update_object( params, is_include_code ) 
+    # puts "=======> Inside update_object\n"*5
     if self.is_base_account? 
       self.errors.add(:generic_errors, "Base Account tidak dapat di update")
+      # puts "tidak bisa update base"
       return self 
     end
+    
+    if self.transaction_activity_entries.count != 0 and 
+      (
+        self.is_contra_account != params[:is_contra_account] or 
+        self.original_account_id != params[:original_account_id ] or 
+        self.account_case != params[:account_case] or
+        self.parent_id != params[:parent_id]
+      )
+      
+      self.errors.add(:generic_errors, "Akun sudah memiliki transaksi")
+      return self  
+    end
+    
+    
+    # puts "inside update_object"
+    # puts "the name : #{params[:name]}"
     
     self.name                      = params[:name]
     self.parent_id                 = params[:parent_id]
@@ -174,6 +221,9 @@ class Account < ActiveRecord::Base
     if self.save
       self.update_normal_balance
     end
+    
+    # puts "Total errors: #{self.errors.size}"
+    
     return self
   end
   
@@ -280,7 +330,7 @@ class Account < ActiveRecord::Base
   def self.create_equity
     new_object = self.new
     new_object.name = "Equity"
-    new_object.normal_balance = NORMAL_BALANCE[:debit]
+    new_object.normal_balance = NORMAL_BALANCE[:credit]
     new_object.account_case = ACCOUNT_CASE[:group]
     new_object.classification = ACCOUNT_CLASSIFICATION[:equity]
     new_object.is_base_account = true 

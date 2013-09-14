@@ -11,10 +11,10 @@ Ext.define('AM.store.Accounts', {
     // }
 
 		root: {
-        expanded: true,
-        // id: -1,
-        name: 'Accounts'
-    }
+		        expanded: true,
+		        // id: -1,
+		        name: 'Accounts'
+		    }
 });
 
 // 

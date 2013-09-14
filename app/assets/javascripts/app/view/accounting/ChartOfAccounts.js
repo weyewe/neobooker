@@ -14,34 +14,35 @@ Ext.define('AM.view.accounting.ChartOfAccounts', {
     // title: 'Chart of Accounts aa',
 		alias : 'widget.coalist',
     store: 'Accounts',
-    hideHeaders: true,
+    // hideHeaders: true,
+// header : false 
 
-    dockedItems: [
-        {
-            xtype: 'toolbar',
-            dock: 'top',
-            items: [
-                {
-                    iconCls: 'tasks-new-list',
-                    tooltip: 'New List'
-                },
-                {
-                    iconCls: 'tasks-delete-list',
-                    id: 'delete-list-btn',
-                    tooltip: 'Delete List'
-                },
-                {
-                    iconCls: 'tasks-new-folder',
-                    tooltip: 'New Folder'
-                },
-                {
-                    iconCls: 'tasks-delete-folder',
-                    id: 'delete-folder-btn',
-                    tooltip: 'Delete Folder'
-                }
-            ]
-        }
-    ],
+    // dockedItems: [
+    //     {
+    //         xtype: 'toolbar',
+    //         dock: 'top',
+    //         items: [
+    //             {
+    //                 iconCls: 'tasks-new-list',
+    //                 tooltip: 'New List'
+    //             },
+    //             {
+    //                 iconCls: 'tasks-delete-list',
+    //                 id: 'delete-list-btn',
+    //                 tooltip: 'Delete List'
+    //             },
+    //             {
+    //                 iconCls: 'tasks-new-folder',
+    //                 tooltip: 'New Folder'
+    //             },
+    //             {
+    //                 iconCls: 'tasks-delete-folder',
+    //                 id: 'delete-folder-btn',
+    //                 tooltip: 'Delete Folder'
+    //             }
+    //         ]
+    //     }
+    // ],
 
    
 
@@ -57,17 +58,59 @@ Ext.define('AM.view.accounting.ChartOfAccounts', {
         me.columns = [
             {
                 xtype: 'treecolumn',
+								header : "Name",
                 dataIndex: 'name',
-                flex: 1,
+                flex: 4,
                 editor: {
                     xtype: 'textfield',
                     selectOnFocus: true,
                     allowOnlyWhitespace: false
                 },
                 renderer: Ext.bind(me.renderName, me)
-            } 
+            } ,
+						{
+                text: 'Amount',
+								header: 'Amount',
+                flex: 1,
+                dataIndex: 'amount' 
+            },
+						{
+                text: 'Normal Balance',
+								header: 'Normal Balance',
+                flex: 1,
+                dataIndex: 'normal_balance_text' 
+            },
+						{
+                text: 'Contra Account',
+								header: 'Contra Account',
+                flex: 1,
+                dataIndex: 'contra_account_text' 
+            }
         ];
         
+				me.addObjectButton = new Ext.Button({
+					text: 'Add Account',
+					action: 'addObject',
+					disabled: true
+				});
+
+				me.editObjectButton = new Ext.Button({
+					text: 'Edit Account',
+					action: 'editObject',
+					disabled: true
+				});
+
+				me.deleteObjectButton = new Ext.Button({
+					text: 'Delete Account',
+					action: 'deleteObject',
+					disabled: true
+				});
+
+			 
+				
+				me.tbar = [me.addObjectButton, me.editObjectButton, me.deleteObjectButton  ];
+				
+				
         me.callParent(arguments);
 
         // me.addEvents(
@@ -175,7 +218,30 @@ Ext.define('AM.view.accounting.ChartOfAccounts', {
     refreshView: function() {
         // refresh the data in the view.  This will trigger the column renderers to run, making sure the task counts are up to date.
         this.getView().refresh();
-    }
+    },
+
+		enableRecordButtons: function(record) {
+			// console.log("The value: ");
+			// console.log( AM.view.Constants.account_case.group);
+			
+			if( record.get('account_case') === AM.view.Constants.account_case.group){
+				this.addObjectButton.enable();
+			}else{
+				this.addObjectButton.disable();
+			}
+			
+			
+			this.editObjectButton.enable();
+			this.deleteObjectButton.enable(); 
+		},
+		
+		disableRecordButtons: function() {
+			this.addObjectButton.disable();
+			this.editObjectButton.disable();
+			this.deleteObjectButton.disable();
+		}
+
+		
 
 
 

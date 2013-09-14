@@ -3,11 +3,20 @@ Ext.define('AM.model.Account', {
 
     fields: [
         { name: 'id', type: 'int' },
+
+				{ name: 'parent_id', type: 'int' },
+				{ name: 'parent_name', type: 'string' },
         { name: 'name' },
         // if we are using local storage, we need to persist the index field so the ordering of tree nodes will be preserved
         // {name: 'index', type: 'int', defaultValue: null, persist: !!SimpleTasksSettings.useLocalStorage}
 				// {name: 'index', type: 'int', defaultValue: null, persist: false },
-				{name : 'leaf' , type : 'boolean'}
+				{name : 'account_case' , type : 'int'},
+				{name : 'account_case_text' , type : 'string'},
+				
+				{name : 'amount' , type : 'string'},
+				{name : 'normal_balance_text' , type : 'string'},
+				{name : 'contra_account_text' , type : 'string'},
+				{ name: 'is_contra_account', type:'boolean' }
     ],
 
   	idProperty: 'id' ,proxy: {
@@ -23,7 +32,7 @@ Ext.define('AM.model.Account', {
 
 			writer: {
 				getRecordData: function(record) {
-					return { user : record.data };
+					return { account : record.data };
 				}
 			}
 		}
