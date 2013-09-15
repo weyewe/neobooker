@@ -15,7 +15,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: acn_booker_development
+  database: neobooker_development
   pool: 5
   username: weyewe
 
@@ -40,13 +40,13 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: acn_booker_test
+  database: neobooker_test
   pool: 5
   username: weyewe
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: acn_booker_production
+  database: neobooker_production
   pool: 5
   username: weyewe
