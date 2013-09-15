@@ -3,18 +3,22 @@ class TransactionActivity < ActiveRecord::Base
   validates_presence_of :transaction_datetime 
   
   
-  def self.create_object( params ) 
+  def self.create_object( params, is_automated_transaction ) 
     new_object = self.new 
     new_object.transaction_datetime = params[:transaction_datetime]
     new_object.description = params[:description]
-    new_object.transaction_source_id = params[:transaction_source_id]
-    new_object.transaction_source_type = params[:transaction_source_type]
+    
+    if is_automated_transaction
+      new_object.transaction_source_id = params[:transaction_source_id]
+      new_object.transaction_source_type = params[:transaction_source_type]
+    end
+    
     new_object.save 
     
     return new_object
   end
   
-  def update_object( params ) 
+  def update_object( params , is_automated_transaction ) 
     if not self.transaction_source_id.nil? 
       self.errors.add(:generic_errors, "Can't modify the automated generated transaction")
       return self 
@@ -27,6 +31,12 @@ class TransactionActivity < ActiveRecord::Base
     
     self.transaction_datetime = params[:transaction_datetime]
     self.description = params[:description]
+    
+    if is_automated_transaction
+      self.transaction_source_id = params[:transaction_source_id]
+      self.transaction_source_type = params[:transaction_source_type]
+    end
+    
     self.save
     return self 
   end

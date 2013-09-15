@@ -102,74 +102,28 @@ class Api::BaseApiController < ApplicationController
     return datetime.utc
   end
   
-  def extract_date( date ) 
-    if date.nil? or date.length == 0 
-      return nil 
-    end
-    
-    date_array = date.split("/")
-    
-    year  = 0
-    month = 0 
-    day   = 0
-    if date_array.nil? || date_array.length == 0  
-    else
-      year  = date_array[2].to_i
-      month = date_array[1].to_i 
-      day   = date_array[0].to_i 
-    end
-    
-    new_date = Date.new( year, month, day)
-    return new_date 
+  def parse_date( date_string) 
+    date_array = date_string.split('-').map{|x| x.to_i}
+     
+     
+   
+    datetime = DateTime.new( date_array[0], 
+                              date_array[1], 
+                              date_array[2], 
+                               0, 
+                               0, 
+                               0,
+                  Rational( UTC_OFFSET , 24) )
+                  
+                  
+    return datetime.utc
   end
   
-  def extract_datetime( datetime )
-    if datetime.nil? or datetime.length ==0 
-      return  nil 
-    end
-    
-    date_array = datetime.split(" ").first 
-    # puts "The date_array : #{date_array}"
-    date_array = date_array.split('/')
-    
-    time_array =  datetime.split(" ").last 
-    # puts "The time_array : #{time_array}"
-    time_array = time_array.split(':')
-    
-    
-    
-    year  = 0
-    month = 0 
-    day   = 0
-    if date_array.nil? || date_array.length == 0  
-    else
-      year  = date_array[2].to_i
-      month = date_array[1].to_i 
-      day   = date_array[0].to_i 
-    end
- 
-    hour   = 0 
-    minute = 0 
-    second = 0 
-    if time_array.nil? || time_array.length == 0  
-    else
-      hour    = time_array[0].to_i
-      minute  = time_array[1].to_i
-      second  = time_array[2].to_i
-    end        
-              
-     
-     
-    new_datetime = DateTime.new( year, 
-                  month, 
-                  day, 
-                  hour, 
-                  minute, 
-                  second, 
-                  Rational( UTC_OFFSET , 24) )
-              
-    return new_datetime.getutc 
-  end
+  
+=begin
+  To be seen by the user 
+=end
+  
   
   # port from application_helper
   def format_datetime_friendly( datetime ) 
@@ -208,10 +162,47 @@ class Api::BaseApiController < ApplicationController
             "#{hour}:#{minute}:#{second}"
   end
   
+  def format_date_friendly( datetime ) 
+    return nil if datetime.nil? 
+     
+    
+    a = datetime.in_time_zone("Jakarta")
+    day = a.day
+    month = a.month
+    year = a.year
+    hour = a.hour
+    minute = a.min
+    second = a.sec 
+    
+    if day.to_s.length == 1 
+      day = "0#{day}"
+    end
+    
+    if month.to_s.length == 1 
+      month = "0#{month}"
+    end
+    
+    if hour.to_s.length == 1
+      hour  = "0#{hour}"
+    end
+    
+    if minute.to_s.length == 1 
+      minute = "0#{minute}"
+    end
+    
+    if second.to_s.length == 1 
+      second = "0#{second}"
+    end
+    
+    return "#{year}-#{month}-#{day}" 
+  end
+  
+  
+  
   def ensure_authorized
-    puts "===========>Inside ensure_authorized\n"
-    puts "The params: "
-    puts "#{params}"
+    # puts "===========>Inside ensure_authorized\n"
+    # puts "The params: "
+    # puts "#{params}"
     current_controller_name = params[:controller].gsub("api/", "")
     
     if not current_user.has_role?(current_controller_name.to_sym, params[:action])

@@ -65,9 +65,7 @@ class Api::CustomersController < Api::BaseApiController
       msg = {
         :success => false, 
         :message => {
-          :errors => {
-            :name => "Nama tidak boleh kosong"
-          }
+          :errors => extjs_error_format( @object.errors )  
         }
       }
       

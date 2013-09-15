@@ -9,6 +9,7 @@ class TransactionActivityEntry < ActiveRecord::Base
   validate :transaction_activity_must_not_be_confirmed 
   
   
+  
   validates_presence_of :account_id, :entry_case, :amount, :transaction_activity_id 
   
   def all_fields_present?
@@ -22,7 +23,11 @@ class TransactionActivityEntry < ActiveRecord::Base
     return if not self.all_fields_present? 
     
     begin
-      Account.find account_id 
+      account = Account.find account_id 
+      if account.account_case != ACCOUNT_CASE[:ledger]
+        self.errors.add(:account_id , "Harus berupa ledger account")
+        return self 
+      end
     rescue
       self.errors.add(:account_id, "Harus memilih account") 
       return self 
@@ -110,7 +115,7 @@ class TransactionActivityEntry < ActiveRecord::Base
     return self 
   end
   
-  def delete_object( params ) 
+  def delete_object
     if self.transaction_activity.is_confirmed?
       self.errors.add(:generic_errors, "Transaction sudah di konfirmasi")
       return self 

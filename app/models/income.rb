@@ -39,7 +39,7 @@ class Income < ActiveRecord::Base
       :description => "Booking Downpayment" ,
       :transaction_source_id => income.id , 
       :transaction_source_type => income.class.to_s 
-    })
+    }, true )
      
     transaction_1 = ta.transaction_activity_entries.where(
       :account_id => unearned_revenue_booking_downpayment_account.id 
@@ -104,7 +104,7 @@ class Income < ActiveRecord::Base
       :description => "Field Usage Payment" ,
       :transaction_source_id => income.id , 
       :transaction_source_type => income.class.to_s 
-    })
+    }, true )
     
     transaction_1 = ta.transaction_activity_entries.where(
       :account_id => unearned_revenue_booking_downpayment_account.id 

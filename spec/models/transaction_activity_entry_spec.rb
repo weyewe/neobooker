@@ -11,7 +11,7 @@ describe TransactionActivityEntry do
     @transaction_activity = TransactionActivity.create_object({
       :transaction_datetime => @transaction_datetime ,
       :description => @msg 
-    })
+    }, true )
     @cash_drawer_account = Account.cash_drawer_account
     @field_usage_revenue_account = Account.field_usage_revenue_account
     

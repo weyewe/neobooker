@@ -31,7 +31,7 @@ class SalvageBooking < ActiveRecord::Base
       :description => "Salvage Downpayment " ,
       :transaction_source_id => self.id , 
       :transaction_source_type => self.class.to_s 
-    })
+    }, true )
     
     # puts "The errors: #{ta.errors.size}"
     # ta.errors.messages.each {|x| puts x }

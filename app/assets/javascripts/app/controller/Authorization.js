@@ -266,8 +266,8 @@ Ext.define("AM.controller.Authorization", {
 				]
 			},
 			{ 
-				text:'Pembayaran', 
-				viewClass:'AM.view.payment.Payment', 
+				text:'Posting', 
+				viewClass:'AM.view.accounting.TransactionActivity', 
 				leaf:true, 
 				iconCls:'text' ,
 				conditions : [

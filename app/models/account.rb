@@ -684,10 +684,13 @@ class Account < ActiveRecord::Base
       else
         
         transaction_activity = TransactionActivity.create_object(
-          :transaction_datetime => DateTime.now,
-          :description => "Migrasi Akun #{self.name}",
-          :transaction_source_id => self.id ,
-          :transaction_source_type => self.class.to_s
+          {
+            :transaction_datetime => DateTime.now,
+            :description => "Migrasi Akun #{self.name}",
+            :transaction_source_id => self.id ,
+            :transaction_source_type => self.class.to_s
+          }, true 
+          
         )
          
       end 

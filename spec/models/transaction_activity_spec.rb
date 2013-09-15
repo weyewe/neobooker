@@ -8,12 +8,12 @@ describe TransactionActivity do
   
   context "create transaction activity" do
     before(:each) do
-      @transaction_datetime =DateTime.now 
+      @transaction_datetime = DateTime.now 
       @msg = "Pembayaran hutang bulanan"
       @object = TransactionActivity.create_object({
         :transaction_datetime => @transaction_datetime ,
         :description => @msg 
-      })
+      }, true )
     end
     
     it 'should create valid transaction activity object' do

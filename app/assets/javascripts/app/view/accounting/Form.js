@@ -181,6 +181,12 @@ Ext.define('AM.view.account.Form', {
     this.callParent(arguments);
   } ,
 
+
+	setParentData: function( record ){
+		this.down('form').getForm().findField('parent_name').setValue(record.get('name')); 
+		this.down('form').getForm().findField('parent_id').setValue(record.get('id')); 
+	},
+	
  
 	setSelectedOriginalAccountId: function( original_account_id ){
 		// console.log("inside set selected original account id ");
@@ -198,10 +204,7 @@ Ext.define('AM.view.account.Form', {
 		});
 	},
 	
-	setParentData: function( record ){
-		this.down('form').getForm().findField('parent_name').setValue(record.get('name')); 
-		this.down('form').getForm().findField('parent_id').setValue(record.get('id')); 
-	},
+	
 	
 	setComboBoxData : function( record){
 		var me = this; 

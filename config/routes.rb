@@ -37,12 +37,13 @@ PortCalendar::Application.routes.draw do
      
      resources :incomes 
      
-     
      resources :events 
      resources :price_rules 
      
      
      resources :accounts
+     resources :transaction_activities
+     resources :transaction_activity_entries 
    end
 end
 
