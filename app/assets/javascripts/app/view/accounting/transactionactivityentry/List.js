@@ -61,13 +61,12 @@ Ext.define('AM.view.accounting.transactionactivityentry.List' ,{
 	},
 
 	enableRecordButtons: function() {
-		this.addObjectButton.enable();
+		// this.addObjectButton.enable();
 		this.editObjectButton.enable();
 		this.deleteObjectButton.enable();
 	},
 
 	disableRecordButtons: function() {
-		this.addObjectButton.disable();
 		this.editObjectButton.disable();
 		this.deleteObjectButton.disable();
 	},

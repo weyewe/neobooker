@@ -8,6 +8,7 @@ json.transaction_activities @objects do |object|
 	json.description 								object.description
 	json.transaction_datetime 			format_date_friendly( object.transaction_datetime ) 
 	json.amount 										object.amount 
+	json.is_confirmed 										object.is_confirmed 
 
 	
 	

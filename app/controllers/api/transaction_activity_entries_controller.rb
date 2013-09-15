@@ -30,7 +30,7 @@ class Api::TransactionActivityEntriesController < Api::BaseApiController
 
   def update
     @object = TransactionActivityEntry.find_by_id params[:id] 
-    @parent = @object.calendar 
+    @parent = @object.transaction_activity 
     
     
     params[:transaction_activity_entry][:transaction_activity_id] = @parent.id 

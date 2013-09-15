@@ -7,6 +7,8 @@ Ext.define('AM.controller.TransactionActivities', {
   views: [
     'accounting.transactionactivity.List',
     'accounting.transactionactivity.Form',
+		'accounting.transactionactivity.ConfirmationForm',
+		'Viewport'
 		// 'accounting.transactionactivityentry.List'
   ],
 
@@ -14,6 +16,10 @@ Ext.define('AM.controller.TransactionActivities', {
 		{
 			ref: 'list',
 			selector: 'transactionactivitylist'
+		},
+		{
+			ref: 'viewport',
+			selector: 'vp'
 		},
 		{
 			ref : 'childList',
@@ -48,7 +54,21 @@ Ext.define('AM.controller.TransactionActivities', {
 			}	,
 			'transactionactivitylist textfield[name=searchField]': {
 				change: this.liveSearch
-			}
+			},
+			
+			
+			// confirming the transaction 
+			'transactionactivitylist button[action=confirmObject]': {
+        click: this.confirmObject
+			},
+			
+			'transactionactivitylist button[action=unconfirmObject]': {
+        click: this.executeUnConfirm
+			},
+			
+			'confirmtransactionactivityform button[action=confirm]' : {
+				click : this.executeConfirm
+			},
 		
     });
   },
@@ -149,13 +169,15 @@ Ext.define('AM.controller.TransactionActivities', {
 
   deleteObject: function() {
     var record = this.getList().getSelectedObject();
-
+	 
     if (record) {
       var store = this.getTransactionActivitiesStore();
 			store.remove(record);
 			store.sync( );
  
 			this.getList().query('pagingtoolbar')[0].doRefresh();
+			this.getList().fireEvent("deleted");
+			
     }
 
   },
@@ -173,32 +195,146 @@ Ext.define('AM.controller.TransactionActivities', {
 		
 
     if (selections.length > 0) {
-      grid.enableRecordButtons();
+      grid.enableRecordButtons( record );
     } else {
       grid.disableRecordButtons();
     }
   },
 
+	
 	updateChildGrid: function(record){
 		var childGrid = this.getChildList();
-		// childGrid.setTitle("Purchase Order: " + record.get('code'));
-		// childGrid.setObjectTitle( record ) ;
 		childGrid.getStore().load({
 			params : {
 				transaction_activity_id : record.get('id')
 			},
 			callback : function(records, options, success){
 				
-				// var totalObject  = records.length;
-				// if( totalObject ===  0 ){
-				// 	childGrid.enableRecordButtons(); 
-				// }else{
-				// 	childGrid.enableRecordButtons(); 
-				// }
+				childGrid.addObjectButton.enable();
 			}
 		});
+	},
+	
+	
+	confirmObject : function(){
+		var view = Ext.widget('confirmtransactionactivityform');
+		var record = this.getList().getSelectedObject();
+		view.setParentData( record );
+    view.show();
+	},
+	
+	
+	 
+	
+	executeConfirm: function(button){
+		var win = button.up('window');
+    var form = win.down('form');
+
+		var me  = this;
+		var record = this.getList().getSelectedObject();
+		var list = this.getList();
+		me.getViewport().setLoading( true ) ;
 		
-	}
+		if(!record){return;}
+		
+		Ext.Ajax.request({
+		    url: 'api/confirm_transaction_activity',
+		    method: 'PUT',
+		    params: {
+					id : record.get('id')
+		    },
+		    jsonData: {},
+		    success: function(result, request ) {
+						me.getViewport().setLoading( false );
+						list.getStore().load({
+							callback : function(records, options, success){
+								// this => refers to a store 
+								record = this.getById(record.get('id'));
+								// record = records.getById( record.get('id'))
+								list.fireEvent('confirmed', record);
+							}
+						});
+						win.close();
+						
+		    },
+		    // failure: function(result, request ) {
+		    // 						me.getViewport().setLoading( false ) ;
+		    // 						
+		    // 						
+		    // }
+				failure : function(record,op ){
+					list.setLoading(false);
+					
+					var message  = op.request.scope.reader.jsonData["message"];
+					var errors = message['errors'];
+					
+					if( errors["generic_errors"] ){
+						Ext.MessageBox.show({
+						           title: 'FAIL',
+						           msg: errors["generic_errors"],
+						           buttons: Ext.MessageBox.OK, 
+						           icon: Ext.MessageBox.ERROR
+						       });
+					}
+					
+				}
+		});
+	},
+	
+	executeUnConfirm: function(button){
+		// var win = button.up('window');
+    // var form = win.down('form');
+
+		var me  = this;
+		var record = this.getList().getSelectedObject();
+		var list = this.getList();
+		me.getViewport().setLoading( true ) ;
+		
+		if(!record){return;}
+		
+		Ext.Ajax.request({
+		    url: 'api/unconfirm_transaction_activity',
+		    method: 'PUT',
+		    params: {
+					id : record.get('id')
+		    },
+		    jsonData: {},
+		    success: function(result, request ) {
+						me.getViewport().setLoading( false );
+						list.getStore().load({
+							callback : function(records, options, success){
+								// this => refers to a store 
+								record = this.getById(record.get('id'));
+								// record = records.getById( record.get('id'))
+								list.fireEvent('unconfirmed', record);
+							}
+						});
+						// win.close();
+						
+		    },
+		    // failure: function(result, request ) {
+		    // 						me.getViewport().setLoading( false ) ;
+		    // 						
+		    // 						
+		    // }
+				failure : function(record,op ){
+					list.setLoading(false);
+					
+					var message  = op.request.scope.reader.jsonData["message"];
+					var errors = message['errors'];
+					
+					if( errors["generic_errors"] ){
+						Ext.MessageBox.show({
+						           title: 'FAIL',
+						           msg: errors["generic_errors"],
+						           buttons: Ext.MessageBox.OK, 
+						           icon: Ext.MessageBox.ERROR
+						       });
+					}
+					
+				}
+		});
+	},
 
 	
 

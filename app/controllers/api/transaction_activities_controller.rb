@@ -43,7 +43,8 @@ class Api::TransactionActivitiesController < Api::BaseApiController
                           	:transaction_source_type => @object.transaction_source_type, 
                           	:transaction_source_id 					 =>	@object.transaction_source_id,
                           	:description 		 =>	@object.description,
-                          	:amount 		 =>	@object.amount
+                          	:amount 		 =>	@object.amount,
+                          	:is_confirmed 		 =>	@object.is_confirmed
                           }
                           ] , 
                         :total => TransactionActivity.count }  
@@ -72,7 +73,8 @@ class Api::TransactionActivitiesController < Api::BaseApiController
                             	:transaction_source_type => @object.transaction_source_type, 
                             	:transaction_source_id 					 =>	@object.transaction_source_id,
                             	:description 		 =>	@object.description,
-                            	:amount 		 =>	@object.amount
+                            	:amount 		 =>	@object.amount,
+                            	:is_confirmed 		 =>	@object.is_confirmed
                             }
                             
                           ],
@@ -88,6 +90,49 @@ class Api::TransactionActivitiesController < Api::BaseApiController
       render :json => msg 
     end
   end
+  
+  
+  def confirm
+    @object = TransactionActivity.find_by_id params[:id]
+    # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
+    @object.confirm   
+    
+    if @object.errors.size == 0  and @object.is_confirmed? 
+      render :json => { :success => true, :total => TransactionActivity.count }  
+    else
+      # render :json => { :success => false, :total => Delivery.active_objects.count } 
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg 
+    end
+  end
+  
+  def unconfirm
+    @object = TransactionActivity.find_by_id params[:id]
+    # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
+    @object.external_unconfirm   
+    
+    if @object.errors.size == 0  and @object.is_confirmed? 
+      render :json => { :success => true, :total => TransactionActivity.count }  
+    else
+      # render :json => { :success => false, :total => Delivery.active_objects.count } 
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg 
+    end
+  end
+  
+  
 
   def destroy
     @object = TransactionActivity.find(params[:id])

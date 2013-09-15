@@ -50,11 +50,9 @@ Ext.define('AM.controller.TransactionActivityEntries', {
       },
  
 			// monitor parent(sales_order) update
-			// 'transactionactivitylist' : {
-			// 	'updated' : this.reloadStore,
-			// 	'confirmed' : this.reloadStore,
-			// 	'deleted' : this.cleanList
-			// }
+			'transactionactivitylist' : {
+				'deleted' : this.cleanList
+			}
 		
     });
   },
@@ -132,11 +130,12 @@ Ext.define('AM.controller.TransactionActivityEntries', {
 
 		var parentRecord = this.getParentList().getSelectedObject();
 	
-    var store = this.getTransactionActivitiesStore();
+    var store = this.getTransactionActivityEntriesStore();
     var record = form.getRecord();
     var values = form.getValues();
-
-		
+		console.log("Inside the transaction activity entries");
+		console.log("The record");
+		console.log( record );
 		if( record ){
 			record.set( values );
 			 
@@ -176,7 +175,7 @@ Ext.define('AM.controller.TransactionActivityEntries', {
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
 		
-			var newObject = new AM.model.TransactionActivity( values ) ;
+			var newObject = new AM.model.TransactionActivityEntry( values ) ;
 			
 		 
 			

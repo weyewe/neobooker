@@ -43,6 +43,8 @@ PortCalendar::Application.routes.draw do
      
      resources :accounts
      resources :transaction_activities
+     put 'confirm_transaction_activity' => 'transaction_activities#confirm' , :as => :confirm_transaction
+     put 'unconfirm_transaction_activity' => 'transaction_activities#unconfirm' , :as => :unconfirm_transaction
      resources :transaction_activity_entries 
    end
 end

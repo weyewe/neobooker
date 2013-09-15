@@ -16,6 +16,7 @@ Ext.define('AM.view.accounting.transactionactivity.List' ,{
 			},
 			{	header: 'Jumlah', dataIndex: 'amount', flex: 1 },
 			{	header: 'Tanggal', dataIndex: 'transaction_datetime', flex: 1 },
+			{	header: 'Konfirmasi', dataIndex: 'is_confirmed', flex: 1 },
 		];
 
 		this.addObjectButton = new Ext.Button({
@@ -42,10 +43,23 @@ Ext.define('AM.view.accounting.transactionactivity.List' ,{
 			emptyText : "Search",
 			checkChangeBuffer: 300
 		});
+		
+		this.confirmObjectButton = new Ext.Button({
+			text: 'Confirm',
+			action: 'confirmObject',
+			disabled: true
+		});
+		
+		this.unconfirmObjectButton = new Ext.Button({
+			text: 'Unconfirm',
+			action: 'unconfirmObject',
+			disabled: true
+		});
 
 
 
-		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton ];
+		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton, 
+											this.confirmObjectButton , this.unconfirmObjectButton ];
 		this.bbar = Ext.create("Ext.PagingToolbar", {
 			store	: this.store, 
 			displayInfo: true,
@@ -62,13 +76,28 @@ Ext.define('AM.view.accounting.transactionactivity.List' ,{
 		return this.getSelectionModel().getSelection()[0];
 	},
 
-	enableRecordButtons: function() {
+	enableRecordButtons: function(record) {
+		var value = record.get("is_confirmed");
+		// console.log("The value");
+		// console.log( value ) ;
+		if( record.get("is_confirmed") === false ){
+			this.confirmObjectButton.enable();
+			this.unconfirmObjectButton.disable();
+		}else{
+			this.confirmObjectButton.disable();
+			this.unconfirmObjectButton.enable();
+		}
+		
 		this.editObjectButton.enable();
 		this.deleteObjectButton.enable();
+		
+		
 	},
 
 	disableRecordButtons: function() {
 		this.editObjectButton.disable();
 		this.deleteObjectButton.disable();
+		this.confirmObjectButton.disable();
+		this.unconfirmObjectButton.disable();
 	}
 });

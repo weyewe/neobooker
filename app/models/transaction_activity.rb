@@ -110,6 +110,20 @@ class TransactionActivity < ActiveRecord::Base
     end
   end
   
+  
+  # to be called in the controller 
+  def external_unconfirm
+    if not self.transaction_source_id.nil? 
+      self.errors.add(:generic_errors, "Can't modify the automated generated transaction")
+      return self 
+    end
+    
+    self.is_confirmed = false 
+    if self.save
+      self.update_affected_accounts_due_to_un_confirmation
+    end
+  end
+  
   def unconfirm
     self.is_confirmed = false 
     if self.save

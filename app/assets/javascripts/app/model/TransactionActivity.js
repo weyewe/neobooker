@@ -10,7 +10,9 @@ Ext.define('AM.model.TransactionActivity', {
 
 				{ name: 'description' , type : 'string'},
 				{ name: 'transaction_datetime', type: 'string' },
-				{ name: 'amount', type: 'string' }
+				{ name: 'amount', type: 'string' },
+				
+				{ name: 'is_confirmed', type: 'boolean' }
     ],
 
   	idProperty: 'id' ,proxy: {

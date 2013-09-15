@@ -399,30 +399,16 @@ Ext.define('AM.controller.Bookings', {
 		var win = button.up('window');
     var form = win.down('form');
 
-		// var parentRecord = this.getParentList().getSelectedObject();
-	
     var store = this.getBookingsStore();
 		var record = this.getList().getSelectedObject();
-    // var record = form.getRecord();
     var values = form.getValues();
-
-		// console.log("The record");
-		// console.log( record ) ;
-		// 
-		// console.log("The values");
-		// console.log( values ) ;
-
 		form.setLoading( true ) ;
  
 		
 		if(record){
 			var rec_id = record.get("id");
 			record.set( values );
-			 
-			// form.query('checkbox').forEach(function(checkbox){
-			// 	record.set( checkbox['name']  ,checkbox['checked'] ) ;
-			// });
-			// 
+			  
 			form.setLoading(true);
 			record.save({
 				params : {
