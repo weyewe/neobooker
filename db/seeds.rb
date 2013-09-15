@@ -244,7 +244,8 @@ customer_array = [cust_1, cust_2, cust_3, cust_4 ]
       :title => "#{customer.name} booking",
       :start_datetime => start_datetime , 
       :number_of_hours => duration ,
-      :customer_id => customer.id 
+      :customer_id => customer.id ,
+      :is_downpayment_imposed => true 
     }
     
     booking = Booking.create_object booking_params 

@@ -53,7 +53,8 @@ class Api::BookingsController < Api::BaseApiController
                             	:end_datetime 	 =>	format_datetime_friendly(@object.end_datetime)  ,
                             	:number_of_hours => @object.number_of_hours, 
                             	:title 					 =>	@object.title,
-                            	:calendar_id 		 =>	@object.calendar_id
+                            	:calendar_id 		 =>	@object.calendar_id,
+                            	:is_downpayment_imposed 		 =>	@object.is_downpayment_imposed
                             }
                           ] , 
                         :total => Booking.active_objects.count }  
@@ -78,7 +79,8 @@ class Api::BookingsController < Api::BaseApiController
                       	:end_datetime 	 =>	format_datetime_friendly(@object.end_datetime)  ,
                       	:number_of_hours => @object.number_of_hours, 
                       	:title 					 =>	@object.title,
-                      	:calendar_id 		 =>	@object.calendar_id
+                      	:calendar_id 		 =>	@object.calendar_id,
+                      	:is_downpayment_imposed 		 =>	@object.is_downpayment_imposed
                       },
                       :total => Booking.active_objects.count  }
   end
@@ -113,7 +115,8 @@ class Api::BookingsController < Api::BaseApiController
                         	:end_datetime 	 =>	format_datetime_friendly(@object.end_datetime)  ,
                         	:number_of_hours => @object.number_of_hours, 
                         	:title 					 =>	@object.title,
-                        	:calendar_id 		 =>	@object.calendar_id
+                        	:calendar_id 		 =>	@object.calendar_id,
+                        	:is_downpayment_imposed 		 =>	@object.is_downpayment_imposed
                         }],
                         :total => Booking.active_objects.count  } 
     else

@@ -38,6 +38,8 @@ Ext.define('AM.model.Booking', {
 			// Payment Details 
 			{ name: 'is_paid', type: 'boolean' } ,
 			{ name: 'remaining_amount', type: 'string'},
+			
+			{ name : 'is_downpayment_imposed' , type : "boolean"}
 
   	],
 

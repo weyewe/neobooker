@@ -36,6 +36,7 @@ Ext.define('AM.view.booking.booking.List' ,{
 				text : "Konfirmasi",
 				flex : 1,
 				tpl : 'Status: <b>{is_confirmed}</b>' + '<br />' + '<br />' +
+							'Wajib DP: <b>{is_downpayment_imposed}</b>'  + '<br />' + '<br />' +
 							'Jumlah: <b>{downpayment_amount}</b>'  + '<br />' + '<br />' +
 							"Confirmation Code: <br /><b>{confirmation_code}</b>"  
 			},

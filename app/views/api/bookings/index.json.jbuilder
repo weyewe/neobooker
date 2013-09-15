@@ -37,6 +37,8 @@ json.bookings @objects do |object|
 	json.confirmation_code object.confirmation_code
 	json.remaining_payment_code object.remaining_payment_code 
 	
+	json.is_downpayment_imposed object.is_downpayment_imposed
+	
 	
 	
 	

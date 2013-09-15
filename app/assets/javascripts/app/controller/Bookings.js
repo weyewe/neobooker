@@ -150,6 +150,10 @@ Ext.define('AM.controller.Bookings', {
 		
 		if( record ){
 			record.set( values );
+			
+			form.query('checkbox').forEach(function(checkbox){
+				record.set( checkbox['name']  ,checkbox['checked'] ) ;
+			});
 			 
 			form.setLoading(true);
 			record.save({
@@ -173,6 +177,10 @@ Ext.define('AM.controller.Bookings', {
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
 			var newObject = new AM.model.Booking( values ) ;
+			
+			form.query('checkbox').forEach(function(checkbox){
+				newObject.set( checkbox['name']  ,checkbox['checked'] ) ;
+			});
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing

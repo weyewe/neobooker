@@ -133,7 +133,12 @@ Ext.define('AM.view.booking.booking.Form', {
 				name: 'number_of_hours',
 				minValue: 1,
 				value : 1 
-			}
+			},
+			{
+				fieldLabel : 'Wajib Downpayment',
+				name : 'is_downpayment_imposed',
+				xtype : 'checkbox'
+			},
 		];
 		
 		
