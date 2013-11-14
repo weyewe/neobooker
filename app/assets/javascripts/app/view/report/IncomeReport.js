@@ -90,7 +90,16 @@ Ext.define('AM.view.report.IncomeReport', {
 						
 								me.fireEvent('seriesClicked',  obj,  me.currentViewType  );
 							}
-						}
+						},
+						tips: {
+							trackMouse: true,
+							width: 150,
+							height: 50,
+							renderer: function(storeItem, item) {
+								 this.setTitle("Date: " + storeItem.get('name') + '<br />' + 
+																"Amount: "	 + 	storeItem.get('data1'));
+							}
+						},
         }]
 			}
 	

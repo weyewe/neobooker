@@ -124,7 +124,7 @@ Ext.define('AM.view.booking.booking.Form', {
 					format: 'Y-m-d',
 				},
 				timeCfg : {
-					increment : 1 
+					increment : 30
 				}
 			},
 			{

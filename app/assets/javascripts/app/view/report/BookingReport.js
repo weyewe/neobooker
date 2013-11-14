@@ -118,8 +118,18 @@ Ext.define('AM.view.report.BookingReport', {
 	            axis: 'bottom',
 	            highlight: true,
 	            xField: 'name',
-	            yField: 'data1'
-	        }]
+	            yField: 'data1',
+							tips: {
+								trackMouse: true,
+								width: 150,
+								height: 50,
+								renderer: function(storeItem, item) {
+									 this.setTitle("Date: " + storeItem.get('name') + '<br />' + 
+																	"Hours: "	 + 	storeItem.get('data1'));
+								}
+							},
+	        }],
+					
 	    });
 	
 			return chart ; 
