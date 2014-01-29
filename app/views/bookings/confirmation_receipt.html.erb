@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title><%= @title %></title>
+<script language="JavaScript">
+function printPage() {
+		if (window.print) {
+		agree = confirm('Cetak Nota Konfirmasi booking. \n\nOK cetak sekarang?');
+		if (agree) {
+			window.print(); 
+			window.close();
+		} else {
+			window.close();
+		}
+	}
+	}
+</script>
+</head>
+<body onload="printPage()">
+<table width="100%">
+	<tbody>
+		<tr>
+			<td align="left">
+				<strong><%= @company %></strong>
+				<br><%= @address %><br>Telp. <%= @phone %></td></tr>
+	</tbody>
+	
+	</table><br><table width="100%" cellspacing="0">
+    <tbody>
+			<tr>
+				<td colspan="4" align="center" style="border-bottom:1px dashed #000">
+					BookingCode: <%= @booking.booking_code %>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4" align="left" style="border-bottom:1px dashed #000">
+					ConfirmationCode: <br><%= @booking.confirmation_code %>
+				</td>
+			</tr>
+			
+			
+		 
+
+		<tr>
+			<td>
+				Field
+			</td>
+			<td>
+				<%= @booking.facility.title %>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				Durasi
+			</td>
+			<td>
+				<%= @booking.number_of_hours %>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				Mulai
+			</td>
+			<td>
+				<%= @start_datetime %>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				Selesai
+			</td>
+			<td>
+				<%= @end_datetime %>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				Jumlah DP
+			</td>
+			<td>
+				<%= @booking.downpayment_amount.to_s  %>
+			</td>
+		</tr>
+	  
+  	    
+  </tbody></table>
+
+</body></html>

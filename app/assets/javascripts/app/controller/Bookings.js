@@ -88,20 +88,66 @@ Ext.define('AM.controller.Bookings', {
     });
   },
 
+	print_sale: function(id){
+		console.log("inside print_sale");
+		console.log("id: " + id );
+		
+		var ps_width = 380; 
+		var ps_height = 550; 
+		
+		// var anotherwindow = window.open(
+		// 	'reports/billofsale.php?id='+id,'PDF','width='+ps_width+',height='+ps_height+',resizable');
+			var anotherwindow = window.open(
+				'bookings/confirmation_receipt/'+id,
+				'PDF',
+				'width='+ps_width+',height='+ps_height+',resizable');
+				
+					
+		console.log("done opening another window");
+		// if(!anotherwindow.closed){
+		// 	setTimeout('poppdf()',5000);
+		// }
+	},
+
+
 	downloadConfirmationReceipt: function(){
 		var record = this.getList().getSelectedObject();
 		
 		if(!record){return;}
 		
-		window.open( '/bookings/confirmation_receipt/' + record.get('id') );
+		// print_sale( record.get("id"));
+		
+		var ps_width = 380; 
+		var ps_height = 550; 
+		var id = record.get("id")
+		
+		// var anotherwindow = window.open(
+		// 	'reports/billofsale.php?id='+id,'PDF','width='+ps_width+',height='+ps_height+',resizable');
+			var anotherwindow = window.open(
+				'bookings/confirmation_receipt/'+id,
+				'PDF',
+				'width='+ps_width+',height='+ps_height+',resizable');
+		
+		// window.open( '/bookings/confirmation_receipt/' + record.get('id') );
 	},
 	
 	downloadPaymentReceipt: function(){
 		var record = this.getList().getSelectedObject();
 		
 		if(!record){return;}
+		var ps_width = 380; 
+		var ps_height = 550; 
+		var id = record.get("id")
 		
-		window.open( '/bookings/payment_receipt/'+ record.get('id')  );
+		// var anotherwindow = window.open(
+		// 	'reports/billofsale.php?id='+id,'PDF','width='+ps_width+',height='+ps_height+',resizable');
+			var anotherwindow = window.open(
+				'bookings/payment_receipt/'+id,
+				'PDF',
+				'width='+ps_width+',height='+ps_height+',resizable');
+				
+				
+		// window.open( '/bookings/payment_receipt/'+ record.get('id')  );
 	},
 	
 

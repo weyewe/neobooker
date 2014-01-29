@@ -76,20 +76,26 @@ class BookingsController < ApplicationController
       return
     end
     
-    start_datetime=  format_datetime_friendly(booking.start_datetime) 
-    end_datetime =  format_datetime_friendly(booking.end_datetime) 
+    @start_datetime=  format_datetime_friendly(booking.start_datetime) 
+    @end_datetime =  format_datetime_friendly(booking.end_datetime) 
     
-    content = print_centered_line("Robert Futsal") + 
-              print_centered_line("BSD Alam Sutra Block x no xx") + 
-              print_centered_line("Booking: #{booking.booking_code}") + 
-              print_centered_line("CONFIRM: #{booking.confirmation_code}") + 
-              print_new_line + print_new_line + 
-              print_left_justified_line("Field: #{booking.facility.title}") + 
-              print_left_justified_line("Durasi: #{booking.number_of_hours} jam") + 
-              print_left_justified_line("  Mulai: #{start_datetime }") + 
-              print_left_justified_line("  Selesai: #{end_datetime  }") +  
-              print_left_justified_line("  Jumlah DP: Rp #{booking.downpayment_amount.to_s  }") 
-    send_data content,  :filename => "confirmation_#{booking.booking_code}.txt", :type => 'text'
+    @company = "Robert Futsal"
+    @address = "BSD Alam Sutra Block x no xx"
+    @phone = "0821 3140 1122"
+    @booking = booking 
+    
+    # content = print_centered_line("Robert Futsal") + 
+    #           print_centered_line("BSD Alam Sutra Block x no xx") + 
+    #           print_centered_line("Booking: #{booking.booking_code}") + 
+    #           print_centered_line("CONFIRM: #{booking.confirmation_code}") + 
+    #           print_new_line + print_new_line + 
+    #           print_left_justified_line("Field: #{booking.facility.title}") + 
+    #           print_left_justified_line("Durasi: #{booking.number_of_hours} jam") + 
+    #           print_left_justified_line("  Mulai: #{start_datetime }") + 
+    #           print_left_justified_line("  Selesai: #{end_datetime  }") +  
+    #           print_left_justified_line("  Jumlah DP: Rp #{booking.downpayment_amount.to_s  }") 
+    # send_data content,  :filename => "confirmation_#{booking.booking_code}.txt", :type => 'text'
+    render :layout => false
   end
   
   def payment_receipt
@@ -99,20 +105,27 @@ class BookingsController < ApplicationController
       return
     end
     
-    start_datetime=  format_datetime_friendly(booking.start_datetime) 
-    end_datetime =  format_datetime_friendly(booking.end_datetime) 
+    @start_datetime=  format_datetime_friendly(booking.start_datetime) 
+    @end_datetime =  format_datetime_friendly(booking.end_datetime) 
     
-    content = print_centered_line("Robert Futsal") + 
-              print_centered_line("BSD Alam Sutra Block x no xx") + 
-              print_centered_line("Booking: #{booking.booking_code}") +
-              print_centered_line("PAYMENT: #{booking.remaining_payment_code}") +  
-              print_new_line + print_new_line + 
-              print_left_justified_line("Field: #{booking.facility.title}") + 
-              print_left_justified_line("Durasi: #{booking.number_of_hours} jam") + 
-              print_left_justified_line("  Mulai: #{start_datetime }") + 
-              print_left_justified_line("  Selesai: #{end_datetime  }") +  
-              print_left_justified_line("  Jumlah Pembayaran: Rp #{booking.remaining_amount.to_s  }")
+    @company = "Robert Futsal"
+    @address = "BSD Alam Sutra Block x no xx"
+    @phone = "0821 3140 1122"
+    @booking = booking
+  
+    # content = print_centered_line("Robert Futsal") + 
+    #           print_centered_line("BSD Alam Sutra Block x no xx") + 
+    #           print_centered_line("Booking: #{booking.booking_code}") +
+    #           print_centered_line("PAYMENT: #{booking.remaining_payment_code}") +  
+    #           print_new_line + print_new_line + 
+    #           print_left_justified_line("Field: #{booking.facility.title}") + 
+    #           print_left_justified_line("Durasi: #{booking.number_of_hours} jam") + 
+    #           print_left_justified_line("  Mulai: #{start_datetime }") + 
+    #           print_left_justified_line("  Selesai: #{end_datetime  }") +  
+    #           print_left_justified_line("  Jumlah Pembayaran: Rp #{booking.remaining_amount.to_s  }")
+    # 
+    # send_data content,  :filename => "payment_#{booking.booking_code}.txt", :type => 'text'
     
-    send_data content,  :filename => "payment_#{booking.booking_code}.txt", :type => 'text'
+    render :layout => false
   end
 end
