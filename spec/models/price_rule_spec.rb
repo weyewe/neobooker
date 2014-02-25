@@ -172,6 +172,24 @@ describe PriceRule do
   context "overlapping price_rule: use the latest price rule" do
     before(:each) do
       @new_specific_amount = @specific_amount  *  2
+      
+      
+      # @specific_price_rule = PriceRule.create_object(
+      #   :is_sunday         => true ,
+      #   :is_monday         => true ,
+      #   :is_tuesday        => true ,
+      #   :is_wednesday      => true ,
+      #   :is_thursday       => true ,
+      #   :is_friday         => true ,
+      #   :is_saturday       => true ,
+      #   :amount            => @specific_amount   ,
+      #   :rule_case         =>  PRICE_RULE_CASE[:specific]    ,
+      #   :calendar_id       => @calendar.id ,
+      #   :hour_start => 17 , 
+      #   :hour_end => 23 
+      # )
+      # 
+      # 
 
       @new_price_rule = PriceRule.create_object(
         :is_sunday         => false ,
@@ -188,24 +206,37 @@ describe PriceRule do
         :hour_end => 23 
       )
       
+      
       @start_datetime =  DateTime.new( 2013, 9, 15, 
                                     9, 30 , 0 
                 ) .new_offset( Rational(0,24) )
       
-      @new_number_of_hours = 2
+      @new_number_of_hours = 1
+      
+      
+      # I want to book at 18:00.. in utc, it is 11:00
+      @start_datetime =  DateTime.new( 2014, 2, 28, 
+                                    11, 0 , 0 
+                ) .new_offset( Rational(UTC_OFFSET,24) )
+                
+      puts "@start_datetime from client input: #{@start_datetime}"
+      puts "@start_datetime in the server: #{@start_datetime.utc}"
+      
       @booking = Booking.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
-        :start_datetime => @start_datetime, 
-        :number_of_hours => @new_number_of_hours ,
+        :start_datetime => @start_datetime.utc, 
+        :number_of_hours => 1 ,
         :customer_id => @customer.id ,
         :is_downpayment_imposed => true
       })
+      
+     
     end
     
     it 'should use the latest price rule' do
-      expected_amount = 1*@calendar_amount  + 1*@new_specific_amount
-      @booking.amount.should == expected_amount
+      @booking.price_details.count.should == 1 
+      @booking.price_details.first.price_rule.id.should == @new_price_rule.id
     end
   end
 end

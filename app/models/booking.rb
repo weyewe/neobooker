@@ -40,12 +40,58 @@ Solution: get the PriceRule on that is active on the creation time
 =end
 
   def price_rules 
+    puts "The start datetime: #{start_datetime}"
+    
     local_datetime = start_datetime.in_time_zone("Jakarta") 
+    puts "Jakarta_datetime: #{local_datetime} "
     result_array = []
     current_calendar_id = self.calendar_id
+    
+    # how can we get the available price rules?
+    # 1. get all 
+    
+    # for each booked hour, get the associated price rule 
     (1..number_of_hours).each do |x|
       datetime = local_datetime + (x-1).hours 
+      book_hour_start = datetime.hour
       booking_creation_datetime = self.created_at 
+      
+      # price_rule = PriceRule.where{
+      #   #  to ensure that we are using the old price at the time of creation
+      #   (
+      #     calendar_id.eq current_calendar_id
+      #   ) & 
+      #   (
+      #     # is still active, and created before the booking creation 
+      #     (
+      #       ( is_active.eq true) & 
+      #       (created_at.lte booking_creation_datetime)
+      #     ) | 
+      #     # is not active, and created before the booking creation
+      #     # and deactivated after the booking creation => 
+      #     # Hence, the rule is still in place
+      #     (
+      #       ( is_active.eq false) & 
+      #       ( created_at.lte booking_creation_datetime) & 
+      #       ( deactivated_at.gt booking_creation_datetime)
+      #     )
+      #   )  & 
+      #   (
+      #     ( is_sunday   .eq datetime.sunday?  ) | 
+      #     ( is_monday   .eq datetime.monday? )  |
+      #     ( is_tuesday  .eq datetime.tuesday? ) | 
+      #     ( is_wednesday.eq datetime.wednesday? ) |
+      #     ( is_thursday .eq datetime.thursday? ) |
+      #     ( is_friday   .eq datetime.friday? ) |
+      #     ( is_saturday .eq datetime.saturday? ) 
+      #   ) & 
+      #   (
+      #     ( hour_start.lte datetime.hour ) & 
+      #     ( hour_end.gte datetime.hour )
+      #   )
+      # }.order("id ASC").last
+      
+      
       
       price_rule = PriceRule.where{
         #  to ensure that we are using the old price at the time of creation
@@ -53,30 +99,69 @@ Solution: get the PriceRule on that is active on the creation time
           calendar_id.eq current_calendar_id
         ) & 
         (
+          # is still active, and created before the booking creation 
           (
             ( is_active.eq true) & 
             (created_at.lte booking_creation_datetime)
           ) | 
+          # is not active, and created before the booking creation
+          # and deactivated after the booking creation => 
+          # Hence, the rule is still in place
           (
             ( is_active.eq false) & 
             ( created_at.lte booking_creation_datetime) & 
             ( deactivated_at.gt booking_creation_datetime)
           )
         )  & 
-        (
-          ( is_sunday   .eq datetime.sunday?  ) | 
-          ( is_monday   .eq datetime.monday? )  |
-          ( is_tuesday  .eq datetime.tuesday? ) | 
-          ( is_wednesday.eq datetime.wednesday? ) |
-          ( is_thursday .eq datetime.thursday? ) |
-          ( is_friday   .eq datetime.friday? ) |
-          ( is_saturday .eq datetime.saturday? ) 
-        ) & 
+        # (
+        #   ( is_sunday   .eq datetime.sunday?  ) | 
+        #   ( is_monday   .eq datetime.monday? )  |
+        #   ( is_tuesday  .eq datetime.tuesday? ) | 
+        #   ( is_wednesday.eq datetime.wednesday? ) |
+        #   ( is_thursday .eq datetime.thursday? ) |
+        #   ( is_friday   .eq datetime.friday? ) |
+        #   ( is_saturday .eq datetime.saturday? ) 
+        # ) & 
         (
           ( hour_start.lte datetime.hour ) & 
           ( hour_end.gte datetime.hour )
         )
-      }.order("id ASC").last
+      }.order("id ASC, rule_case DESC")  # rule_case 1== specific, rule case 0= catch_all
+      
+      puts "Total price rule: #{price_rule.count}"
+      
+      final_price_rule = []
+      
+      price_rule.each do |x|
+        if x.is_sunday? and datetime.sunday?
+          final_price_rule <<  x 
+        elsif x.is_monday? and  datetime.monday?
+          final_price_rule <<  x 
+        elsif x.is_tuesday? and  datetime.tuesday?
+          final_price_rule <<  x 
+        elsif x.is_wednesday? and  datetime.wednesday?
+          final_price_rule <<  x 
+        elsif x.is_thursday? and  datetime.thursday?
+          final_price_rule <<  x 
+        elsif x.is_friday? and  datetime.friday?
+          final_price_rule <<  x 
+        elsif x.is_saturday? and  datetime.saturday? 
+          final_price_rule <<  x 
+        end
+      end
+      
+      puts "The datetime.hour: #{datetime.hour}"
+      puts "Total final price rule: #{final_price_rule.count}"
+      
+      final_price_rule.each do |pr|
+        puts "\n\n=========>>"
+        puts "The rule case #{pr.rule_case}"
+        puts "hour start: #{pr.hour_start}"
+        puts "hour end : #{pr.hour_end}"
+      end
+      
+      
+      price_rule = final_price_rule.sort_by {|x| x.id }.last
       
       result_array << price_rule.id
       
