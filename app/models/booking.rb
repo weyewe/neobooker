@@ -182,6 +182,9 @@ Solution: get the PriceRule on that is active on the creation time
   end
   
   def create_price_details 
+    # if self.is_confirmed?
+    #   puts "#{self.id} is confirmed. can't refresh price details"
+    # end
     
     destroy_price_details
     self.reload   # because we have deleted the price_details
@@ -380,6 +383,7 @@ Solution: get the PriceRule on that is active on the creation time
     if self.save 
       if is_discount_changed or is_number_of_hours_changed
         self.update_income 
+        self.create_price_details 
       end
     end
     
