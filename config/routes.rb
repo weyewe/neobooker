@@ -39,6 +39,7 @@ PortCalendar::Application.routes.draw do
      
      resources :events 
      resources :price_rules 
+     resources :holiday_price_rules 
      
      
      resources :accounts

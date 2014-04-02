@@ -102,6 +102,18 @@ Ext.define("AM.controller.Authorization", {
 						action : 'update_details'
 					}
 				]
+	     },
+			{ 
+				text:'Holiday Price', 
+				viewClass:'AM.view.master.HolidayPriceRule', 
+				leaf:true, 
+				iconCls:'text',
+				conditions : [
+					{
+						controller : 'calendars',
+						action : 'update_details'
+					}
+				]
 	     }
 		]
 	},

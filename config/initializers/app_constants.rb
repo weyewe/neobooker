@@ -86,7 +86,8 @@ IMAGE_ASSET_URL = {
 
 PRICE_RULE_CASE = {
   :catch_all => 0 , 
-  :specific => 1 
+  :specific => 1 ,
+  :holiday => 2
 }
 
 NORMAL_BALANCE = {

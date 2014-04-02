@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130911040545) do
+ActiveRecord::Schema.define(version: 20140402144232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,6 +121,8 @@ ActiveRecord::Schema.define(version: 20130911040545) do
     t.datetime "deactivated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "holiday_date"
+    t.boolean  "is_holiday",                              default: false
   end
 
   create_table "prices", force: true do |t|

@@ -14,7 +14,19 @@ class Calendar < ActiveRecord::Base
   
   
   def active_price_rules
-    self.price_rules.where(:is_active => true).order("rule_case ASC, id ASC")
+ 
+    self.price_rules.where(
+      :is_active => true,
+      :is_holiday => false 
+    ).order("rule_case ASC, id ASC")
+  end
+  
+  def active_holiday_price_rules
+ 
+    self.price_rules.where(
+      :is_active => true,
+      :is_holiday => true 
+    ).order("rule_case ASC, id ASC")
   end
   
   def create_catch_all_price_rule

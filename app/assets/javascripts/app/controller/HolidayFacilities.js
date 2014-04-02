@@ -1,4 +1,4 @@
-Ext.define('AM.controller.Facilities', {
+Ext.define('AM.controller.HolidayFacilities', {
   extend: 'Ext.app.Controller',
 
   stores: ['Facilities'],
@@ -16,8 +16,8 @@ Ext.define('AM.controller.Facilities', {
 			selector: 'facilitylist'
 		},
 		{
-			ref : 'priceRuleList',
-			selector : 'pricerulelist'
+			ref : 'holidayPriceRuleList',
+			selector : 'holidaypricerulelist'
 		},
 		
 		{
@@ -28,28 +28,28 @@ Ext.define('AM.controller.Facilities', {
 
   init: function() {
     this.control({
-      'facilityProcess facilitylist': {
+      'holidaypriceruleProcess facilitylist': {
         itemdblclick: this.editObject,
         selectionchange: this.selectionChange,
 				afterrender : this.loadObjectList,
       },
-      'facilityProcess facilityform button[action=save]': {
+      'holidaypriceruleProcess facilityform button[action=save]': {
         click: this.updateObject
       },
-			'facilityProcess facilityform customcolorpicker' : {
+			'holidaypriceruleProcess facilityform customcolorpicker' : {
 				'colorSelected' : this.onColorPickerSelect
 			},
 
-      'facilityProcess facilitylist button[action=addObject]': {
+      'holidaypriceruleProcess facilitylist button[action=addObject]': {
         click: this.addObject
       },
-      'facilityProcess facilitylist button[action=editObject]': {
+      'holidaypriceruleProcess facilitylist button[action=editObject]': {
         click: this.editObject
       },
-      'facilityProcess facilitylist button[action=deleteObject]': {
+      'holidaypriceruleProcess facilitylist button[action=deleteObject]': {
         click: this.deleteObject
 			}	,
-			'facilityProcess facilitylist textfield[name=searchField]': {
+			'holidaypriceruleProcess facilitylist textfield[name=searchField]': {
 				change: this.liveSearch
 			}
 		
@@ -200,7 +200,7 @@ Ext.define('AM.controller.Facilities', {
   },
 
 	updateChildGrid: function(record){
-		var priceRuleGrid = this.getPriceRuleList();
+		var priceRuleGrid = this.getHolidayPriceRuleList();
 		// priceRuleGrid.setTitle("Purchase Order: " + record.get('code'));
 		priceRuleGrid.setObjectTitle( record ) ;
 		priceRuleGrid.getStore().load({
