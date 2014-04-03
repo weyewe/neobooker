@@ -37,6 +37,8 @@ class Api::HolidayPriceRulesController < Api::BaseApiController
   end
 
   def update
+    params[:holiday_price_rule][:holiday_date] =  parse_date( params[:holiday_price_rule][:holiday_date] )
+    
     @object = PriceRule.find_by_id params[:id] 
     @parent = @object.calendar 
     
