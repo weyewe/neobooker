@@ -71,6 +71,7 @@ describe PriceRule do
                                     9, 0 , 0 
                 ) .new_offset( Rational(0,24) )
       
+      puts "@calendar: #{@calendar}"
       @booking = Booking.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
@@ -79,6 +80,10 @@ describe PriceRule do
         :customer_id => @customer.id ,
         :is_downpayment_imposed => true
       })
+      
+      @booking.errors.messages.each do |x|
+        puts "Error: #{x}"
+      end
     end
     
     it 'should create booking with old price' do
@@ -108,6 +113,8 @@ describe PriceRule do
         :customer_id => @customer.id ,
         :is_downpayment_imposed => true
       })
+      
+      
     end
     
     it 'should create booking with new price' do
@@ -190,7 +197,7 @@ describe PriceRule do
       # )
       # 
       # 
-
+  
       @new_price_rule = PriceRule.create_object(
         :is_sunday         => false ,
         :is_monday         => false ,
@@ -239,4 +246,7 @@ describe PriceRule do
       @booking.price_details.first.price_rule.id.should == @new_price_rule.id
     end
   end
+  
+
+
 end

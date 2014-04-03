@@ -40,10 +40,10 @@ Solution: get the PriceRule on that is active on the creation time
 =end
 
   def price_rules 
-    puts "The start datetime: #{start_datetime}"
+    # puts "The start datetime: #{start_datetime}"
     
     local_datetime = start_datetime.in_time_zone("Jakarta") 
-    puts "Jakarta_datetime: #{local_datetime} "
+    # puts "Jakarta_datetime: #{local_datetime} "
     result_array = []
     current_calendar_id = self.calendar_id
     
@@ -70,85 +70,81 @@ Solution: get the PriceRule on that is active on the creation time
       if not holiday_price_rule.nil?
         result_array << holiday_price_rule.id
       else
-        result_array << holiday_price_rule.id
-      end
-      
-      # http://stackoverflow.com/questions/13211916/rails-activerecord-find-search-by-date
-      # sh = SupportHistory.where(
-      #        :created_at => selected_date.beginning_of_day..selected_date.end_of_day)
-      
-      #  price rule for non holiday
-      price_rules = PriceRule.where{
-        #  to ensure that we are using the old price at the time of creation
-        (
-          calendar_id.eq current_calendar_id
-        ) & 
         
-        
-        (
-          # is still active, and created before the booking creation 
+        price_rules = PriceRule.where{
+          #  to ensure that we are using the old price at the time of creation
           (
-            ( is_active.eq true) & 
-            (created_at.lte booking_creation_datetime)
-          ) | 
-          # is not active, and created before the booking creation
-          # and deactivated after the booking creation => 
-          # Hence, the rule is still in place
+            calendar_id.eq current_calendar_id
+          ) & 
+
+
           (
-            ( is_active.eq false) & 
-            ( created_at.lte booking_creation_datetime) & 
-            ( deactivated_at.gt booking_creation_datetime)
+            # is still active, and created before the booking creation 
+            (
+              ( is_active.eq true) & 
+              (created_at.lte booking_creation_datetime)
+            ) | 
+            # is not active, and created before the booking creation
+            # and deactivated after the booking creation => 
+            # Hence, the rule is still in place
+            (
+              ( is_active.eq false) & 
+              ( created_at.lte booking_creation_datetime) & 
+              ( deactivated_at.gt booking_creation_datetime)
+            )
+          )  & 
+
+          # 0 - 23 
+          (
+            ( hour_start.lte datetime.hour ) & 
+            ( hour_end.gte datetime.hour )
           )
-        )  & 
-        
-        # 0 - 23 
-        (
-          ( hour_start.lte datetime.hour ) & 
-          ( hour_end.gte datetime.hour )
-        )
-      }.order("id ASC, rule_case DESC")  # rule_case 2 == holiday, 1== specific, rule case 0= catch_all
-      
-      # puts "Total price rule: #{price_rule.count}"
-      
-      final_price_rule = []
-      
-      
-      price_rule.each do |x|
-        if x.is_sunday? and datetime.sunday?
-          final_price_rule <<  x 
-        elsif x.is_monday? and  datetime.monday?
-          final_price_rule <<  x 
-        elsif x.is_tuesday? and  datetime.tuesday?
-          final_price_rule <<  x 
-        elsif x.is_wednesday? and  datetime.wednesday?
-          final_price_rule <<  x 
-        elsif x.is_thursday? and  datetime.thursday?
-          final_price_rule <<  x 
-        elsif x.is_friday? and  datetime.friday?
-          final_price_rule <<  x 
-        elsif x.is_saturday? and  datetime.saturday? 
-          final_price_rule <<  x 
+        }.order("id ASC, rule_case DESC")  # rule_case 2 == holiday, 1== specific, rule case 0= catch_all
+
+        # puts "Total price rule: #{price_rule.count}"
+
+        final_price_rule = []
+
+
+        price_rules.each do |x|
+          if x.is_sunday? and datetime.sunday?
+            final_price_rule <<  x 
+          elsif x.is_monday? and  datetime.monday?
+            final_price_rule <<  x 
+          elsif x.is_tuesday? and  datetime.tuesday?
+            final_price_rule <<  x 
+          elsif x.is_wednesday? and  datetime.wednesday?
+            final_price_rule <<  x 
+          elsif x.is_thursday? and  datetime.thursday?
+            final_price_rule <<  x 
+          elsif x.is_friday? and  datetime.friday?
+            final_price_rule <<  x 
+          elsif x.is_saturday? and  datetime.saturday? 
+            final_price_rule <<  x 
+          end
         end
+
+
+        price_rule = final_price_rule.sort_by {|x| x.id }.last
+
+        result_array << price_rule.id
+
+        # corner case:
+        # rule 1 : 1300-1300
+        # rule 2 : 1300-1400 
+        # booking time: 13.30 .. which rule will be selected? 
+        # we have the ordering by id, ASC
+        # in this case: rule2 is created later.. rule2 will be selected. 
+
+        # corner case
+        # rule1 : 2300-2300 
+        # it means it will only affect the time from 2300-2400 
+
+
+        
       end
-
-
-      price_rule = final_price_rule.sort_by {|x| x.id }.last
-
-      result_array << price_rule.id
-
-      # corner case:
-      # rule 1 : 1300-1300
-      # rule 2 : 1300-1400 
-      # booking time: 13.30 .. which rule will be selected? 
-      # we have the ordering by id, ASC
-      # in this case: rule2 is created later.. rule2 will be selected. 
-
-      # corner case
-      # rule1 : 2300-2300 
-      # it means it will only affect the time from 2300-2400 
-    
-    
       
+
     end
     
     return result_array
