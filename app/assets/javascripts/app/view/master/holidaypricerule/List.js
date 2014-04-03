@@ -9,34 +9,15 @@ Ext.define('AM.view.master.holidaypricerule.List' ,{
 		this.columns = [
 			{
 				xtype : 'templatecolumn',
-				text : "Hari Aktif",
+				text : "Tanggal",
 				flex : 1,
-				tpl : 'Senin: <b>{is_monday}</b>' +   "<br />" + 
-							'Selasa: <b>{is_tuesday}</b>' +  "<br />" + 
-							'Rabu: <b>{is_wednesday}</b>' +  "<br />" + 
-							'Kamis: <b>{is_thursday}</b>' +  "<br />" + 
-							'Jumat: <b>{is_friday}</b>' +  "<br />" + 
-							'Sabtu: <b>{is_saturday}</b>' +  "<br />" + 
-							'Minggu: <b>{is_sunday}</b>'   
+				tpl : '<b>{holiday_date}</b>'  
 			},
 			{
 				xtype : 'templatecolumn',
-				text : "Jam",
-				flex : 1,
-				tpl : '<b>{hour_start}</b> - <b>{hour_end}</b>'  
-			},
-			{
-				xtype : 'templatecolumn',
-				text : "Harga",
+				text : "Harga Per Jam",
 				flex : 1,
 				tpl : '<b>{amount}</b>'  
-			},
-			
-			{
-				xtype : 'templatecolumn',
-				text : "Type",
-				flex : 1,
-				tpl : '<b>{rule_case_name}</b>'  
 			},
 			
 			 

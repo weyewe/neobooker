@@ -2,9 +2,22 @@ class PriceRule < ActiveRecord::Base
   belongs_to :calendar
 
   has_many :price_details
+  validates_presence_of :amount
   
   validate :hour_start_is_earlier_than_hour_end
   validate :valid_hour_start_and_hour_end
+  validate :amount_must_not_be_negative
+  
+  def amount_must_not_be_negative
+    return if not amount.present?
+    
+    if amount < BigDecimal('0')
+      self.errors.add(:amount, "The amount must not be negative")
+      return 
+    end
+  end
+  
+  
   
   def hour_start_is_earlier_than_hour_end
     return if not hour_start.present? or not  hour_end.present? 
@@ -34,6 +47,45 @@ class PriceRule < ActiveRecord::Base
   end
   
   
+  def self.create_holiday_object(params)
+    
+    new_object = self.new 
+    
+    new_object.is_sunday      = false 
+    new_object.is_monday      = false 
+    new_object.is_tuesday     = false 
+    new_object.is_wednesday   = false  
+    new_object.is_thursday    = false 
+    new_object.is_friday      = false 
+    new_object.is_saturday    = false 
+    new_object.amount         = params[:amount ]
+    new_object.rule_case      = PRICE_RULE_CASE[:holiday]
+    new_object.calendar_id    = params[:calendar_id  ]
+    new_object.hour_start    = 0 
+    new_object.hour_end    =  23 
+    new_object.is_holiday =  true 
+    new_object.holiday_date = params[:holiday_date]
+    
+    new_object.save 
+    return new_object
+  end
+  
+  def update_holiday_object( params ) 
+    
+    if self.price_details.count != 0 
+      msg = "Sudah ada booking yang menggunakan harga ini. " + " Silakan delete dan create rule baru"
+      self.errors.add(:generic_errors, msg )
+      return self 
+    end
+    
+    self.amount         = params[:amount ]
+    self.holiday_date = params[:holiday_date]
+    
+    self.save
+    
+    return self 
+  end
+   
                   
   def self.create_object(params)
     new_object = self.new 
@@ -97,6 +149,8 @@ class PriceRule < ActiveRecord::Base
   	
   	
   end
+  
+   
   
   def delete_object  # 
     if self.rule_case == PRICE_RULE_CASE[:catch_all]

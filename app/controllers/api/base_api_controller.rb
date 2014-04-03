@@ -55,6 +55,7 @@ class Api::BaseApiController < ApplicationController
     return datetime 
   end
   
+ 
   def parse_datetime_from_client( datetime_string)
     date = datetime_string.split("T").first
     time = datetime_string.split("T").last 

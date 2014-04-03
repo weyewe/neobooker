@@ -7,7 +7,7 @@ Ext.define('AM.controller.HolidayFacilities', {
   views: [
     'master.facility.List',
     'master.facility.Form',
-		'master.pricerule.List'
+		'master.holidaypricerule.List'
   ],
 
   	refs: [
@@ -200,7 +200,9 @@ Ext.define('AM.controller.HolidayFacilities', {
   },
 
 	updateChildGrid: function(record){
+		// console.log("Inside the #updateChildGrid, from HolidayFacilitiesController");
 		var priceRuleGrid = this.getHolidayPriceRuleList();
+		// console.log(priceRuleGrid);
 		// priceRuleGrid.setTitle("Purchase Order: " + record.get('code'));
 		priceRuleGrid.setObjectTitle( record ) ;
 		priceRuleGrid.getStore().load({

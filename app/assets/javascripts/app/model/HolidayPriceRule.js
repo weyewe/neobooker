@@ -19,6 +19,8 @@ Ext.define('AM.model.HolidayPriceRule', {
 			{ name: 'is_friday', type: 'boolean' } , 
 			{ name: 'is_saturday', type: 'boolean' } , 
 			{ name: 'is_sunday', type: 'boolean' } , 
+			{ name: 'holiday_date', type: 'string' },
+			{ name: 'is_holiday', type: 'boolean' },
 
   	],
 

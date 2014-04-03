@@ -9,6 +9,7 @@ class Api::HolidayPriceRulesController < Api::BaseApiController
   def create
    
     @parent = Calendar.find_by_id params[:calendar_id]
+    params[:holiday_price_rule][:holiday_date] =  parse_date( params[:holiday_price_rule][:holiday_date] )
     
    
     params[:holiday_price_rule][:calendar_id] = @parent.id 
@@ -17,7 +18,11 @@ class Api::HolidayPriceRulesController < Api::BaseApiController
     
     if @object.errors.size == 0 
       render :json => { :success => true, 
-                        :holiday_price_rules => [@object] , 
+                        :holiday_price_rules => [
+                            :id => @object.id,
+                            :is_holiday => @object.is_holiday,
+                            :holiday_date =>format_date_friendly(@object.holiday_date) 
+                          ] , 
                         :total => @parent.active_holiday_price_rules.count }  
     else
       msg = {
@@ -42,7 +47,11 @@ class Api::HolidayPriceRulesController < Api::BaseApiController
      
     if @object.errors.size == 0 
       render :json => { :success => true,   
-                        :holiday_price_rules => [@object],
+                        :holiday_price_rules => [
+                            :id => @object.id,
+                            :is_holiday => @object.is_holiday,
+                            :holiday_date =>format_date_friendly(@object.holiday_date) 
+                          ] ,
                         :total => @parent.active_holiday_price_rules.count  } 
     else
       msg = {
@@ -59,7 +68,7 @@ class Api::HolidayPriceRulesController < Api::BaseApiController
   def destroy
     @object = PriceRule.find(params[:id])
     @parent = @object.calendar 
-    @object.delete_holiday_object 
+    @object.delete_object 
 
     if ( @object.persisted? and not  @object.is_active? ) or ( not @object.persisted? )
       render :json => { :success => true, :total => @parent.active_holiday_price_rules.count }  
