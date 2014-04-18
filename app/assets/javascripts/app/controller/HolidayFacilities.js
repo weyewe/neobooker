@@ -36,6 +36,11 @@ Ext.define('AM.controller.HolidayFacilities', {
       'holidaypriceruleProcess facilityform button[action=save]': {
         click: this.updateObject
       },
+
+			// 'facilityform button[action=save]': {
+			//         click: this.updateObject
+			//       },
+
 			'holidaypriceruleProcess facilityform customcolorpicker' : {
 				'colorSelected' : this.onColorPickerSelect
 			},

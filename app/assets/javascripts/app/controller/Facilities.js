@@ -51,7 +51,10 @@ Ext.define('AM.controller.Facilities', {
 			}	,
 			'facilityProcess facilitylist textfield[name=searchField]': {
 				change: this.liveSearch
-			}
+			},
+			'facilityform button[action=save]': {
+        click: this.updateObject
+      }
 		
     });
   },
@@ -88,6 +91,7 @@ Ext.define('AM.controller.Facilities', {
 	},
 
   addObject: function() {
+	// console.log("The add object is called");
     var view = Ext.widget('facilityform');
     view.show();
   },

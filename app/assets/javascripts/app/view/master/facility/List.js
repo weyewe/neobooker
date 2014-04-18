@@ -3,6 +3,7 @@ Ext.define('AM.view.master.facility.List' ,{
   	alias : 'widget.facilitylist',
 
   	store: 'Facilities', 
+		allowCRUD: true, 
  
 
 	initComponent: function() {
@@ -54,10 +55,18 @@ Ext.define('AM.view.master.facility.List' ,{
 			emptyText : "Search",
 			checkChangeBuffer: 300
 		});
+		
+		
+		if(this.allowCRUD === true ){
+			
+			this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton ];
+		}else
+		{
+			this.tbar = [] 
+		}
 
 
-
-		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton ];
+		
 		this.bbar = Ext.create("Ext.PagingToolbar", {
 			store	: this.store, 
 			displayInfo: true,

@@ -13,6 +13,7 @@ Ext.define('AM.view.master.HolidayPriceRule', {
 		items : [
 			{
 				xtype : 'facilitylist' ,
+				allowCRUD: false, 
 				flex : 1 //,
 				// html : 'hahaha'
 			},
