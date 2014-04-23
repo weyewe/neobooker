@@ -24,6 +24,71 @@ class Booking < ActiveRecord::Base
   validate :valid_calendar_id
   validate :valid_number_of_hours
   
+  validate :no_double_booking
+  
+  def no_double_booking
+    return if calendar_id.nil? 
+    return if start_datetime.nil? 
+    return if number_of_hours.nil? or number_of_hours < 1 
+    
+    selected_calendar_id = calendar_id 
+    current_id = self.id 
+    current_start_datetime = start_datetime
+    current_end_datetime = start_datetime + number_of_hours.hours 
+    
+    total_other_bookings = 0 
+    if self.persisted?
+      total_other_bookings = Booking.where{
+        ( calendar_id.eq selected_calendar_id) & 
+        ( id.not_eq current_id ) & 
+        (
+          # current_start_datetime intersection 
+          ( 
+            (start_datetime.lte current_start_datetime)  & 
+            (end_datetime.gte current_start_datetime)
+          )  | 
+          # current_end_datetime intersection 
+          (
+            (end_datetime.gte  current_end_datetime) & 
+            (start_datetime.lte current_end_datetime )
+          ) | 
+          # currently_booking is subset of other booking 
+          (
+            (start_datetime.lte current_start_datetime) &
+            (end_datetime.gte current_end_datetime )
+          )
+        )
+      }.count 
+    else
+      total_other_bookings = Booking.where{
+        ( calendar_id.eq selected_calendar_id) & 
+        (
+          # current_start_datetime intersection 
+          ( 
+            (start_datetime.lte current_start_datetime)  & 
+            (end_datetime.gte current_start_datetime)
+          )  | 
+          # current_end_datetime intersection 
+          (
+            (end_datetime.gte  current_end_datetime) & 
+            (start_datetime.lte current_end_datetime )
+          ) | 
+          # currently_booking is subset of other booking 
+          (
+            (start_datetime.lte current_start_datetime) &
+            (end_datetime.gte current_end_datetime )
+          )
+        )
+      }.count
+      
+    end
+    
+    if total_other_bookings > 0 
+      self.errors.add(:generic_errors, " Sudah ada #{total_other_bookings} booking parallel")
+      return 
+    end
+  end
+  
   def destroy_price_details
     self.price_details.each {|x| x.destroy }
   end
