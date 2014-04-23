@@ -63,7 +63,7 @@ Solution: get the PriceRule on that is active on the creation time
       holiday_price_rule = PriceRule.where(
         :is_holiday => true, 
         :is_active => true ,
-        :holiday_date => actual_booking_datetime.beginning_of_day..actual_booking_datetime.end_of_day
+        :holiday_date => ( actual_booking_datetime.beginning_of_day - 7.hours)..(actual_booking_datetime.end_of_day - 7.hours)
       ).order(" id DESC").first
       
       

@@ -53,75 +53,75 @@ describe PriceRule do
     )
   end
   
-  # it 'should have 3 price rules' do
-  #   @calendar.price_rules.count.should == 3 
-  # end
-  # 
-  # context "booking made" do
-  #   before(:each) do
-  #     
-  #     
-  #     
-  #     # Do booking at 9am jakarta time.. 2 am UTC time
-  #     @start_datetime =  DateTime.new( 2014, 2, 25, 
-  #                                   2, 0 , 0 
-  #               ) .new_offset( Rational(UTC_OFFSET,24) )
-  #               
-  #     puts "@start_datetime from client input: #{@start_datetime}"
-  #     puts "@start_datetime in the server: #{@start_datetime.utc}"
-  #     
-  #     @booking = Booking.create_object( {
-  #       :calendar_id => @calendar.id , 
-  #       :title => "#{@customer.name} booking",
-  #       :start_datetime => @start_datetime.utc, 
-  #       :number_of_hours => @number_of_hours ,
-  #       :customer_id => @customer.id ,
-  #       :is_downpayment_imposed => true
-  #     })
-  #     
-  #     @catch_all_price_rule  = @calendar.price_rules.where(:rule_case => PRICE_RULE_CASE[:catch_all]  ).first
-  #     
-  #   end
-  #   
-  #   it 'should create booking with catch-all price' do 
-  #     @booking.price_details.count.should == 1 
-  #     
-  #     # @booking.price_details.first.price_rule.rule_case.should == PRICE_RULE_CASE[:specific] 
-  #     @booking.price_details.first.price_rule.id.should == @catch_all_price_rule.id
-  #   end
-  # end
-  # 
-  # 
-  # 
-  # context "booking with single price rule,  SPECIFIC price rule" do
-  #   before(:each) do
-  #     
-  #     
-  #     
-  #     # start at 9 UTC time.. 9+17 == 16 jakarta time.. nothing to do with the specific rule
-  #     @start_datetime =  DateTime.new( 2013, 9, 15, 
-  #                                   10, 0 , 0 
-  #               ) .new_offset( Rational(0,24) )
-  #     
-  #     @booking = Booking.create_object( {
-  #       :calendar_id => @calendar.id , 
-  #       :title => "#{@customer.name} booking",
-  #       :start_datetime => @start_datetime, 
-  #       :number_of_hours => @number_of_hours ,
-  #       :customer_id => @customer.id ,
-  #       :is_downpayment_imposed => true
-  #     })
-  #   end
-  #   
-  #   it 'should create booking with new price' do
-  #     expected_amount = @number_of_hours*@specific_amount
-  #     puts "The start date: #{@booking.start_datetime}"
-  #     puts "actual amount : #{@booking.amount.to_s}"
-  #     puts "expected amount : #{expected_amount.to_s}"
-  #     @booking.amount.should == expected_amount
-  #   end 
-  # end
-  # 
+  it 'should have 3 price rules' do
+    @calendar.price_rules.count.should == 3 
+  end
+  
+  context "booking made" do
+    before(:each) do
+      
+      
+      
+      # Do booking at 9am jakarta time.. 2 am UTC time
+      @start_datetime =  DateTime.new( 2014, 2, 25, 
+                                    2, 0 , 0 
+                ) .new_offset( Rational(UTC_OFFSET,24) )
+                
+      puts "@start_datetime from client input: #{@start_datetime}"
+      puts "@start_datetime in the server: #{@start_datetime.utc}"
+      
+      @booking = Booking.create_object( {
+        :calendar_id => @calendar.id , 
+        :title => "#{@customer.name} booking",
+        :start_datetime => @start_datetime.utc, 
+        :number_of_hours => @number_of_hours ,
+        :customer_id => @customer.id ,
+        :is_downpayment_imposed => true
+      })
+      
+      @catch_all_price_rule  = @calendar.price_rules.where(:rule_case => PRICE_RULE_CASE[:catch_all]  ).first
+      
+    end
+    
+    it 'should create booking with catch-all price' do 
+      @booking.price_details.count.should == 1 
+      
+      # @booking.price_details.first.price_rule.rule_case.should == PRICE_RULE_CASE[:specific] 
+      @booking.price_details.first.price_rule.id.should == @catch_all_price_rule.id
+    end
+  end
+  
+  
+  
+  context "booking with single price rule,  SPECIFIC price rule" do
+    before(:each) do
+      
+      
+      
+      # start at 9 UTC time.. 9+17 == 16 jakarta time.. nothing to do with the specific rule
+      @start_datetime =  DateTime.new( 2013, 9, 15, 
+                                    10, 0 , 0 
+                ) .new_offset( Rational(0,24) )
+      
+      @booking = Booking.create_object( {
+        :calendar_id => @calendar.id , 
+        :title => "#{@customer.name} booking",
+        :start_datetime => @start_datetime, 
+        :number_of_hours => @number_of_hours ,
+        :customer_id => @customer.id ,
+        :is_downpayment_imposed => true
+      })
+    end
+    
+    it 'should create booking with new price' do
+      expected_amount = @number_of_hours*@specific_amount
+      puts "The start date: #{@booking.start_datetime}"
+      puts "actual amount : #{@booking.amount.to_s}"
+      puts "expected amount : #{expected_amount.to_s}"
+      @booking.amount.should == expected_amount
+    end 
+  end
+  
   context "booking with single price rule,  The specific starts at 1700.. our booking is 1630-1730" do
     before(:each) do
       

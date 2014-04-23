@@ -12,6 +12,7 @@ class Api::PriceRulesController < Api::BaseApiController
     
    
     params[:price_rule][:calendar_id] = @parent.id 
+    params[:price_rule][:rule_case] = PRICE_RULE_CASE[:specific]
     @object = PriceRule.create_object(params[:price_rule])
     
     
