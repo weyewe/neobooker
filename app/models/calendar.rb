@@ -92,7 +92,7 @@ class Calendar < ActiveRecord::Base
     new_object = self.new 
     new_object.title = params[:title]
     new_object.description = params[:description]
-    new_object.color = params[:color]
+    new_object.color = params[:color_picker]
     new_object.amount = BigDecimal( params[:amount])
     new_object.downpayment_percentage = BigDecimal( params[:downpayment_percentage] || 0 )
     new_object.save
@@ -123,7 +123,7 @@ class Calendar < ActiveRecord::Base
     
     self.title = params[:title]
     self.description = params[:description]
-    self.color = params[:color]
+    self.color = params[:color_picker]
     self.amount = new_price 
     self.downpayment_percentage = BigDecimal( params[:downpayment_percentage] || 0)
     self.save 
