@@ -79,9 +79,9 @@ class BookingsController < ApplicationController
     @start_datetime=  format_datetime_friendly(booking.start_datetime) 
     @end_datetime =  format_datetime_friendly(booking.end_datetime) 
     
-    @company = "Robert Futsal"
-    @address = "BSD Alam Sutra Block x no xx"
-    @phone = "0821 3140 1122"
+    @company = "Stadiums Futsal"
+    @address = "Jalan Pondok Jagung Timur No 35B"
+    @phone = "+622192011104"
     @booking = booking 
     
     # content = print_centered_line("Robert Futsal") + 
@@ -108,9 +108,9 @@ class BookingsController < ApplicationController
     @start_datetime=  format_datetime_friendly(booking.start_datetime) 
     @end_datetime =  format_datetime_friendly(booking.end_datetime) 
     
-    @company = "Robert Futsal"
-    @address = "BSD Alam Sutra Block x no xx"
-    @phone = "0821 3140 1122"
+    @company = "Stadiums Futsal"
+    @address = "Jalan Pondok Jagung Timur No 35B"
+    @phone = "+622192011104"
     @booking = booking
   
     # content = print_centered_line("Robert Futsal") + 
