@@ -25,6 +25,37 @@ class Booking < ActiveRecord::Base
   validate :valid_number_of_hours
   
   validate :no_double_booking
+  validate :limit_booking_from_8_to_12
+  
+  
+  def limit_booking_from_8_to_12
+    return if start_datetime.nil? 
+    return if number_of_hours.nil? or number_of_hours < 1 
+    
+    local_datetime = start_datetime.in_time_zone("Jakarta") 
+    finish_datetime = local_datetime + number_of_hours.hours 
+    
+    # earlier than 8am 
+    if local_datetime.hour < 8 
+      self.errors.add(:start_datetime, "Tidak boleh lebih awal dari jam 8 pagi")
+      return self 
+    end
+    
+    # different day
+    puts "finish_datetime: #{finish_datetime}"
+    puts "local_datetime: #{local_datetime}"
+    result = finish_datetime - local_datetime
+    puts "result.to_i : #{result.to_i}"
+    
+    is_at_the_same_day = Time.at(finish_datetime).to_date === Time.at(local_datetime).to_date
+    
+    
+    if not is_at_the_same_day
+      self.errors.add(:number_of_hours, "Booking hanya dari jam 8 sampai 12 malam")
+      return self
+    end
+    
+  end
   
   def no_double_booking
     return if calendar_id.nil? 
