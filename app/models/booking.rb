@@ -27,6 +27,18 @@ class Booking < ActiveRecord::Base
   validate :no_double_booking
   validate :limit_booking_from_8_to_12
   
+  validate :no_minutes_in_start_datetime 
+  
+  def no_minutes_in_start_datetime
+    return if start_datetime.nil? 
+    local_datetime = start_datetime.in_time_zone("Jakarta") 
+    
+    if local_datetime.to_datetime.minute !=  0 
+      self.errors.add(:start_datetime, "Waktu mulai booking harus bulat: tidak boleh ada menit.")
+      return self 
+    end
+  end
+  
   
   def limit_booking_from_8_to_12
     return if start_datetime.nil? 
@@ -346,9 +358,11 @@ Solution: get the PriceRule on that is active on the creation time
       new_object.update_end_datetime 
       new_object.update_price  
       new_object.generate_booking_code
+       
     end
     return new_object
   end
+   
   
   def update_object(params)
     

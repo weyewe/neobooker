@@ -121,10 +121,10 @@ Ext.define('AM.view.booking.booking.Form', {
         name : 'start_datetime',
         fieldLabel: ' Waktu Mulai',
 				dateCfg : {
-					format: 'Y-m-d',
+					format: 'Y-m-d'
 				},
 				timeCfg : {
-					increment : 30
+					increment : 60
 				}
 			},
 			{

@@ -64,7 +64,9 @@ Ext.define('AM.model.Booking', {
 					return { booking : record.data };
 				}
 			}
-		}
+		},
+		
+		awesomeDate : "2014-7-7"
 	
   
 });
