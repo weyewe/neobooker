@@ -66,7 +66,7 @@ Ext.define('AM.view.booking.booking.UpdateStartTimeForm', {
 		start_date_field.setValue(start_date);
 		
 		
-		console.log( record.get("start_datetime") );
+		// console.log( record.get("start_datetime") );
 		var start_hour = record.get("start_datetime").split(" ")[1].split(":")[0];
 		var start_min	 = record.get("start_datetime").split(" ")[1].split(":")[1];
 		var end_hour   = record.get("end_datetime").split(" ")[1].split(":")[0];
@@ -89,6 +89,9 @@ Ext.define('AM.view.booking.booking.UpdateStartTimeForm', {
 		// time_field.setMaxValue(12.toString() + ":59");
 		// time_field.setMinValue(11.toString() + ":00");
 		
+		time_field.setMaxValue("23:59");
+		time_field.setMinValue("8:00");
+		
 		// time_field.setMaxValue(end_hour + ":59");
 		// time_field.setMinValue(start_hour + ":00");
 		
@@ -99,10 +102,9 @@ Ext.define('AM.view.booking.booking.UpdateStartTimeForm', {
 		// console.log(actual_start_datetime);
 		
 		if( actual_start_datetime.length == 0 ){
-			time_field.setValue("17:07");
+			// time_field.setValue("17:07");
 			time_field.setValue( start_hour + ":" +  start_min.toString() );
 		}else{
-			console.log("has elength");
 			var actual_start_hour = record.get("actual_start_datetime").split(" ")[1].split(":")[0];
 			var actual_start_min	 = record.get("actual_start_datetime").split(" ")[1].split(":")[1];
 			time_field.setValue( actual_start_hour.toString() + ":" +  actual_start_min.toString() );

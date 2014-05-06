@@ -53,11 +53,8 @@ class Booking < ActiveRecord::Base
       return self 
     end
     
-    # different day
-    puts "finish_datetime: #{finish_datetime}"
-    puts "local_datetime: #{local_datetime}"
+     
     result = finish_datetime - local_datetime
-    puts "result.to_i : #{result.to_i}"
     
     is_at_the_same_day = Time.at(finish_datetime).to_date === Time.at(local_datetime).to_date
     
@@ -655,8 +652,17 @@ Solution: get the PriceRule on that is active on the creation time
       self.errors.add(:actual_start_datetime, "Jam mulai harus di isi")
       return self 
     end
+  
+    local_datetime = start_datetime.in_time_zone("Jakarta") 
+    
     
     self.actual_start_datetime = start_datetime
+    
+    if local_datetime.hour < 8 
+      self.errors.add(:actual_start_datetime, "Waktu mulai, dimulai dari jam 8 pagi")
+      return self 
+    end
+    
     self.save 
   end
   
@@ -678,7 +684,16 @@ Solution: get the PriceRule on that is active on the creation time
       return self 
     end
     
+    local_datetime = end_datetime.in_time_zone("Jakarta") 
+    
     self.actual_end_datetime = end_datetime
+    
+    if local_datetime.hour >23  
+      self.errors.add(:actual_end_datetime, "Waktu selesai, jam 12 malam (23:59)")
+      return self 
+    end
+    
+    
     self.save 
   end
   
