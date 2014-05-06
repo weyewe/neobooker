@@ -124,7 +124,9 @@ Ext.define('AM.view.booking.booking.Form', {
 					format: 'Y-m-d'
 				},
 				timeCfg : {
-					increment : 60
+					increment : 60,
+					maxValue: "23:59",
+					minValue: "08:00"
 				}
 			},
 			{
