@@ -75,6 +75,15 @@ Ext.define('AM.view.BookingCalendar', {
 				calendarStore : me.calendarStore,
 				flex : 5 ,
 				readOnly : true, 
+				
+				weekViewCfg : {
+					viewStartHour: 8,
+					viewEndHour: 24,
+				},
+				dayViewCfg : {
+					viewStartHour: 8,
+					viewEndHour: 24,
+				}
 			}
 			
 			// console.log("[END] building main panel");

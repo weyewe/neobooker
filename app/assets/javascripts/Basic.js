@@ -16,6 +16,9 @@ Ext.define('AM.view.calendar.Basic', {
 			
 			
 			
+			
+			
+			
 			this.callParent( arguments );
 		},
 		
