@@ -74,7 +74,7 @@ class Booking < ActiveRecord::Base
     selected_calendar_id = calendar_id 
     current_id = self.id 
     current_start_datetime = start_datetime
-    current_end_datetime = start_datetime + number_of_hours.hours 
+    current_end_datetime = start_datetime + number_of_hours.hours  - 1.seconds
     
     total_other_bookings = 0 
     if self.persisted?
@@ -98,7 +98,7 @@ class Booking < ActiveRecord::Base
             (end_datetime.gte current_end_datetime )
           )
         )
-      }.count 
+      } 
     else
       total_other_bookings = Booking.where{
         ( calendar_id.eq selected_calendar_id) & 
@@ -119,12 +119,15 @@ class Booking < ActiveRecord::Base
             (end_datetime.gte current_end_datetime )
           )
         )
-      }.count
+      } 
       
     end
     
-    if total_other_bookings > 0 
-      self.errors.add(:generic_errors, " Sudah ada #{total_other_bookings} booking parallel")
+    total_other_bookings_count = total_other_bookings.count 
+    total_other_bookings = total_other_bookings.map{|x| x.booking_code }
+    if total_other_bookings_count > 0 
+      self.errors.add(:generic_errors, " Sudah ada #{total_other_bookings_count} booking parallel: #{total_other_bookings}")
+      puts total_other_bookings 
       return 
     end
   end
@@ -319,7 +322,7 @@ Solution: get the PriceRule on that is active on the creation time
   
   def update_end_datetime
     return self.start_datetime if not self.number_of_hours.present? 
-    self.end_datetime = self.start_datetime + self.number_of_hours.hours
+    self.end_datetime = self.start_datetime + self.number_of_hours.hours  - 1.seconds
     self.save 
   end
   
@@ -795,5 +798,12 @@ Solution: get the PriceRule on that is active on the creation time
 end
 
 =begin
-Booking.where
+array = [] 
+Booking.all.each do |x|
+  x.update_end_datetime 
+  
+  if x.errors.size != 0 
+    array << x 
+  end
+end
 =end
