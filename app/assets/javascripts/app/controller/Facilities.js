@@ -102,7 +102,7 @@ Ext.define('AM.controller.Facilities', {
 
     view.down('form').loadRecord(record);
 		// view.setComboBoxData(record); 
-		view.setColorPickerData(record)
+		view.setColorPickerData(record);
   },
 
   updateObject: function(button) {
@@ -114,12 +114,21 @@ Ext.define('AM.controller.Facilities', {
     var record = form.getRecord();
     var values = form.getValues();
 
+		var colorpicker = form.down("customcolorpicker");
+		// console.log( colorpicker.getValue() );
+		
+		
+
+// move color_picker value to color 
+
 		// console.log("Inside updateObject");
 		// console.log("The values");
 		// console.log(values);
 		if( record ){
 			record.set( values );
 			 
+			record.set('color'  , colorpicker.getValue()   ) ;
+			
 			form.setLoading(true);
 			record.save({
 				success : function(record){
@@ -143,6 +152,7 @@ Ext.define('AM.controller.Facilities', {
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
 			var newObject = new AM.model.Facility( values ) ;
+			newObject.set('color'  , colorpicker.getValue()   ) ;
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing

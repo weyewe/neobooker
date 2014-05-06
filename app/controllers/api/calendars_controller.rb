@@ -35,10 +35,14 @@ class Api::CalendarsController < Api::BaseApiController
     @object = Calendar.create_object( params[:calendar])
  
     if @object.errors.size == 0 
+      
       render :json => { :success => true, 
                         :calendars => [@object] , 
                         :total => Calendar.active_objects.count }  
     else
+      puts "It is fucking error!!\n"*10
+      @object.errors.messages.each {|x| puts x }
+      
       msg = {
         :success => false, 
         :message => {

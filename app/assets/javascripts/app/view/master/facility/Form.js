@@ -85,6 +85,8 @@ Ext.define('AM.view.master.facility.Form', {
   },
 
 	setColorPickerData: function( record ) {
+		// console.log("Inside setColorPickerData");
+		// console.log( record ) ;
 		var colorId =  record.get("color")
 		if(!colorId){
 			colorId = 0 ;

@@ -55,10 +55,10 @@ data_entry_role = {
 }
 
 data_entry_role = Role.create!(
-:name        => ROLE_NAME[:data_entry],
-:title       => 'Data Entry',
-:description => 'Role for data entry',
-:the_role    => data_entry_role.to_json
+  :name        => ROLE_NAME[:data_entry],
+  :title       => 'Data Entry',
+  :description => 'Role for data entry',
+  :the_role    => data_entry_role.to_json
 )
 
 
