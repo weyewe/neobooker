@@ -135,7 +135,7 @@ class Api::BookingsController < Api::BaseApiController
     @object = Booking.find(params[:id])
     puts "Gonna destroy "
     if @object.is_confirmed? 
-      if not current_user.has_role?(:bookings , :post_confirm_delete)
+      if not current_user.has_role?(:bookings , :post_confirm_destroy)
         render :json => {:success => false, :access_denied => "Sudah Konfirmasi. Hanya dapat di hapus manager atau admin"}
         return 
       end
