@@ -80,6 +80,7 @@ class Booking < ActiveRecord::Base
     if self.persisted?
       total_other_bookings = Booking.where{
         ( calendar_id.eq selected_calendar_id) & 
+        ( is_deleted.eq false ) & 
         ( id.not_eq current_id ) & 
         (
           # current_start_datetime intersection 
@@ -102,6 +103,7 @@ class Booking < ActiveRecord::Base
     else
       total_other_bookings = Booking.where{
         ( calendar_id.eq selected_calendar_id) & 
+        ( is_deleted.eq false ) & 
         (
           # current_start_datetime intersection 
           ( 
