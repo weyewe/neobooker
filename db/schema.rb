@@ -55,6 +55,8 @@ ActiveRecord::Schema.define(version: 20140402144232) do
     t.boolean  "is_deleted",                                      default: false
     t.boolean  "is_paid",                                         default: false
     t.datetime "paid_datetime"
+    t.boolean  "is_salvaged",                                     default: false
+    t.datetime "salvage_datetime"
     t.decimal  "amount",                 precision: 12, scale: 2, default: 0.0
     t.boolean  "is_downpayment_imposed",                          default: true
     t.string   "code"

@@ -31,7 +31,7 @@ describe Booking do
     
     @number_of_hours = 2 
     @start_datetime =  DateTime.new( 2013, 9, 15, 
-                                  17, 0 , 0 
+                                  9, 0 , 0 
               ) .new_offset( Rational(0,24) )
               
     @booking = Booking.create_object( {

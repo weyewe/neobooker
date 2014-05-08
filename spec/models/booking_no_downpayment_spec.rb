@@ -31,8 +31,10 @@ describe Booking do
     
     @number_of_hours = 2 
     @start_datetime =  DateTime.new( 2013, 9, 15, 
-                                  17, 0 , 0 
+                                  8, 0 , 0 
               ) .new_offset( Rational(0,24) )
+              
+              
               
     @booking = Booking.create_object( {
       :calendar_id => @calendar.id , 
@@ -43,7 +45,11 @@ describe Booking do
       :is_downpayment_imposed => false 
     })
     
-    # @booking.reload
+    
+    # @booking.errors.messages.each {|x| puts x}
+    # local_datetime = @start_datetime.in_time_zone("Jakarta") 
+    # puts "start_datetime: #{@start_datetime}"
+    # puts "Local datetime: #{local_datetime}"
     
   end
   

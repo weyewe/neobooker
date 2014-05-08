@@ -141,7 +141,6 @@ class Api::BookingsController < Api::BaseApiController
       end
     end
     
-    puts "it has the role for post confirm delete"
     
     @object.delete_object
 
@@ -192,6 +191,29 @@ class Api::BookingsController < Api::BaseApiController
     @object.pay   
     
     if @object.errors.size == 0  and @object.is_confirmed?  and @object.is_paid? 
+      render :json => { :success => true, :total => Booking.active_objects.count }  
+    else
+      # render :json => { :success => false, :total => Delivery.active_objects.count } 
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg 
+    end
+  end
+  
+  def execute_salvage
+    @object = Booking.find_by_id params[:id]
+    # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
+    @object.execute_salvage   
+    @object.reload
+    
+    puts "=======> the error: #{@object.errors.messages.each {|x| puts x}}"
+    puts "error count: #{@object.errors.size}"
+    if @object.errors.size == 0  and @object.is_salvaged?   
       render :json => { :success => true, :total => Booking.active_objects.count }  
     else
       # render :json => { :success => false, :total => Delivery.active_objects.count } 

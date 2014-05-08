@@ -95,7 +95,7 @@ describe Calendar do
       before(:each) do
         @number_of_hours = 2 
         @start_datetime =  DateTime.new( 2013, 9, 15, 
-                                      17, 0 , 0 
+                                      10, 0 , 0 
                   ) .new_offset( Rational(0,24) )
                   
                   

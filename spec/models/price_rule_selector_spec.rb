@@ -131,7 +131,7 @@ describe PriceRule do
       # what day is 2013/9/15 == Sunday
       # of course, it will use @specific_price_rule
       @start_datetime =  DateTime.new( 2013, 9, 15, 
-                                    9, 30 , 0 
+                                    9, 0 , 0 
                 ) .new_offset( Rational(0,24) )
       
       @booking = Booking.create_object( {
@@ -155,7 +155,7 @@ describe PriceRule do
       # start at 9 UTC time.. 9+17 == 16 jakarta time.. nothing to do with the specific rule
       # on sunday, the rule doesn't apply 
       @start_datetime =  DateTime.new( 2013, 9, 15, 
-                                    9, 30 , 0 
+                                    9, 0 , 0 
                 ) .new_offset( Rational(0,24) )
       
       @new_number_of_hours = 2
@@ -195,7 +195,7 @@ describe PriceRule do
       )
       
       @start_datetime =  DateTime.new( 2013, 9, 15, 
-                                    9, 30 , 0 
+                                    9, 0 , 0 
                 ) .new_offset( Rational(0,24) )
       
       @new_number_of_hours = 2

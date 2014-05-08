@@ -50,6 +50,10 @@ Ext.define('AM.controller.Bookings', {
         click: this.confirmObject
 			}	,
 			
+			'bookinglist button[action=salvageObject]': {
+        click: this.salvageObject
+			}	,
+			
 			'bookinglist button[action=startObject]': {
         click: this.startObject
 			}	,
@@ -83,14 +87,15 @@ Ext.define('AM.controller.Bookings', {
 			},
 			'paybookingform button[action=pay]' : {
 				click : this.executePayBooking
+			},
+			'salvagebookingform button[action=salvage]' : {
+				click : this.executeSalvageBooking
 			}
 		
     });
   },
 
 	print_sale: function(id){
-		console.log("inside print_sale");
-		console.log("id: " + id );
 		
 		var ps_width = 380; 
 		var ps_height = 550; 
@@ -296,6 +301,7 @@ Ext.define('AM.controller.Bookings', {
 			
 			if( record.get("is_confirmed")){
 				grid.enableConfirmReceiptButton();
+				grid.enableSalvageBookingButton();
 			}
 			
 			if( record.get("is_paid")){
@@ -325,6 +331,7 @@ Ext.define('AM.controller.Bookings', {
 		var record = this.getList().getSelectedObject();
 		var list = this.getList();
 		me.getViewport().setLoading( true ) ;
+		// win.setLoading(true);
 		
 		if(!record){return;}
 		
@@ -573,4 +580,85 @@ Ext.define('AM.controller.Bookings', {
 				}
 		});
 	},
+	
+	
+	salvageObject : function(){
+		var view = Ext.widget('salvagebookingform');
+		var record = this.getList().getSelectedObject();
+		view.setParentData( record );
+    view.show();
+	},
+	
+	executeSalvageBooking : function(button){
+		var win = button.up('window');
+    var form = win.down('form');
+
+		var me  = this;
+		var record = this.getList().getSelectedObject();
+		var list = this.getList();
+		me.getViewport().setLoading( true ) ;
+		
+		if(!record){return;}
+		
+		Ext.Ajax.request({
+		    url: 'api/execute_salvage',
+		    method: 'PUT',
+		    params: {
+					id : record.get('id')
+		    },
+		    jsonData: {},
+		    success: function(result, request ) {
+					// console.log("Supposed to be failing");
+					// console.log( result ) ;
+					
+					var responseText=  result.responseText; 
+					var data = Ext.decode(responseText );
+					
+					if( data['success'] !== true ){
+						var message =  data['message']['errors']['generic_errors']; 
+						Ext.MessageBox.show({
+						           title: 'FAIL',
+						           msg: message,
+						           buttons: Ext.MessageBox.OK, 
+						           icon: Ext.MessageBox.ERROR
+						       });
+					}else{
+						list.getStore().load({
+							callback : function(records, options, success){
+								// this => refers to a store 
+								record = this.getById(record.get('id'));
+								// record = records.getById( record.get('id'))
+								list.fireEvent('confirmed', record);
+							}
+						});
+					}
+					
+					
+						me.getViewport().setLoading( false );
+						
+						win.close();
+						
+		    },
+				failure : function(record,op ){
+					// fail case if the internal server error
+					// not the tag success : false 
+					list.setLoading(false);
+					
+					
+					var message  = op.request.scope.reader.jsonData["message"];
+					var errors = message['errors'];
+					
+					if( errors["generic_errors"] ){
+						Ext.MessageBox.show({
+						           title: 'FAIL',
+						           msg: errors["generic_errors"],
+						           buttons: Ext.MessageBox.OK, 
+						           icon: Ext.MessageBox.ERROR
+						       });
+					}
+					
+				}
+		});
+	},
+	
 });

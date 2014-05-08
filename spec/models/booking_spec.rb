@@ -38,8 +38,9 @@ describe Booking do
       
       @number_of_hours = 2 
       @start_datetime =  DateTime.new( 2013, 9, 15, 
-                                    17, 0 , 0 
+                                    8, 0 , 0 
                 ) .new_offset( Rational(0,24) )
+                # jakarta time = 8 + 7 == 15 
                 
       @booking = Booking.create_object( {
         :calendar_id => @calendar.id , 
@@ -51,6 +52,7 @@ describe Booking do
       })
       
       @price_detail = PriceDetail.first 
+      @booking.errors.messages.each {|x| puts x }
       @booking.reload 
     end
     

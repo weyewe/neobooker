@@ -80,7 +80,8 @@ class Booking < ActiveRecord::Base
     if self.persisted?
       total_other_bookings = Booking.where{
         ( calendar_id.eq selected_calendar_id) & 
-        ( is_deleted.eq false ) & 
+        ( is_deleted.eq false ) &  
+        ( is_salvaged.eq false ) &  
         ( id.not_eq current_id ) & 
         (
           # current_start_datetime intersection 
@@ -103,7 +104,8 @@ class Booking < ActiveRecord::Base
     else
       total_other_bookings = Booking.where{
         ( calendar_id.eq selected_calendar_id) & 
-        ( is_deleted.eq false ) & 
+        ( is_deleted.eq false ) &
+        ( is_salvaged.eq false ) &   
         (
           # current_start_datetime intersection 
           ( 
@@ -370,7 +372,8 @@ Solution: get the PriceRule on that is active on the creation time
     
     
     if self.is_confirmed? or self.is_paid? 
-      self.update_post_confirm(params)
+      # self.update_post_confirm(params)
+      self.errors.add(:generic_errors, "Sudah konfirmasi. Tidak bisa update data booking")
       return self
     end
     
@@ -421,6 +424,13 @@ Solution: get the PriceRule on that is active on the creation time
       return self 
     end
     
+    
+    is_start_datetime_changed = false  
+    
+    if start_datetime != params[:start_datetime]
+      is_start_datetime_changed = true 
+    end
+    
     is_number_of_hours_changed = false 
     is_discount_changed = false 
     if self.number_of_hours != params[:number_of_hours].to_i
@@ -430,6 +440,8 @@ Solution: get the PriceRule on that is active on the creation time
     if self.discount != BigDecimal( params[:discount])
       is_discount_changed = true 
     end
+    
+    
     
     
     self.start_datetime = params[:start_datetime]
@@ -720,9 +732,14 @@ Solution: get the PriceRule on that is active on the creation time
     
     if self.is_confirmed? and not self.is_paid?
       SalvageBooking.create_object :booking_id => self.id, :salvaged_datetime => DateTime.now  
-    else
-      self.errors.add(:generic_errors, "Booking harus sudah dikonfirmasi dan belum dibayar sisanya")
+      self.is_salvaged = true
+      self.save
+    elsif not self.is_confirmed?
+      self.errors.add(:generic_errors, "Booking belum di konfirmasi")
       return self 
+    elsif self.is_paid?
+      self.errors.add(:generic_errors, "Booking sudah dibayar dan selesai dipakai")
+      return self
     end
   end
   
@@ -732,7 +749,10 @@ Solution: get the PriceRule on that is active on the creation time
       self.is_deleted = true 
       self.save 
       
-      self.salvaged_booking.delete_object 
+      if not self.salvage_booking.nil?
+        self.salvage_booking.delete_object 
+      end
+     
       
     else
       self.destroy 

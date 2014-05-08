@@ -39,6 +39,9 @@ class CreateBookings < ActiveRecord::Migration
       t.boolean :is_paid, :default => false 
       t.datetime :paid_datetime 
       
+      
+      t.boolean :is_salvaged, :default => false
+      t.datetime :salvage_datetime 
      
       
       t.decimal :amount,  :default        => 0,  :precision => 12, :scale => 2 

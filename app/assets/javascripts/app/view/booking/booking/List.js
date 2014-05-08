@@ -28,7 +28,8 @@ Ext.define('AM.view.booking.booking.List' ,{
 				 			'Start:<br /> <b>{start_datetime}</b>' + '<br />' + '<br />' +
 							'Durasi(jam):<br /> <b>{number_of_hours}</b>'  + '<br />' + '<br />' +
 							"Harga: <br /><b>{total_price}</b>" + '<br />' + 
-							'Discount(%):<br /> <b>{discount}</b>'  
+							'Discount(%):<br /> <b>{discount}</b>'  + '<br />'  + '<br />' + 
+							'Salvaged?:<br /> <b>{is_salvaged}</b>'
 			},
 			
 			{
@@ -121,6 +122,12 @@ Ext.define('AM.view.booking.booking.List' ,{
 			emptyText : "Search",
 			checkChangeBuffer: 300
 		}); 
+		
+		this.salvageButton = new Ext.Button({
+			text: 'Salvage',
+			action: 'salvageObject',
+			disabled: true 
+		});
 
 
 
@@ -133,7 +140,11 @@ Ext.define('AM.view.booking.booking.List' ,{
 			this.endObjectButton,
 			this.payObjectButton,
 			this.payReceiptButton, 
-		 this.searchField ];
+			
+		 this.searchField, '->',
+		this.salvageButton,
+		 
+		 ];
 		
 		
 		this.bbar = Ext.create("Ext.PagingToolbar", {
@@ -165,6 +176,13 @@ Ext.define('AM.view.booking.booking.List' ,{
 		this.confirmReceiptButton.enable();
 	},
 	
+	enableSalvageBookingButton : function(){
+		this.salvageButton.enable();
+	},
+	disableSalvageBookingButton : function(){
+		this.salvageButton.disable();
+	},
+	
 	enablePayReceiptButton : function(){
 		this.payReceiptButton.enable();
 	},
@@ -179,5 +197,6 @@ Ext.define('AM.view.booking.booking.List' ,{
 		
 		this.confirmReceiptButton.disable();
 		this.payReceiptButton.disable();
+		this.salvageButton.disable();
 	}
 });

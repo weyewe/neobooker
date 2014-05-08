@@ -48,7 +48,7 @@ describe PriceRule do
                   Rational( UTC_OFFSET , 24) ).utc
                   
   
-    @start_datetime = @holiday_date + 3.hours
+    @start_datetime = @holiday_date + 9.hours
     
     
     @holiday_price_rule = PriceRule.create_holiday_object(
@@ -74,6 +74,7 @@ describe PriceRule do
   end
   
   it 'should select the holiday price rule' do
+    @booking.errors.messages.each {|x| puts x }
     @booking.should be_valid
     price_rule_id_list = @booking.price_details.map{|x| x.price_rule_id}
     price_rule_id_list.uniq!
