@@ -56,7 +56,7 @@ class Booking < ActiveRecord::Base
      
     result = finish_datetime - local_datetime
     
-    is_at_the_same_day = Time.at(finish_datetime).to_date === Time.at(local_datetime).to_date
+    is_at_the_same_day = Time.at(finish_datetime  -1.seconds).to_date === Time.at(local_datetime).to_date 
     
     
     if not is_at_the_same_day

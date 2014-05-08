@@ -230,38 +230,38 @@ if Rails.env.development?
   calendar_array = [c1,c2,c3,c4]
   customer_array = [cust_1, cust_2, cust_3, cust_4 ]
 
-  # 
-  # 
-  # (-30..0).each do |day|
-  #   calendar_array.each do |calendar|
-  #     customer = customer_array[ rand(0..customer_array.length-1)]
-  # 
-  #     starting_hour = rand( (9-7)..(18-7))  # stored as UTC.. we need to adjust with the conversion to Jakarta time
-  #     duration = rand(1..4)
-  # 
-  #     start_datetime = make_date( day, starting_hour)
-  # 
-  #     booking_params = {
-  #       :calendar_id => calendar.id , 
-  #       :title => "#{customer.name} booking",
-  #       :start_datetime => start_datetime , 
-  #       :number_of_hours => duration ,
-  #       :customer_id => customer.id ,
-  #       :is_downpayment_imposed => true 
-  #     }
-  # 
-  #     booking = Booking.create_object booking_params 
-  #     if booking.errors.size != 0 
-  #       booking.errors.each do |msg|
-  #         puts msg 
-  #       end
-  #     end
-  # 
-  #     booking.confirm
-  #     booking.pay 
-  #   end
-  # end
-  # 
+  
+  
+  (-30..0).each do |day|
+    calendar_array.each do |calendar|
+      customer = customer_array[ rand(0..customer_array.length-1)]
+  
+      starting_hour = rand( (9-7)..(18-7))  # stored as UTC.. we need to adjust with the conversion to Jakarta time
+      duration = rand(1..4)
+  
+      start_datetime = make_date( day, starting_hour)
+  
+      booking_params = {
+        :calendar_id => calendar.id , 
+        :title => "#{customer.name} booking",
+        :start_datetime => start_datetime , 
+        :number_of_hours => duration ,
+        :customer_id => customer.id ,
+        :is_downpayment_imposed => true 
+      }
+  
+      booking = Booking.create_object booking_params 
+      if booking.errors.size != 0 
+        booking.errors.each do |msg|
+          puts msg 
+        end
+      end
+  
+      booking.confirm
+      booking.pay 
+    end
+  end
+  
 
 
 end
