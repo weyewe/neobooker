@@ -62,7 +62,8 @@ Ext.define('AM.view.booking.booking.UpdateEndTimeForm', {
 		var time_field = end_datetime_field.down("timefield");
 	
 		time_field.setMaxValue("23:59");
-		time_field.setMinValue("8:00");
+		// time_field.setMinValue("8:00");
+		time_field.setMinValue("00:00");
 		
 		var end_date = record.get("end_datetime").split(" ")[0];
 		end_date_field.format = 'Y-m-d';

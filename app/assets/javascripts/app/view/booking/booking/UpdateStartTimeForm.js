@@ -90,7 +90,9 @@ Ext.define('AM.view.booking.booking.UpdateStartTimeForm', {
 		// time_field.setMinValue(11.toString() + ":00");
 		
 		time_field.setMaxValue("23:59");
-		time_field.setMinValue("8:00");
+		// time_field.setMinValue("8:00");
+		
+		time_field.setMinValue("00:00");
 		
 		// time_field.setMaxValue(end_hour + ":59");
 		// time_field.setMinValue(start_hour + ":00");

@@ -25,7 +25,7 @@ class Booking < ActiveRecord::Base
   validate :valid_number_of_hours
   
   validate :no_double_booking
-  validate :limit_booking_from_8_to_12
+  # validate :limit_booking_from_8_to_12
   
   validate :no_minutes_in_start_datetime 
   
@@ -675,10 +675,10 @@ Solution: get the PriceRule on that is active on the creation time
     
     self.actual_start_datetime = start_datetime
     
-    if local_datetime.hour < 8 
-      self.errors.add(:actual_start_datetime, "Waktu mulai, dimulai dari jam 8 pagi")
-      return self 
-    end
+    # if local_datetime.hour < 8 
+    #   self.errors.add(:actual_start_datetime, "Waktu mulai, dimulai dari jam 8 pagi")
+    #   return self 
+    # end
     
     self.save 
   end
@@ -705,10 +705,10 @@ Solution: get the PriceRule on that is active on the creation time
     
     self.actual_end_datetime = end_datetime
     
-    if local_datetime.hour >23  
-      self.errors.add(:actual_end_datetime, "Waktu selesai, jam 12 malam (23:59)")
-      return self 
-    end
+    # if local_datetime.hour >23  
+    #   self.errors.add(:actual_end_datetime, "Waktu selesai, jam 12 malam (23:59)")
+    #   return self 
+    # end
     
     
     self.save 
