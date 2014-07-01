@@ -77,11 +77,13 @@ Ext.define('AM.view.BookingCalendar', {
 				readOnly : true, 
 				
 				weekViewCfg : {
-					viewStartHour: 8,
+					// viewStartHour: 8,
+					viewStartHour: 0,
 					viewEndHour: 24,
 				},
 				dayViewCfg : {
-					viewStartHour: 8,
+					// viewStartHour: 8,
+					viewStartHour: 0,
 					viewEndHour: 24,
 				}
 			}
