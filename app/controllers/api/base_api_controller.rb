@@ -50,7 +50,7 @@ class Api::BaseApiController < ApplicationController
     # date = Date.new( date_array[0], date_array[1], date_array[2])
     # return date.to_datetime
     
-    datetime = DateTime.new(date_array[0], date_array[1], date_array[2], 0 ,0 ,0) 
+    datetime = DateTime.new(date_array[0], date_array[1], date_array[2], 0 ,0 ,0, Rational( UTC_OFFSET , 24) ) 
     # puts "inside extraction.. the datetime: #{datetime}"
     return datetime 
   end
