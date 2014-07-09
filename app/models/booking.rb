@@ -155,6 +155,7 @@ Solution: get the PriceRule on that is active on the creation time
     # puts "The start datetime: #{start_datetime}"
     
     local_datetime = start_datetime.in_time_zone("Jakarta") 
+    server_datetime = start_datetime
     # puts "Jakarta_datetime: #{local_datetime} "
     result_array = []
     current_calendar_id = self.calendar_id
@@ -166,6 +167,7 @@ Solution: get the PriceRule on that is active on the creation time
     (1..number_of_hours).each do |x|
       datetime = local_datetime + (x-1).hours 
       actual_booking_datetime = start_datetime + (x-1).hours 
+      server_booking_datetime = server_datetime + (x-1).hours
       
       book_hour_start = datetime.hour
       booking_creation_datetime = self.created_at 
@@ -175,7 +177,7 @@ Solution: get the PriceRule on that is active on the creation time
       holiday_price_rule = PriceRule.where(
         :is_holiday => true, 
         :is_active => true ,
-        :holiday_date => ( actual_booking_datetime.beginning_of_day - 7.hours)..(actual_booking_datetime.end_of_day - 7.hours)
+        :holiday_date => ( server_booking_datetime.beginning_of_day)..(server_booking_datetime.end_of_day)
       ).order(" id DESC").first
       
       
