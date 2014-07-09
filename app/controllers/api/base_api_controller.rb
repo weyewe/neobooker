@@ -104,6 +104,10 @@ class Api::BaseApiController < ApplicationController
   end
   
   def parse_date( date_string) 
+    
+    if date_string.length == 0 
+      return nil
+    end
     date_array = date_string.split('-').map{|x| x.to_i}
      
      

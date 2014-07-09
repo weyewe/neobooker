@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140402144232) do
+ActiveRecord::Schema.define(version: 20140709040554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,22 +109,23 @@ ActiveRecord::Schema.define(version: 20140402144232) do
   create_table "price_rules", force: true do |t|
     t.integer  "hour_start"
     t.integer  "hour_end"
-    t.boolean  "is_sunday",                               default: false
-    t.boolean  "is_monday",                               default: false
-    t.boolean  "is_tuesday",                              default: false
-    t.boolean  "is_wednesday",                            default: false
-    t.boolean  "is_thursday",                             default: false
-    t.boolean  "is_friday",                               default: false
-    t.boolean  "is_saturday",                             default: false
-    t.decimal  "amount",         precision: 12, scale: 2, default: 0.0
-    t.integer  "rule_case",                               default: 1
+    t.boolean  "is_sunday",                                    default: false
+    t.boolean  "is_monday",                                    default: false
+    t.boolean  "is_tuesday",                                   default: false
+    t.boolean  "is_wednesday",                                 default: false
+    t.boolean  "is_thursday",                                  default: false
+    t.boolean  "is_friday",                                    default: false
+    t.boolean  "is_saturday",                                  default: false
+    t.decimal  "amount",              precision: 12, scale: 2, default: 0.0
+    t.integer  "rule_case",                                    default: 1
     t.integer  "calendar_id"
-    t.boolean  "is_active",                               default: true
+    t.boolean  "is_active",                                    default: true
     t.datetime "deactivated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "holiday_date"
-    t.boolean  "is_holiday",                              default: false
+    t.boolean  "is_holiday",                                   default: false
+    t.datetime "finish_holiday_date"
   end
 
   create_table "prices", force: true do |t|

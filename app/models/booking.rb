@@ -175,10 +175,18 @@ Solution: get the PriceRule on that is active on the creation time
    
       # check if there is holiday on that day
       holiday_price_rule = PriceRule.where(
+        :calendar_id => self.calendar_id, 
         :is_holiday => true, 
         :is_active => true ,
         :holiday_date => ( server_booking_datetime.beginning_of_day)..(server_booking_datetime.end_of_day)
       ).order(" id DESC").first
+       #      
+       # holiday_price_rule = PriceRule.where(
+       #   :calendar_id => self.calendar_id, 
+       #   :is_holiday => true, 
+       #   :is_active => true ,
+       #   :holiday_date => ( server_datetime.beginning_of_day)..(server_datetime.end_of_day)
+       # ).order(" id DESC").first
       
       
       if not holiday_price_rule.nil?
