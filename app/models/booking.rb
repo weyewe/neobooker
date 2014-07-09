@@ -56,7 +56,7 @@ class Booking < ActiveRecord::Base
      
     result = finish_datetime - local_datetime
     
-    is_at_the_same_day = Time.at(finish_datetime  -1.seconds).to_date === Time.at(local_datetime).to_date 
+    is_at_the_same_day = Time.at(finish_datetime  - 1.seconds).to_date === Time.at(local_datetime).to_date 
     
     
     if not is_at_the_same_day
@@ -150,6 +150,12 @@ It has to be fixed: add number_of_hours.
 
 Solution: get the PriceRule on that is active on the creation time 
 =end
+=begin
+  PriceRule.where(:is_holiday => true).each do |pr|
+    pr.finish_holiday_date =  pr.holiday_date + 24.hours - 1.seconds
+    pr.save  
+  end
+=end
 
   def price_rules 
     # puts "The start datetime: #{start_datetime}"
@@ -172,21 +178,41 @@ Solution: get the PriceRule on that is active on the creation time
       book_hour_start = datetime.hour
       booking_creation_datetime = self.created_at 
       
-   
-      # check if there is holiday on that day
-      holiday_price_rule = PriceRule.where(
-        :calendar_id => self.calendar_id, 
-        :is_holiday => true, 
-        :is_active => true ,
-        :holiday_date => ( server_booking_datetime.beginning_of_day)..(server_booking_datetime.end_of_day)
-      ).order(" id DESC").first
-       #      
-       # holiday_price_rule = PriceRule.where(
-       #   :calendar_id => self.calendar_id, 
-       #   :is_holiday => true, 
-       #   :is_active => true ,
-       #   :holiday_date => ( server_datetime.beginning_of_day)..(server_datetime.end_of_day)
-       # ).order(" id DESC").first
+      
+      current_calendar_id = self.calendar_id  
+      
+      
+      holiday_price_rule = PriceRule.where{
+        #  to ensure that we are using the old price at the time of creation
+        (
+          calendar_id.eq current_calendar_id
+        ) & 
+        (
+          is_holiday.eq true 
+        ) & 
+        (
+          # is still active, and created before the booking creation 
+          (
+            ( is_active.eq true) & 
+            (created_at.lte booking_creation_datetime)
+          ) | 
+          # is not active, and created before the booking creation
+          # and deactivated after the booking creation => 
+          # Hence, the rule is still in place
+          (
+            ( is_active.eq false) & 
+            ( created_at.lte booking_creation_datetime) & 
+            ( deactivated_at.gt booking_creation_datetime)
+          )
+        )  & 
+
+        # 0 - 23 
+        (
+          ( holiday_date.lte server_booking_datetime ) & 
+          ( finish_holiday_date.gt (server_booking_datetime + 1.hours - 1.seconds) )
+        )
+      }.order(" id DESC").first
+      
       
       
       if not holiday_price_rule.nil?

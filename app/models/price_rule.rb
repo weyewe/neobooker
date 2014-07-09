@@ -51,6 +51,10 @@ class PriceRule < ActiveRecord::Base
     
     new_object = self.new 
     
+    
+    
+    
+    
     new_object.is_sunday      = false 
     new_object.is_monday      = false 
     new_object.is_tuesday     = false 
@@ -66,7 +70,21 @@ class PriceRule < ActiveRecord::Base
     new_object.is_holiday =  true 
     new_object.holiday_date = params[:holiday_date]
     
-    new_object.save 
+    
+    if  ( not new_object.holiday_date.present? )  
+        new_object.errors.add(:generic_errors, "harus ada tanggal")
+        return new_object 
+    end
+    
+     
+    
+    if new_object.save 
+      puts "gonna add new_object.save"
+      new_object.finish_holiday_date = new_object.holiday_date + 24.hours - 1.seconds 
+      new_object.save
+      
+      puts "Total erros: #{new_object.errors.size}"
+    end
     return new_object
   end
   
@@ -81,7 +99,10 @@ class PriceRule < ActiveRecord::Base
     self.amount         = params[:amount ]
     self.holiday_date = params[:holiday_date]
     
-    self.save
+    if self.save
+      self.finish_holiday_date = self.holiday_date + 24.hours - 1.seconds 
+      self.save 
+    end
     
     return self 
   end
@@ -104,6 +125,8 @@ class PriceRule < ActiveRecord::Base
     new_object.calendar_id    = params[:calendar_id  ]
     new_object.hour_start    = params[:hour_start  ]
     new_object.hour_end    = params[:hour_end  ]
+    
+    
     
     new_object.save 
     return new_object
