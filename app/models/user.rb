@@ -92,7 +92,7 @@ class User < ActiveRecord::Base
     admin_role = Role.find_by_name ROLE_NAME[:admin]
     
     new_object                        = User.new 
-    password                         = UUIDTools::UUID.timestamp_create.to_s[0..7]
+    password                         = "willy1234" # UUIDTools::UUID.timestamp_create.to_s[0..7]
     new_object.name                  = params[:name]
     new_object.email                 = params[:email] 
     new_object.role_id               =   params[:role_id]
