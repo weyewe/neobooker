@@ -9,7 +9,9 @@ class Api::PriceRulesController < Api::BaseApiController
   def create
    
     @parent = Calendar.find_by_id params[:calendar_id]
-    params[:price_rule][:holiday_date] =  parse_datetime_from_client_booking( params[:price_rule][:holiday_date] )
+    if( params[:price_rule][:holiday_date].present? )
+      params[:price_rule][:holiday_date] =  parse_datetime_from_client_booking( params[:price_rule][:holiday_date] )
+    end
    
     params[:price_rule][:calendar_id] = @parent.id 
     params[:price_rule][:rule_case] = PRICE_RULE_CASE[:specific]
@@ -38,7 +40,9 @@ class Api::PriceRulesController < Api::BaseApiController
     
     
     params[:price_rule][:calendar_id] = @parent.id 
-    params[:price_rule][:holiday_date] =  parse_datetime_from_client_booking( params[:price_rule][:holiday_date] )
+    if( params[:price_rule][:holiday_date].present? )
+      params[:price_rule][:holiday_date] =  parse_datetime_from_client_booking( params[:price_rule][:holiday_date] )
+    end
     
     @object.update_object( params[:price_rule])
      
