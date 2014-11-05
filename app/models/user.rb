@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
      
     
     if new_object.valid? and Rails.env.production? 
-      UserMailer.notify_new_user_registration( new_object , password    ).deliver
+      # UserMailer.notify_new_user_registration( new_object , password    ).deliver
       # if Rails.env.production?
       #   UserMailer.notify_new_user_registration( new_object , password    ).deliver
       # end
