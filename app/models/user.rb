@@ -152,7 +152,7 @@ class User < ActiveRecord::Base
     self.password_confirmation = password 
     
     if self.save
-      UserMailer.notify_reset_password( employee, self , password    ).deliver
+      # UserMailer.notify_reset_password( employee, self , password    ).deliver
     end
     
     return self
