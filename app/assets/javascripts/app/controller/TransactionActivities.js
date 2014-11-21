@@ -56,6 +56,7 @@ Ext.define('AM.controller.TransactionActivities', {
 				change: this.liveSearch
 			},
 			
+ 
 			
 			// confirming the transaction 
 			'transactionactivitylist button[action=confirmObject]': {
