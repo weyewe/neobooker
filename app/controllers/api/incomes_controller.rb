@@ -28,8 +28,16 @@ class Api::IncomesController < Api::BaseApiController
     elsif params[:startDate].present? 
       startDate = extract_extensible_date( params[:startDate])
       endDate = ( extract_extensible_date(params[:endDate]) + 1.day ).to_date.to_datetime
-      @objects = Income.bookings_in_between(startDate, endDate)
+      @objects = Income.incomes_in_between(startDate, endDate)
       @total = @objects.count 
+    elsif params[:focusDate].present? 
+      startDate = extract_extensible_date( params[:focusDate])
+      puts "The focus date: #{params[:focusDate]}"
+      puts "The start_date :#{startDate}"
+      # startDate = startDate.to_date.to_datetime + 7.hours
+      endDate = ( startDate + 1.day ).to_date.to_datetime
+      @objects = Income.incomes_in_between(startDate, endDate)
+      @total = @objects.count
     else
       @objects = Income.page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Income.count

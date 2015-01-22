@@ -5,17 +5,15 @@ class Api::TransactionActivitiesController < Api::BaseApiController
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
       @objects = TransactionActivity.where{
-        (is_deleted.eq false) & 
         (
-          (name =~  livesearch )
+          (description =~  livesearch )
         )
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
       @total = TransactionActivity.where{
-        (is_deleted.eq false) & 
         (
-          (name =~  livesearch )
+          (description =~  livesearch )
         )
       }.count
       

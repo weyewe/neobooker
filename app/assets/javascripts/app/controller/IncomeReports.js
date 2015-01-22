@@ -78,6 +78,7 @@ Ext.define('AM.controller.IncomeReports', {
 	},
 	onAfterRender: function(){
 		// console.log("on after render");
+		this.getList().getStore().loadData([],false);
 	}
 
 
