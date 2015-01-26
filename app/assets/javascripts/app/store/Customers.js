@@ -5,7 +5,7 @@ Ext.define('AM.store.Customers', {
   	// autoLoad: {start: 0, limit: this.pageSize},
 		autoLoad : false, 
   	autoSync: false,
-	pageSize : 10, 
+	pageSize : 30, 
 	
 	
 		

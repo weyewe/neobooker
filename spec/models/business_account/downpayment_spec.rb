@@ -63,7 +63,7 @@ describe Booking do
    
   context "confirming booking"  do
     before(:each) do
-      @booking.confirm
+      @booking.confirm(nil)
       @booking.reload 
       
       @asset_account    .reload 

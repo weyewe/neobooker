@@ -650,26 +650,30 @@ Solution: get the PriceRule on that is active on the creation time
     end
   end
   
-  def confirm
+  def confirm( confirmed_datetime )
     return if self.is_confirmed? 
     
     self.is_confirmed = true 
-    self.confirmed_datetime = DateTime.now 
-    self.save 
-    
-    
-    self.generate_code 
-    
-    if self.downpayment_amount != BigDecimal('0')
-      self.create_booking_income  
+    if confirmed_datetime.nil?
+      self.confirmed_datetime = DateTime.now 
+    else
+      self.confirmed_datetime  = confirmed_datetime
     end
+    
+  
+    
+    if self.save 
+      self.generate_code 
+      self.create_booking_income   if self.downpayment_amount != BigDecimal('0')
+    end
+    
     
      
   end
   
   
   
-  def pay
+  def pay(pay_datetime)
     return if self.is_paid? 
     return if self.is_deleted? 
     if not self.is_confirmed?
@@ -683,7 +687,14 @@ Solution: get the PriceRule on that is active on the creation time
     end
     
     self.is_paid = true 
-    self.paid_datetime  = DateTime.now 
+    
+    if pay_datetime.nil?
+      self.paid_datetime = DateTime.now 
+    else
+      self.paid_datetime  = pay_datetime
+    end
+    
+    
     self.save 
     
     
