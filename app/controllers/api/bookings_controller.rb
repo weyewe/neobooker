@@ -12,7 +12,8 @@ class Api::BookingsController < Api::BaseApiController
         (
           (customer.name =~  livesearch ) | 
           (calendar.title =~ livesearch) | 
-          (booking_code =~ livesearch )
+          (booking_code =~ livesearch ) | 
+          (code =~ livesearch)
         )
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
@@ -166,7 +167,7 @@ class Api::BookingsController < Api::BaseApiController
   def confirm
     @object = Booking.find_by_id params[:id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
-    @object.confirm   
+    @object.confirm(nil)
     
     if @object.errors.size == 0  and @object.is_confirmed? 
       render :json => { :success => true, :total => Booking.active_objects.count }  
@@ -188,7 +189,7 @@ class Api::BookingsController < Api::BaseApiController
   def pay
     @object = Booking.find_by_id params[:id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
-    @object.pay   
+    @object.pay(nil)
     
     if @object.errors.size == 0  and @object.is_confirmed?  and @object.is_paid? 
       render :json => { :success => true, :total => Booking.active_objects.count }  

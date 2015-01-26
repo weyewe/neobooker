@@ -140,22 +140,30 @@ data_entry.save
 
 
 if Rails.env.development?
-  customer = Customer.create_object({
-    :name => "Andy"
-  })
+  
+  customer_array = ["WXU", "DOA IBU", "KCFC Vs SKT", "KCR", "DEDY ARPAN", "DANU", "PERSIJAP", "CIBI", "F.SEVEN ", 
+    "ACE Alam sutera", "BTN", "RICKY", "KCC", "BANDARA FC", "WIK FC", "BUJANG", "IGI", "SOPIAN/LINGNET", 
+    "IPS-3", "FRANDI", "LANUS FC", "YOLANDI", "BULAC FC", "DARUSALAM AN-NUR", 
+    "BAGAS", "FAUZI Pamindo", "EDO", "SOFYAN", "MULYA", "SMK 5", "YOGI", "MEGA KARYA", "STEVEN 2", 
+    "ODI DIKUN", "ALDI I", "EMMANUEL RIO", "CHEVY FUTSAL SERPONG", "MDS MATAHARI", "WILLY", 
+    "ANDREAS", "DEDE", "DIMAS", "NARDO", "ARIF", "BUDI", "YANTO", "WASLI", "GRIYA HIJAU", "INFORMA", 
+    "BINUS", "BONAR FC", "IRGI", "SEHATI FC", "ONE LOVE", "PORTAL", "ROMY", "FERDI", "CiKE'", "ARIS", 
+    "FRONTLINER", "GAPURA FC", "BOWO", "ADENA", "BOUGENVILLE", "EGI", "RENDI", "COBRA FC", "DANFUL FC", 
+    "UMAY", "SUKMA (KATEL)", "KARPET", "GALIH RINADI", "IDRIS", "ABRAHAM", "WARSU", "ALKA", "DAFA", "NAMEL", 
+    "JAYA BOARD", "NYENDER FC", "ALSUT FC ", "MARGA MOTOR", "GENARO", "DICKY", "ABI", "MICHAEL", "KARANG TARUNA", 
+    "DUCKING PSS", "TIO", "PSM", "ALDI ALPA", "MJM", "TKJ", "INDRA", "JOSHUA", "PT.HMT", "SKS", "MEJIKU FC", 
+    "JELUPANG", "TKP"]
+    
+  customer_array.each do |x|
+    customer = Customer.create_object({
+      :name => x
+    })
+  end
+  
+  customer_array = Customer.all
+  
+  
 
-  cust_1 = customer 
-  cust_2 = Customer.create_object({
-    :name => "Jimmy"
-  })
-
-  cust_3 = Customer.create_object({
-    :name => "Metro"
-  })
-
-  cust_4 = Customer.create_object({
-    :name => "Garlic"
-  })
 
 
   @objects = [{
@@ -228,7 +236,7 @@ if Rails.env.development?
   # end result: demonstrate the reporting (cash to be stored, daily)
 
   calendar_array = [c1,c2,c3,c4]
-  customer_array = [cust_1, cust_2, cust_3, cust_4 ]
+
 
   
   
@@ -257,8 +265,8 @@ if Rails.env.development?
         end
       end
   
-      booking.confirm
-      booking.pay 
+      booking.confirm( booking.created_at + 30.minutes)
+      booking.pay( booking.start_datetime + 2.hours)
     end
   end
   

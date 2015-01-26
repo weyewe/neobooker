@@ -307,8 +307,8 @@ class Income < ActiveRecord::Base
   
   def self.incomes_in_between(startDate, endDate)
     self.where{
-      ( created_at.lte endDate ) &
-      ( created_at.gte startDate)
+      ( transaction_datetime.lte endDate ) &
+      ( transaction_datetime.gte startDate)
     }
   end
   

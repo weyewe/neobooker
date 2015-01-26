@@ -67,7 +67,7 @@ describe Booking do
   
   context "confirm booking" do
     before(:each) do
-      @booking.confirm
+      @booking.confirm(nil)
       @booking.reload 
     end
     
@@ -94,7 +94,7 @@ describe Booking do
     
     context "perform payment" do
       before(:each) do
-        @booking.pay 
+        @booking.pay(nil)
         @booking.reload 
         
         @income = @booking.incomes.first 

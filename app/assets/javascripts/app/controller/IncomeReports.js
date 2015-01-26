@@ -62,15 +62,25 @@ Ext.define('AM.controller.IncomeReports', {
 		
 		var viewport = this.getViewport();
 		viewport.setLoading(true);
-		list.store.load({
-			params: {
-				viewValue : viewValue,
-				focusDate :  Ext.Date.format( selectedDate, 'Y-m-d H:i:s')
-			},
+		
+		list.getStore().getProxy().extraParams.viewValue =  viewValue ;
+		list.getStore().getProxy().extraParams.focusDate =  Ext.Date.format( selectedDate, 'Y-m-d H:i:s') ;
+		list.getStore().load({
 			callback : function(records, options, success){
 				viewport.setLoading(false);
 			}
 		});
+		
+		// 
+		// list.store.load({
+		// 	params: {
+		// 		viewValue : viewValue,
+		// 		focusDate :  Ext.Date.format( selectedDate, 'Y-m-d H:i:s')
+		// 	},
+			// callback : function(records, options, success){
+			// 	viewport.setLoading(false);
+			// }
+		// });
 	},
 	
 	onActivePanel: function(){
