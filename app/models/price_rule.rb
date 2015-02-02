@@ -126,6 +126,7 @@ class PriceRule < ActiveRecord::Base
     new_object.calendar_id    = params[:calendar_id  ]
     new_object.hour_start    = params[:hour_start  ]
     new_object.hour_end    = params[:hour_end  ]
+    # new_object.office_id = params[:office_id]
     
     
     

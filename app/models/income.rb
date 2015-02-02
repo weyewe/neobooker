@@ -9,7 +9,8 @@ class Income < ActiveRecord::Base
                   :amount ,
                   :case ,
                   :transaction_datetime ,
-                  :code
+                  :code,
+                  :office_id
                   
   belongs_to :income_source, :polymorphic => true 
   
@@ -25,7 +26,8 @@ class Income < ActiveRecord::Base
         :amount               => params[:amount              ],
         :case                 => params[:case                ],
         :transaction_datetime => params[:transaction_datetime],
-        :code                 => params[:code                ]
+        :code                 => params[:code                ],
+        :office_id => params[:office_id]
     )            
       
       
@@ -39,7 +41,8 @@ class Income < ActiveRecord::Base
       :transaction_datetime => income.income_source.confirmed_datetime ,
       :description => "Booking Downpayment" ,
       :transaction_source_id => income.id , 
-      :transaction_source_type => income.class.to_s 
+      :transaction_source_type => income.class.to_s ,
+      :office_id => params[:office_id]
     }, true )
      
     transaction_1 = ta.transaction_activity_entries.where(
@@ -87,8 +90,11 @@ class Income < ActiveRecord::Base
         :amount               => params[:amount              ],
         :case                 => params[:case                ],
         :transaction_datetime => params[:transaction_datetime],
-        :code                 => params[:code                ]
+        :code                 => params[:code                ],
+        :office_id => params[:office_id]
     )
+    
+    # puts "Inside create_remaining_payment_income. office_id #{params[:office_id]}"
     
     income_source = income.income_source
     
@@ -104,7 +110,8 @@ class Income < ActiveRecord::Base
       :transaction_datetime => income_source.paid_datetime  ,
       :description => "Field Usage Payment" ,
       :transaction_source_id => income.id , 
-      :transaction_source_type => income.class.to_s 
+      :transaction_source_type => income.class.to_s ,
+      :office_id => params[:office_id]
     }, true )
     
     transaction_1 = ta.transaction_activity_entries.where(
@@ -161,7 +168,11 @@ class Income < ActiveRecord::Base
       NORMAL_BALANCE[:debit]
     ) 
   
+  
     ta.confirm
+    # puts "11313 is ta.confirmed: #{ta.is_confirmed}"
+    # puts "errors:"
+    ta.errors.messages.each {|x| puts x}
     
     return income 
   end

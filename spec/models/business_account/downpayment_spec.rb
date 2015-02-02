@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Booking do
   before(:each) do
-    Account.setup_business
+    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
     @asset_account     = Account.asset_account
     @expense_account   = Account.expense_account
     @revenue_account   = Account.revenue_account
@@ -18,14 +18,14 @@ describe Booking do
     
     @calendar_amount = BigDecimal('200000')
     @downpayment_percentage = BigDecimal( '20')
-    @calendar =  Calendar.create_object({
+    @calendar =  @current_office.calendars.create_object({
       :title => "Futsal 1",
       :color => 2 ,
       :amount => @calendar_amount,
       :downpayment_percentage => @downpayment_percentage
     })
     
-    @customer = Customer.create_object({
+    @customer = @current_office.customers.create_object({
       :name => "Andy"
     })
     
@@ -34,7 +34,7 @@ describe Booking do
                                   9, 0 , 0 
               ) .new_offset( Rational(0,24) )
               
-    @booking = Booking.create_object( {
+    @booking = @current_office.bookings.create_object( {
       :calendar_id => @calendar.id , 
       :title => "#{@customer.name} booking",
       :start_datetime => @start_datetime, 
@@ -43,7 +43,7 @@ describe Booking do
       :is_downpayment_imposed => true
     })
     
-    @price_detail = PriceDetail.first 
+    @price_detail = @current_office.price_details.first 
     @booking.reload
     
   end
@@ -117,7 +117,7 @@ describe Booking do
     
     
     it 'should create accounting entries' do
-      @transaction_activity = TransactionActivity.where(
+      @transaction_activity = @current_office.transaction_activities.where(
         :transaction_source_id => @booking.downpayment_income.id,
         :transaction_source_type => @booking.downpayment_income.class.to_s
       ).first 

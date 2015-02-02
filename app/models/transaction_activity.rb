@@ -8,6 +8,7 @@ class TransactionActivity < ActiveRecord::Base
     new_object = self.new 
     new_object.transaction_datetime = params[:transaction_datetime]
     new_object.description = params[:description]
+    new_object.office_id = params[:office_id]
     
     if is_automated_transaction
       new_object.transaction_source_id = params[:transaction_source_id]

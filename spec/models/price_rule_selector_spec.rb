@@ -2,17 +2,19 @@ require 'spec_helper'
 
 describe PriceRule do
   before(:each) do
-    Account.setup_business
+    # Account.setup_business
+    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+    
     @calendar_amount = BigDecimal('75000')
     @downpayment_percentage = BigDecimal( '30')
-    @calendar =  Calendar.create_object({
+    @calendar =  @current_office.calendars.create_object({
       :title => "Futsal 1",
       :color => 2 ,
       :amount => @calendar_amount,
       :downpayment_percentage => @downpayment_percentage
     })
     
-    @customer = Customer.create_object({
+    @customer = @current_office.customers.create_object({
       :name => "Andy"
     })
     
@@ -21,7 +23,7 @@ describe PriceRule do
     
     
     @specific_amount = @calendar_amount  *  2
-    @specific_price_rule = PriceRule.create_object(
+    @specific_price_rule = @current_office.price_rules.create_object(
       :is_sunday         => true ,
       :is_monday         => false ,
       :is_tuesday        => false ,
@@ -37,7 +39,7 @@ describe PriceRule do
     )
     
     @specific_amount_2 = @calendar_amount  *  2
-    @specific_price_rule_2 = PriceRule.create_object(
+    @specific_price_rule_2 = @current_office.price_rules.create_object(
       :is_sunday         => false ,
       :is_monday         => true ,
       :is_tuesday        => true ,
@@ -70,7 +72,7 @@ describe PriceRule do
       puts "@start_datetime from client input: #{@start_datetime}"
       puts "@start_datetime in the server: #{@start_datetime.utc}"
       
-      @booking = Booking.create_object( {
+      @booking = @current_office.bookings.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
         :start_datetime => @start_datetime.utc, 
@@ -103,7 +105,7 @@ describe PriceRule do
                                     10, 0 , 0 
                 ) .new_offset( Rational(0,24) )
       
-      @booking = Booking.create_object( {
+      @booking = @current_office.bookings.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
         :start_datetime => @start_datetime, 
@@ -134,7 +136,7 @@ describe PriceRule do
                                     9, 0 , 0 
                 ) .new_offset( Rational(0,24) )
       
-      @booking = Booking.create_object( {
+      @booking = @current_office.bookings.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
         :start_datetime => @start_datetime, 
@@ -159,7 +161,7 @@ describe PriceRule do
                 ) .new_offset( Rational(0,24) )
       
       @new_number_of_hours = 2
-      @booking = Booking.create_object( {
+      @booking = @current_office.bookings.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
         :start_datetime => @start_datetime, 
@@ -179,7 +181,7 @@ describe PriceRule do
     before(:each) do
       @new_specific_amount = @specific_amount  *  2
   
-      @new_price_rule = PriceRule.create_object(
+      @new_price_rule = @current_office.price_rules.create_object(
         :is_sunday         => false ,
         :is_monday         => false ,
         :is_tuesday        => false ,
@@ -199,7 +201,7 @@ describe PriceRule do
                 ) .new_offset( Rational(0,24) )
       
       @new_number_of_hours = 2
-      @booking = Booking.create_object( {
+      @booking = @current_office.bookings.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
         :start_datetime => @start_datetime, 

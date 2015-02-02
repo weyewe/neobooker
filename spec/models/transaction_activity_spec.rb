@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe TransactionActivity do
   before(:each) do
-    Account.setup_business
+    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+    
   end
    
   

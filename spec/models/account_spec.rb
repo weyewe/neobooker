@@ -5,11 +5,17 @@ describe Account do
   
   context "base accounts creation" do
     before(:each) do
-      @asset_account     = Account.create_asset
-      @expense_account   = Account.create_expense
-      @revenue_account   = Account.create_revenue
-      @liability_account = Account.create_liability
-      @equity_account    = Account.create_equity
+      @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+      # @asset_account     = Account.create_asset
+      # @expense_account   = Account.create_expense
+      # @revenue_account   = Account.create_revenue
+      # @liability_account = Account.create_liability
+      # @equity_account    = Account.create_equity
+      @asset_account = @current_office.accounts.asset_account
+      @expense_account = @current_office.accounts.expense_account
+      @revenue_account = @current_office.accounts.revenue_account
+      @liability_account = @current_office.accounts.liability_account
+      @equity_account = @current_office.accounts.equity_account
 
     end
 
@@ -24,21 +30,21 @@ describe Account do
   
   context "business accounts creation" do
     before(:each) do
-      Account.setup_business
-      @asset_account     = Account.asset_account
-      @expense_account   = Account.expense_account
-      @revenue_account   = Account.revenue_account
-      @liability_account = Account.liability_account
-      @equity_account    = Account.equity_account
+      @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+      @asset_account     = @current_office.accounts.asset_account
+      @expense_account   = @current_office.accounts.expense_account
+      @revenue_account   = @current_office.accounts.revenue_account
+      @liability_account = @current_office.accounts.liability_account
+      @equity_account    = @current_office.accounts.equity_account
       
     end
     
     it 'should create 5 base objects' do
-      Account.where(:is_base_account =>true ).count.should == 7
+      @current_office.accounts.where(:is_base_account =>true ).count.should == 7
     end
     
     it 'should create 2 temporary accounts' do
-      Account.where(:is_temporary_account => true).count.should ==  2
+      @current_office.accounts.where(:is_temporary_account => true).count.should ==  2
     end
     
     it "temporary_account of normal_balance debit account should be temporary_credit_account" do
@@ -53,15 +59,15 @@ describe Account do
       # 4. salvaged_downpayment_revenue 
       # 5. field_booking_downpayment 
       
-      Account.cash_account.should be_valid 
-      Account.cash_drawer_account.should be_valid
-      Account.field_usage_revenue_account.should be_valid 
-      Account.salvaged_downpayment_revenue_account.should be_valid 
-      Account.field_booking_downpayment_account.should be_valid 
+      @current_office.accounts.cash_account.should be_valid 
+      @current_office.accounts.cash_drawer_account.should be_valid
+      @current_office.accounts.field_usage_revenue_account.should be_valid 
+      @current_office.accounts.salvaged_downpayment_revenue_account.should be_valid 
+      @current_office.accounts.field_booking_downpayment_account.should be_valid 
     end
     
     it 'should give asset_account 2 children : cash_drawer and cash' do
-      @asset_account = Account.asset_account
+      @asset_account = @current_office.accounts.asset_account
 =begin
 descendants  => all childs down the tree
 children => direct children (1 depth below)
@@ -87,19 +93,19 @@ same_scope?
     end
     
     it 'should give liability a descendant: downpayment_revenue' do
-      @liability_account = Account.liability_account 
+      @liability_account = @current_office.accounts.liability_account 
       @liability_account.descendants.count.should == 1 
       
-      @downpayment_unearned_revenue_account = Account.field_booking_downpayment_account
+      @downpayment_unearned_revenue_account = @current_office.accounts.field_booking_downpayment_account
       
       @downpayment_unearned_revenue_account.is_descendant_of?(@liability_account).should be_true 
     end
     
     it 'should create 2 descendants of revenue account' do
-      @field_usage_revenue = Account.field_usage_revenue_account 
-      @salvaged_downpayment_revenue = Account.salvaged_downpayment_revenue_account 
+      @field_usage_revenue = @current_office.accounts.field_usage_revenue_account 
+      @salvaged_downpayment_revenue = @current_office.accounts.salvaged_downpayment_revenue_account 
       
-      @revenue = Account.revenue_account
+      @revenue = @current_office.accounts.revenue_account
       @revenue.descendants.count.should == 2 
       @field_usage_revenue.is_descendant_of?(@revenue).should be_true 
       @salvaged_downpayment_revenue.is_descendant_of?(@revenue).should be_true 

@@ -169,6 +169,7 @@ class Account < ActiveRecord::Base
     new_object.account_case              = params[:account_case]
     new_object.is_contra_account         = params[:is_contra_account]
     new_object.original_account_id       = params[:original_account_id]
+    new_object.office_id = params[:office_id]
     
     if is_include_code
       new_object.code = params[:code]
@@ -522,7 +523,7 @@ class Account < ActiveRecord::Base
   
   
   
-  def self.create_cash_account
+  def self.create_cash_account( office) 
     new_object = self.new
     new_object.name = "Cash"
     new_object.parent_id = self.asset_account.id 
@@ -530,11 +531,12 @@ class Account < ActiveRecord::Base
     new_object.account_case = ACCOUNT_CASE[:group]
     new_object.classification = ACCOUNT_CLASSIFICATION[:asset]
     new_object.code = APP_SPECIFIC_ACCOUNT_CODE[:cash]
+    new_object.office_id = office.id
     new_object.save
     return new_object 
   end
   
-  def self.create_downpayment_account
+  def self.create_downpayment_account(office)
     new_object = self.new
     new_object.name = "Downpayment"
     new_object.parent_id = self.liability_account.id 
@@ -542,6 +544,7 @@ class Account < ActiveRecord::Base
     new_object.account_case = ACCOUNT_CASE[:ledger]
     new_object.classification = ACCOUNT_CLASSIFICATION[:liability]
     new_object.code = APP_SPECIFIC_ACCOUNT_CODE[:unearned_revenue_booking_downpayment]
+    new_object.office_id = office.id
     new_object.save
     return new_object
   end
@@ -552,15 +555,16 @@ class Account < ActiveRecord::Base
   
   
   
-  def self.create_business_specific_objects 
-    cash_account = self.create_cash_account
+  def self.create_business_specific_objects(office)
+    cash_account = self.create_cash_account(office)
     self.create_object({
       :name => "Cash Drawer",
       :parent_id => cash_account.id , 
       :account_case => ACCOUNT_CASE[:ledger],
       :is_contra_account => false,
       :original_account_id => nil,
-      :code  => APP_SPECIFIC_ACCOUNT_CODE[:cash_drawer]
+      :code  => APP_SPECIFIC_ACCOUNT_CODE[:cash_drawer],
+      :office_id => office.id 
     },true
       
     )
@@ -572,7 +576,8 @@ class Account < ActiveRecord::Base
       :account_case => ACCOUNT_CASE[:ledger],
       :is_contra_account => false,
       :original_account_id => nil,
-      :code  => APP_SPECIFIC_ACCOUNT_CODE[:field_usage_revenue]
+      :code  => APP_SPECIFIC_ACCOUNT_CODE[:field_usage_revenue],
+      :office_id => office.id 
     },true
       
     )
@@ -583,7 +588,8 @@ class Account < ActiveRecord::Base
       :account_case => ACCOUNT_CASE[:ledger],
       :is_contra_account => false,
       :original_account_id => nil,
-      :code  => APP_SPECIFIC_ACCOUNT_CODE[:salvaged_downpayment_revenue]
+      :code  => APP_SPECIFIC_ACCOUNT_CODE[:salvaged_downpayment_revenue],
+      :office_id => office.id 
     },true
       
     )
@@ -597,12 +603,13 @@ class Account < ActiveRecord::Base
       :account_case => ACCOUNT_CASE[:ledger],
       :is_contra_account => false,
       :original_account_id => nil,
-      :code  => APP_SPECIFIC_ACCOUNT_CODE[:unearned_revenue_booking_downpayment]
+      :code  => APP_SPECIFIC_ACCOUNT_CODE[:unearned_revenue_booking_downpayment],
+      :office_id => office.id 
     }, true
     )
   end
   
-  def self.create_temporary_migration_objects
+  def self.create_temporary_migration_objects(office)
     
   
     new_object = self.new
@@ -612,6 +619,7 @@ class Account < ActiveRecord::Base
     new_object.classification = ACCOUNT_CLASSIFICATION[:temporary_debit]
     new_object.is_base_account = true 
     new_object.is_temporary_account = true 
+    new_object.office_id = office.id 
     new_object.save 
     
     new_object = self.new
@@ -621,6 +629,7 @@ class Account < ActiveRecord::Base
     new_object.classification = ACCOUNT_CLASSIFICATION[:temporary_credit]
     new_object.is_base_account = true 
     new_object.is_temporary_account = true 
+    new_object.office_id = office.id 
     new_object.save  
   end
   

@@ -2,17 +2,19 @@ require 'spec_helper'
 
 describe PriceRule do
   before(:each) do
-    Account.setup_business
+    # Account.setup_business
+    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+    
     @calendar_amount = BigDecimal('200000')
     @downpayment_percentage = BigDecimal( '20')
-    @calendar =  Calendar.create_object({
+    @calendar =  @current_office.calendars.create_object({
       :title => "Futsal 1",
       :color => 2 ,
       :amount => @calendar_amount,
       :downpayment_percentage => @downpayment_percentage
     })
     
-    @customer = Customer.create_object({
+    @customer = @current_office.customers.create_object({
       :name => "Andy"
     })
     
@@ -26,7 +28,7 @@ describe PriceRule do
     @holiday_date = DateTime.new(2014, 7, 9,0,0,0)
     
     @new_amount = @calendar_amount + BigDecimal("200000")
-    @holiday_price_rule = PriceRule.create_holiday_object(
+    @holiday_price_rule = @current_office.price_rules.create_holiday_object(
       :is_sunday         => false ,
       :is_monday         => false ,
       :is_tuesday        => false ,
@@ -48,7 +50,7 @@ describe PriceRule do
   end
   
   it "should create booking" do
-    @booking = Booking.create_object( {
+    @booking = @current_office.bookings.create_object( {
       :calendar_id => @calendar.id , 
       :title => "#{@customer.name} booking",
       :start_datetime => @holiday_date + 7.hours , 
@@ -80,7 +82,7 @@ describe PriceRule do
   
   context "created booking" do
     before(:each) do
-      @booking = Booking.create_object( {
+      @booking = @current_office.bookings.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
         :start_datetime => @holiday_date + 7.hours , 
@@ -105,7 +107,7 @@ describe PriceRule do
   
   context "create double holiday price rule on the same day" do
     before(:each) do
-      @new_holiday_price_rule = PriceRule.create_holiday_object(
+      @new_holiday_price_rule = @current_office.price_rules.create_holiday_object(
         :is_sunday         => false ,
         :is_monday         => false ,
         :is_tuesday        => false ,
@@ -122,7 +124,7 @@ describe PriceRule do
         :holiday_date => @holiday_date
       )
       
-      @booking = Booking.create_object( {
+      @booking = @current_office.bookings.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
         :start_datetime => @holiday_date + 9.hours , 

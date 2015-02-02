@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe Calendar do
   before(:each) do
-    Account.setup_business
+    # Account.setup_business
+    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
     @calendar_amount = BigDecimal('200000')
     @downpayment_percentage = BigDecimal( '20')
-    @calendar =  Calendar.create_object({
+    @calendar =  @current_office.calendars.create_object({
       :title => "Futsal 1",
       :color => 2 ,
       :amount => @calendar_amount,
@@ -18,12 +19,12 @@ describe Calendar do
   end
   
   it 'should create price rule' do
-    PriceRule.count.should == 1 
+    @current_office.price_rules.count.should == 1 
   end
   
   context "price rule post-state" do
     before(:each) do
-      @price_rule = PriceRule.first 
+      @price_rule = @current_office.price_rules.first 
     end
     
     it 'should encompass all hours in a day' do
@@ -100,11 +101,11 @@ describe Calendar do
                   
                   
 
-        @customer = Customer.create_object({
+        @customer = @current_office.customers.create_object({
           :name => "Andy"
           })
                   
-        @booking = Booking.create_object( {
+        @booking = @current_office.bookings.create_object( {
           :calendar_id => @calendar.id , 
           :title => "#{@customer.name} booking",
           :start_datetime => @start_datetime, 

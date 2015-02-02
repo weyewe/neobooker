@@ -184,7 +184,7 @@ Solution: get the PriceRule on that is active on the creation time
       current_calendar_id = self.calendar_id  
       
       
-      holiday_price_rule = office.price_rules.where{
+      holiday_price_rule = PriceRule.where{
         #  to ensure that we are using the old price at the time of creation
         (
           calendar_id.eq current_calendar_id
@@ -221,7 +221,7 @@ Solution: get the PriceRule on that is active on the creation time
         result_array << holiday_price_rule.id
       else
         
-        price_rules = office.price_rules.where{
+        price_rules = PriceRule.where{
           #  to ensure that we are using the old price at the time of creation
           (
             calendar_id.eq current_calendar_id
@@ -414,7 +414,7 @@ Solution: get the PriceRule on that is active on the creation time
     
       
    
-    new_object.valid? 
+    # new_object.valid? 
     
     # puts "The errors: #{new_object.errors.size}"
     
@@ -539,7 +539,8 @@ Solution: get the PriceRule on that is active on the creation time
       :amount => self.downpayment_amount ,                 
       :case => INCOME_CASE[:downpayment],                  
       :transaction_datetime => self.confirmed_datetime,    
-      :code => self.confirmation_code   
+      :code => self.confirmation_code ,
+      :office_id => self.office_id
     )
   end
   
@@ -558,13 +559,14 @@ Solution: get the PriceRule on that is active on the creation time
   end
   
   def create_remaining_income
-    office.incomes.create_remaining_payment_income(
+    Income.create_remaining_payment_income(
       :income_source_type => self.class.to_s , 
       :income_source_id => self.id ,
       :amount => self.remaining_amount,
       :case => INCOME_CASE[:remaining_payment],
       :transaction_datetime =>  self.paid_datetime,
-      :code => self.remaining_payment_code
+      :code => self.remaining_payment_code,
+      :office_id => self.office_id
     )        
   end
   
@@ -725,13 +727,6 @@ Solution: get the PriceRule on that is active on the creation time
     if self.remaining_amount != BigDecimal("0")
       self.create_remaining_income
     end
-    
-    # Income.create :income_source_type => self.class.to_s , 
-    #               :income_source_id => self.id ,
-    #               :amount => self.remaining_amount,
-    #               :case => INCOME_CASE[:remaining_payment],
-    #               :transaction_datetime =>  self.paid_datetime,
-    #               :code => self.remaining_payment_code
     
   end
   

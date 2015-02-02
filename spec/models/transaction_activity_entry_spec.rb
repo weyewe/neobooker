@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe TransactionActivityEntry do
   before(:each) do
-    Account.setup_business
+    # Account.setup_business
+    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+    
     
     @transaction_datetime =DateTime.now 
     @msg = "Pembayaran hutang bulanan"

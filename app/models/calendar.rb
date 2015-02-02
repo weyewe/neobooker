@@ -31,7 +31,7 @@ class Calendar < ActiveRecord::Base
   end
   
   def create_catch_all_price_rule
-    PriceRule.create_object(
+    office.price_rules.create_object(
       :is_sunday         => true ,
       :is_monday         => true ,
       :is_tuesday        => true ,
@@ -43,7 +43,7 @@ class Calendar < ActiveRecord::Base
       :rule_case         =>  PRICE_RULE_CASE[:catch_all]    ,
       :calendar_id       => self.id ,
       :hour_start => 0 , 
-      :hour_end => 23 
+      :hour_end => 23  
     )
   end
   

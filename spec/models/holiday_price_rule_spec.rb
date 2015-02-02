@@ -2,17 +2,18 @@ require 'spec_helper'
 
 describe PriceRule do
   before(:each) do
-    Account.setup_business
+    # Account.setup_business
+    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
     @calendar_amount = BigDecimal('200000')
     @downpayment_percentage = BigDecimal( '20')
-    @calendar =  Calendar.create_object({
+    @calendar =  @current_office.calendars.create_object({
       :title => "Futsal 1",
       :color => 2 ,
       :amount => @calendar_amount,
       :downpayment_percentage => @downpayment_percentage
     })
     
-    @customer = Customer.create_object({
+    @customer = @current_office.customers.create_object({
       :name => "Andy"
     })
     
@@ -21,7 +22,7 @@ describe PriceRule do
     
     
     @specific_amount = @calendar_amount  *  2
-    @specific_price_rule = PriceRule.create_object(
+    @specific_price_rule = @current_office.price_rules.create_object(
       :is_sunday         => true ,
       :is_monday         => true ,
       :is_tuesday        => true ,
@@ -51,14 +52,14 @@ describe PriceRule do
     @start_datetime = @holiday_date + 9.hours
     
     
-    @holiday_price_rule = PriceRule.create_holiday_object(
+    @holiday_price_rule = @current_office.price_rules.create_holiday_object(
       :holiday_date => @holiday_date, 
       :amount            => @holiday_amount     , 
       :calendar_id       => @calendar.id , 
     )
 
 
-    @booking = Booking.create_object( {
+    @booking = @current_office.bookings.create_object( {
       :calendar_id => @calendar.id , 
       :title => "#{@customer.name} booking",
       :start_datetime => @start_datetime, 
@@ -67,10 +68,20 @@ describe PriceRule do
       :is_downpayment_imposed => true
       })
     
+    @current_office.reload
+  end
+  
+  it "should assign specific price rule to office" do
+    @specific_price_rule.office_id.should == @current_office.id 
+  end
+  
+  it "should create holiday price rule" do
+    @holiday_price_rule.errors.size.should == 0 
+    @holiday_price_rule.office_id.should == @current_office.id
   end
   
   it 'should create 3 pric rule' do
-    PriceRule.count.should == 3 
+    @current_office.price_rules.count.should == 3 
   end
   
   it 'should select the holiday price rule' do

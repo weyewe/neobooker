@@ -90,6 +90,7 @@ class TransactionActivityEntry < ActiveRecord::Base
     new_object.account_id = params[:account_id]
     new_object.entry_case = params[:entry_case]
     new_object.amount = BigDecimal(params[:amount] || '0') 
+    new_object.office_id = params[:office_id]
     new_object.save 
     
     return new_object
@@ -161,7 +162,8 @@ class TransactionActivityEntry < ActiveRecord::Base
           :transaction_activity_id =>  transaction_activity.id,
           :account_id => account.id ,
           :entry_case => entry_case,
-          :amount =>  amount.to_s
+          :amount =>  amount.to_s,
+          :office_id => transaction_activity.office_id 
         )
       else
         transaction_activity_entry.amount = amount 

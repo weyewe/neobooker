@@ -2,17 +2,18 @@ require 'spec_helper'
 
 describe Booking do
   before(:each) do
-    Account.setup_business
+    # Account.setup_business
+    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
     @calendar_amount = BigDecimal('200000')
     @downpayment_percentage = BigDecimal( '20')
-    @calendar =  Calendar.create_object({
+    @calendar =  @current_office.calendars.create_object({
       :title => "Futsal 1",
       :color => 2 ,
       :amount => @calendar_amount,
       :downpayment_percentage => @downpayment_percentage
     })
     
-    @customer = Customer.create_object({
+    @customer = @current_office.customers.create_object({
       :name => "Andy"
     })
   end
@@ -26,11 +27,11 @@ describe Booking do
   end
   
   it 'should create 1 PriceRule' do
-    PriceRule.count.should == 1 
+    @current_office.price_rules.count.should == 1 
   end
   
   it 'should not have PriceDetail' do
-    PriceDetail.count.should ==  0 
+    @current_office.price_details.count.should ==  0 
   end
   
   context "create booking" do
@@ -42,7 +43,7 @@ describe Booking do
                 ) .new_offset( Rational(0,24) )
                 # jakarta time = 8 + 7 == 15 
                 
-      @booking = Booking.create_object( {
+      @booking = @current_office.bookings.create_object( {
         :calendar_id => @calendar.id , 
         :title => "#{@customer.name} booking",
         :start_datetime => @start_datetime, 
@@ -51,7 +52,7 @@ describe Booking do
         :is_downpayment_imposed => true 
       })
       
-      @price_detail = PriceDetail.first 
+      @price_detail = @current_office.price_details.first 
       @booking.errors.messages.each {|x| puts x }
       @booking.reload 
     end
@@ -124,12 +125,12 @@ describe Booking do
       end
       
       it 'should destroy booking' do
-        Booking.find_by_id(@booking.id).should be_nil 
+        @current_office.bookings.find_by_id(@booking.id).should be_nil 
       end
       
       it 'should destroy price booking' do
         @price_detail_array.each do |price_detail|
-          PriceDetail.find_by_id( price_detail.id).should be_nil 
+          @current_office.price_details.find_by_id( price_detail.id).should be_nil 
         end
       end
     end
