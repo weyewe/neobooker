@@ -4,7 +4,7 @@ class Api::AppUsersController < Api::BaseApiController
     
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
-      @objects = User.where{
+      @objects = current_office.users.where{
         (is_deleted.eq false) & 
         (
           (name =~  livesearch ) | 
@@ -13,7 +13,7 @@ class Api::AppUsersController < Api::BaseApiController
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
-      @total = User.where{
+      @total = current_office.users.where{
         (is_deleted.eq false) & 
         (
           (name =~  livesearch ) | 
@@ -22,8 +22,8 @@ class Api::AppUsersController < Api::BaseApiController
         
       }.count
     else
-      @objects = User.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
-      @total = User.active_objects.count
+      @objects = current_office.users.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+      @total = current_office.users.active_objects.count
     end
     
     
@@ -32,14 +32,14 @@ class Api::AppUsersController < Api::BaseApiController
   end
 
   def create
-    @object = User.create_by_employee(current_user,  params[:user] )  
+    @object = current_office.users.create_by_employee(current_user,  params[:user] )  
     
     
  
     if @object.errors.size == 0 
       render :json => { :success => true, 
                         :users => [@object] , 
-                        :total => User.active_objects.count }  
+                        :total => current_office.users.active_objects.count }  
     else
       msg = {
         :success => false, 
@@ -54,13 +54,13 @@ class Api::AppUsersController < Api::BaseApiController
 
   def update
     
-    @object = User.find_by_id params[:id] 
+    @object = current_office.users.find_by_id params[:id] 
     @object.update_by_employee(current_user,  params[:user])
      
     if @object.errors.size == 0 
       render :json => { :success => true,   
                         :users => [@object],
-                        :total => User.active_objects.count  } 
+                        :total => current_office.users.active_objects.count  } 
     else
       msg = {
         :success => false, 
@@ -74,13 +74,13 @@ class Api::AppUsersController < Api::BaseApiController
   end
 
   def destroy
-    @object = User.find(params[:id])
+    @object = current_office.users.find(params[:id])
     @object.delete(current_user)
 
     if @object.is_deleted
-      render :json => { :success => true, :total => User.active_objects.count }  
+      render :json => { :success => true, :total => current_office.users.active_objects.count }  
     else
-      render :json => { :success => false, :total => User.active_objects.count }  
+      render :json => { :success => false, :total => current_office.users.active_objects.count }  
     end
   end
 end

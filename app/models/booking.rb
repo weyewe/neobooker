@@ -1,4 +1,6 @@
 class Booking < ActiveRecord::Base
+  belongs_to :office
+  
   has_many :incomes, :as => :income_source 
   
   belongs_to :calendar 
@@ -78,7 +80,7 @@ class Booking < ActiveRecord::Base
     
     total_other_bookings = 0 
     if self.persisted?
-      total_other_bookings = Booking.where{
+      total_other_bookings = office.bookings.where{
         ( calendar_id.eq selected_calendar_id) & 
         ( is_deleted.eq false ) &  
         ( is_salvaged.eq false ) &  
@@ -102,7 +104,7 @@ class Booking < ActiveRecord::Base
         )
       } 
     else
-      total_other_bookings = Booking.where{
+      total_other_bookings = office.bookings.where{
         ( calendar_id.eq selected_calendar_id) & 
         ( is_deleted.eq false ) &
         ( is_salvaged.eq false ) &   
@@ -182,7 +184,7 @@ Solution: get the PriceRule on that is active on the creation time
       current_calendar_id = self.calendar_id  
       
       
-      holiday_price_rule = PriceRule.where{
+      holiday_price_rule = office.price_rules.where{
         #  to ensure that we are using the old price at the time of creation
         (
           calendar_id.eq current_calendar_id
@@ -219,7 +221,7 @@ Solution: get the PriceRule on that is active on the creation time
         result_array << holiday_price_rule.id
       else
         
-        price_rules = PriceRule.where{
+        price_rules = office.price_rules.where{
           #  to ensure that we are using the old price at the time of creation
           (
             calendar_id.eq current_calendar_id
@@ -321,7 +323,7 @@ Solution: get the PriceRule on that is active on the creation time
     end
     
     final_result_array.each do |pair|
-      PriceDetail.create_object(
+      office.price_details.create_object(
         :booking_id => self.id,
         :price_rule_id => pair.first,
         :number_of_hours => pair.last  
@@ -336,7 +338,16 @@ Solution: get the PriceRule on that is active on the creation time
     return if not customer_id.present? 
     if customer_id == 0 
       self.errors.add(:customer_id , "Customer Harus Dipilih")
+      return self 
     end
+    
+    object = office.customers.find_by_id self.customer_id 
+    
+    if object.nil?
+      self.errors.add(:customer_id , "Harus ada customer id")
+      return self 
+    end
+   
   end
   
   def valid_calendar_id
@@ -344,6 +355,19 @@ Solution: get the PriceRule on that is active on the creation time
     if calendar_id == 0 
       self.errors.add(:calendar_id , "Fasilitas Harus Dipilih")
     end
+    
+    object = office.calendars.find_by_id self.calendar_id 
+    
+    if object.nil?
+      self.errors.add(:calendar_id , "Harus ada customer id")
+      return self 
+    end
+    
+    if object.office_id != self.office_id 
+      self.errors.add(:generic_errors, "Harus ada customer id")
+      return self 
+    end
+    
   end
   
   def valid_number_of_hours
@@ -534,7 +558,7 @@ Solution: get the PriceRule on that is active on the creation time
   end
   
   def create_remaining_income
-    Income.create_remaining_payment_income(
+    office.incomes.create_remaining_payment_income(
       :income_source_type => self.class.to_s , 
       :income_source_id => self.id ,
       :amount => self.remaining_amount,

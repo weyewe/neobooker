@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140709040554) do
+ActiveRecord::Schema.define(version: 20150202034942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.string   "code"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "office_id"
   end
 
   create_table "bookings", force: true do |t|
@@ -63,6 +64,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.string   "booking_code"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "office_id"
   end
 
   create_table "calendars", force: true do |t|
@@ -74,6 +76,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.boolean  "is_deleted",                                     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "office_id"
   end
 
   create_table "customers", force: true do |t|
@@ -84,6 +87,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.boolean  "is_deleted",   default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "office_id"
   end
 
   create_table "incomes", force: true do |t|
@@ -92,6 +96,15 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.decimal  "amount",               precision: 11, scale: 2, default: 0.0
     t.integer  "case"
     t.datetime "transaction_datetime"
+    t.string   "code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "office_id"
+  end
+
+  create_table "offices", force: true do |t|
+    t.string   "name"
+    t.text     "description"
     t.string   "code"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -104,6 +117,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.integer  "number_of_hours"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "office_id"
   end
 
   create_table "price_rules", force: true do |t|
@@ -126,6 +140,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.datetime "holiday_date"
     t.boolean  "is_holiday",                                   default: false
     t.datetime "finish_holiday_date"
+    t.integer  "office_id"
   end
 
   create_table "prices", force: true do |t|
@@ -134,6 +149,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.boolean  "is_active",                           default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "office_id"
   end
 
   create_table "roles", force: true do |t|
@@ -150,6 +166,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.datetime "salvaged_datetime"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "office_id"
   end
 
   create_table "transaction_activities", force: true do |t|
@@ -161,6 +178,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.boolean  "is_confirmed"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "office_id"
   end
 
   create_table "transaction_activity_entries", force: true do |t|
@@ -171,6 +189,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.boolean  "is_bank_transaction",                              default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "office_id"
   end
 
   create_table "users", force: true do |t|
@@ -191,6 +210,7 @@ ActiveRecord::Schema.define(version: 20140709040554) do
     t.boolean  "is_deleted",             default: false
     t.boolean  "is_main_user",           default: false
     t.string   "authentication_token"
+    t.integer  "office_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

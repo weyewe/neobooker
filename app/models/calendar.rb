@@ -1,4 +1,5 @@
 class Calendar < ActiveRecord::Base
+  belongs_to :office
   attr_accessible :title, :color, :description 
   has_many :bookings 
   has_many :prices 

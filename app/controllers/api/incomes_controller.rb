@@ -7,7 +7,7 @@ class Api::IncomesController < Api::BaseApiController
     # livesearch
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
-      @objects = Income.where{
+      @objects = current_office.incomes.where{
         (is_deleted.eq false) & 
         (
           (customer.name =~  livesearch ) | 
@@ -16,7 +16,7 @@ class Api::IncomesController < Api::BaseApiController
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
-      @total = Income.where{
+      @total = current_office.incomes.where{
         (is_deleted.eq false) & 
         (
           (customer.name =~  livesearch ) | 
@@ -28,7 +28,7 @@ class Api::IncomesController < Api::BaseApiController
     elsif params[:startDate].present? 
       startDate = extract_extensible_date( params[:startDate])
       endDate = ( extract_extensible_date(params[:endDate]) + 1.day ).to_date.to_datetime
-      @objects = Income.incomes_in_between(startDate, endDate)
+      @objects = current_office.incomes.incomes_in_between(startDate, endDate)
       @total = @objects.count 
     elsif params[:focusDate].present? 
       
@@ -50,11 +50,11 @@ now.beginning_of_minute  now.beginning_of_week
       
        #( startDate + 24.hours).to_date.to_datetime
       puts "The end_date = #{endDate}"
-      @objects = Income.incomes_in_between(startDate, endDate)
+      @objects = current_office.incomes.incomes_in_between(startDate, endDate)
       @total = @objects.count
     else
-      @objects = Income.page(params[:page]).per(params[:limit]).order("id DESC")
-      @total = Income.count
+      @objects = current_office.incomes.page(params[:page]).per(params[:limit]).order("id DESC")
+      @total = current_office.incomes.count
     end
     
   end
@@ -87,7 +87,7 @@ now.beginning_of_minute  now.beginning_of_week
     if view_value == VIEW_VALUE[:week]
       starting_date = date - date.wday.days 
       ending_date = starting_date + 7.days 
-      bookings = Income.where{
+      bookings = current_office.incomes.where{
         (transaction_datetime.gte starting_date) & 
         (transaction_datetime.lt ending_date )
       }
@@ -121,7 +121,7 @@ now.beginning_of_minute  now.beginning_of_week
       days_in_month = Time.days_in_month(date.month, date.year)
       ending_date = starting_date + days_in_month.days
    
-      bookings = Income.where{
+      bookings = current_office.incomes.where{
         (transaction_datetime.gte starting_date) & 
         (transaction_datetime.lt ending_date )
       }

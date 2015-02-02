@@ -4,7 +4,7 @@ class Api::AccountsController < Api::BaseApiController
     
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
-      @objects = Account.where{
+      @objects = current_office.accounts.where{
         (is_deleted.eq false) & 
         (
           (name =~  livesearch )
@@ -12,7 +12,7 @@ class Api::AccountsController < Api::BaseApiController
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
-      @total = Account.where{
+      @total = current_office.accounts.where{
         (is_deleted.eq false) & 
         (
           (name =~  livesearch )
@@ -22,7 +22,7 @@ class Api::AccountsController < Api::BaseApiController
       # calendar
       
     else
-      @objects = Account.active_accounts.where(:depth => 0).order("id ASC")
+      @objects = current_office.accounts.active_accounts.where(:depth => 0).order("id ASC")
       @total = @objects.count 
     end
     
@@ -31,7 +31,7 @@ class Api::AccountsController < Api::BaseApiController
   end
   
   def show
-    @object = Account.find_by_id params[:id]
+    @object = current_office.accounts.find_by_id params[:id]
     
     @parent = @object
     @objects = @object.children
@@ -42,16 +42,16 @@ class Api::AccountsController < Api::BaseApiController
 
   def create
  
-      # @object = Account.new(params[:account])
+      # @object = current_office.accounts.new(params[:account])
  
     puts "\n\n============>"
     
     puts "The name is : #{params[:account][:name]}\n\n"
-    @object = Account.create_object( params[:account] , false  )
+    @object = current_office.accounts.create_object( params[:account] , false  )
     if @object.errors.size == 0 
       render :json => { :success => true, 
                         :accounts => [@object] , 
-                        :total => Account.active_accounts.count }  
+                        :total => current_office.accounts.active_accounts.count }  
     else
       msg = {
         :success => false, 
@@ -68,7 +68,7 @@ class Api::AccountsController < Api::BaseApiController
   end
 
   def update
-    @object = Account.find(params[:id])
+    @object = current_office.accounts.find(params[:id])
     
     
     # puts "\n\n============>"
@@ -81,7 +81,7 @@ class Api::AccountsController < Api::BaseApiController
     if @object.errors.size == 0 
       render :json => { :success => true,   
                         :accounts => [@object],
-                        :total => Account.active_accounts.count  } 
+                        :total => current_office.accounts.active_accounts.count  } 
     else
       msg = {
         :success => false, 
@@ -95,11 +95,11 @@ class Api::AccountsController < Api::BaseApiController
   end
 
   def destroy
-    @object = Account.find(params[:id])
+    @object = current_office.accounts.find(params[:id])
     @object.delete_object 
 
     if (not @object.persisted?) 
-      render :json => { :success => true, :total => Account.active_accounts.count }  
+      render :json => { :success => true, :total => current_office.accounts.active_accounts.count }  
     else
       msg = {
         :success => false, 
@@ -124,7 +124,7 @@ class Api::AccountsController < Api::BaseApiController
     # on PostGre SQL, it is ignoring lower case or upper case 
     
     if  selected_id.nil?
-      @objects = Account.active_accounts.where{ 
+      @objects = current_office.accounts.active_accounts.where{ 
                           (name =~ query)  & 
                           (account_case.eq ACCOUNT_CASE[:ledger])
         
@@ -133,16 +133,16 @@ class Api::AccountsController < Api::BaseApiController
                         per(params[:limit]).
                         order("id DESC")
                         
-      @total =  Account.active_accounts.where{ (name =~ query)                   & 
+      @total =  current_office.accounts.active_accounts.where{ (name =~ query)                   & 
                         (account_case.eq ACCOUNT_CASE[:ledger])  }.count
     else
-      @objects = Account.active_accounts.where{ (id.eq selected_id)  & 
+      @objects = current_office.accounts.active_accounts.where{ (id.eq selected_id)  & 
                                   (account_case.eq ACCOUNT_CASE[:ledger])
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
-      @total =  Account.active_accounts.where{ (id.eq selected_id)                   & 
+      @total =  current_office.accounts.active_accounts.where{ (id.eq selected_id)                   & 
                         (account_case.eq ACCOUNT_CASE[:ledger])  }.count
     end
     

@@ -1,4 +1,4 @@
-Account.setup_business
+
 
 role = {
   :system => {
@@ -14,6 +14,10 @@ Role.create!(
 )
 
 
+current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+
+Account.setup_business
+Account.all.each {|x| x.office_id = current_office.id; x.save ; }
 
 data_entry_role = {
   :passwords => {
@@ -116,11 +120,11 @@ manager_role = Role.create!(
 )
 
 
-admin = User.create_main_user(  :name => "Admin", :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
+admin = current_office.users.create_main_user(  :name => "Admin", :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
 
 admin.set_as_main_user
 
-manager = User.create_object(:name => "Manager", :email => "manager@gmail.com", 
+manager = current_office.users.create_object(:name => "Manager", :email => "manager@gmail.com", 
               :password => 'willy1234', 
               :password_confirmation => 'willy1234',
               :role_id => manager_role.id ) 
@@ -129,7 +133,7 @@ manager.password = 'willy1234'
 manager.password_confirmation = 'willy1234'
 manager.save 
 
-data_entry = User.create_object(:name => "Data Entry", :email => "data_entry@gmail.com", 
+data_entry = current_office.users.create_object(:name => "Data Entry", :email => "data_entry@gmail.com", 
               :password => 'willy1234', 
               :password_confirmation => 'willy1234',
               :role_id => data_entry_role.id )
@@ -155,12 +159,12 @@ if Rails.env.development?
     "JELUPANG", "TKP"]
     
   customer_array.each do |x|
-    customer = Customer.create_object({
+    customer = current_office.customers.create_object({
       :name => x
     })
   end
   
-  customer_array = Customer.all
+  customer_array = current_office.customers.all
   
   
 
@@ -184,26 +188,26 @@ if Rails.env.development?
        "cal_color" => 26
    }]
 
-  c1 = Calendar.create_object({
+  c1 = current_office.calendars.create_object({
     :title => "Futsal 1",
     :color => 2 ,
     :amount => '200000',
     :downpayment_percentage => '20'
   })
 
-  c2 = Calendar.create_object({
+  c2 = current_office.calendars.create_object({
     :title => "Futsal 2",
     :color => 22  ,
     :amount => '200000',
     :downpayment_percentage => '20'
   })
-  c3 = Calendar.create_object({
+  c3 = current_office.calendars.create_object({
     :title => "Futsal 3",
     :color => 7  ,
     :amount => '200000',
     :downpayment_percentage => '20'
   })
-  c4 = Calendar.create_object({
+  c4 = current_office.calendars.create_object({
     :title => "Futsal 4",
     :color => 26  ,
     :amount => '200000',
@@ -258,7 +262,7 @@ if Rails.env.development?
         :is_downpayment_imposed => true 
       }
   
-      booking = Booking.create_object booking_params 
+      booking = current_office.bookings.create_object booking_params 
       if booking.errors.size != 0 
         booking.errors.each do |msg|
           puts msg 

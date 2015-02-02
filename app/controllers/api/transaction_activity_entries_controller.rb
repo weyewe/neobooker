@@ -1,16 +1,16 @@
 class Api::TransactionActivityEntriesController < Api::BaseApiController
   
   def index
-    @parent = TransactionActivity.find_by_id params[:transaction_activity_id]
+    @parent = current_office.transaction_activities.find_by_id params[:transaction_activity_id]
     @objects = @parent.transaction_activity_entries.joins(:account).page(params[:page]).per(params[:limit]).order("id DESC")
     @total = @parent.transaction_activity_entries.count
   end
 
   def create
-    @parent = TransactionActivity.find_by_id params[:transaction_activity_id]
+    @parent = current_office.transaction_activities.find_by_id params[:transaction_activity_id]
     
     params[:transaction_activity_entry][:transaction_activity_id] = @parent.id 
-    @object = TransactionActivityEntry.create_object(params[:transaction_activity_entry])
+    @object = current_office.transaction_activity_entriescreate_object(params[:transaction_activity_entry])
     
     if @object.errors.size == 0 
       render :json => { :success => true, 
@@ -29,7 +29,7 @@ class Api::TransactionActivityEntriesController < Api::BaseApiController
   end
 
   def update
-    @object = TransactionActivityEntry.find_by_id params[:id] 
+    @object = current_office.transaction_activity_entriesfind_by_id params[:id] 
     @parent = @object.transaction_activity 
     
     
@@ -54,7 +54,7 @@ class Api::TransactionActivityEntriesController < Api::BaseApiController
   end
 
   def destroy
-    @object = TransactionActivityEntry.find(params[:id])
+    @object = current_office.transaction_activity_entriesfind(params[:id])
     @parent = @object.transaction_activity 
     @object.delete_object 
 

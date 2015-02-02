@@ -1,4 +1,5 @@
 class TransactionActivityEntry < ActiveRecord::Base
+  belongs_to :office
   belongs_to :account
   belongs_to :transaction_activity
   

@@ -4,7 +4,7 @@ class Api::CustomersController < Api::BaseApiController
     
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
-      @objects = Customer.where{
+      @objects = current_office.customers.where{
         (is_deleted.eq false) & 
         (
           (name =~  livesearch )
@@ -12,7 +12,7 @@ class Api::CustomersController < Api::BaseApiController
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
-      @total = Customer.where{
+      @total = current_office.customers.where{
         (is_deleted.eq false) & 
         (
           (name =~  livesearch )
@@ -22,8 +22,8 @@ class Api::CustomersController < Api::BaseApiController
       # calendar
       
     else
-      @objects = Customer.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
-      @total = Customer.active_objects.count 
+      @objects = current_office.customers.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+      @total = current_office.customers.active_objects.count 
     end
     
     
@@ -31,13 +31,13 @@ class Api::CustomersController < Api::BaseApiController
   end
 
   def create
-    # @object = Customer.new(params[:customer])
+    # @object = current_office.customers.new(params[:customer])
  
-    @object = Customer.create_object( params[:customer] )
+    @object = current_office.customers.create_object( params[:customer] )
     if @object.errors.size == 0 
       render :json => { :success => true, 
                         :customers => [@object] , 
-                        :total => Customer.active_objects.count }  
+                        :total => current_office.customers.active_objects.count }  
     else
       msg = {
         :success => false, 
@@ -54,13 +54,13 @@ class Api::CustomersController < Api::BaseApiController
   end
 
   def update
-    @object = Customer.find(params[:id])
+    @object = current_office.customers.find(params[:id])
     
     @object.update_object( params[:customer] )
     if @object.errors.size == 0 
       render :json => { :success => true,   
                         :customers => [@object],
-                        :total => Customer.active_objects.count  } 
+                        :total => current_office.customers.active_objects.count  } 
     else
       msg = {
         :success => false, 
@@ -74,11 +74,11 @@ class Api::CustomersController < Api::BaseApiController
   end
 
   def destroy
-    @object = Customer.find(params[:id])
+    @object = current_office.customers.find(params[:id])
     @object.delete_object 
 
     if ( not @object.persisted?  or @object.is_deleted ) and @object.errors.size == 0 
-      render :json => { :success => true, :total => Customer.active_objects.count }  
+      render :json => { :success => true, :total => current_office.customers.active_objects.count }  
     else
       msg = {
         :success => false, 
@@ -103,14 +103,14 @@ class Api::CustomersController < Api::BaseApiController
     # on PostGre SQL, it is ignoring lower case or upper case 
     
     if  selected_id.nil?
-      @objects = Customer.where{ (name =~ query)   & 
+      @objects = current_office.customers.where{ (name =~ query)   & 
                                 (is_deleted.eq false )
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
     else
-      @objects = Customer.where{ (id.eq selected_id)  & 
+      @objects = current_office.customers.where{ (id.eq selected_id)  & 
                                 (is_deleted.eq false )
                               }.
                         page(params[:page]).

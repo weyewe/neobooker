@@ -1,4 +1,5 @@
 class Account < ActiveRecord::Base
+  belongs_to :office
   acts_as_nested_set
   
   has_many :transaction_activity_entries
@@ -283,57 +284,62 @@ class Account < ActiveRecord::Base
   Creating base account
 =end
 
-  def self.create_asset 
+  def self.create_asset(office)
     new_object = self.new
     new_object.name = "Asset"
     new_object.normal_balance = NORMAL_BALANCE[:debit]
     new_object.account_case = ACCOUNT_CASE[:group]
     new_object.classification = ACCOUNT_CLASSIFICATION[:asset]
     new_object.is_base_account = true 
+    new_object.office_id = office.id
     new_object.save 
     return new_object
   end
   
-  def self.create_expense
+  def self.create_expense(office)
     new_object = self.new
     new_object.name = "Expense"
     new_object.normal_balance = NORMAL_BALANCE[:debit]
     new_object.account_case = ACCOUNT_CASE[:group]
     new_object.classification = ACCOUNT_CLASSIFICATION[:expense]
     new_object.is_base_account = true 
+    new_object.office_id = office.id
     new_object.save
     return new_object
   end
   
-  def self.create_revenue
+  def self.create_revenue(office)
     new_object = self.new
     new_object.name = "Revenue"
     new_object.normal_balance = NORMAL_BALANCE[:credit]
     new_object.account_case = ACCOUNT_CASE[:group]
     new_object.classification = ACCOUNT_CLASSIFICATION[:revenue]
     new_object.is_base_account = true 
+    new_object.office_id = office.id
     new_object.save
     return new_object
   end
   
-  def self.create_liability
+  def self.create_liability(office)
     new_object = self.new
     new_object.name = "Liability"
     new_object.normal_balance = NORMAL_BALANCE[:credit]
     new_object.account_case = ACCOUNT_CASE[:group]
     new_object.classification = ACCOUNT_CLASSIFICATION[:liability]
     new_object.is_base_account = true 
+    new_object.office_id = office.id
     new_object.save
     return new_object
   end
   
-  def self.create_equity
+  def self.create_equity(office)
     new_object = self.new
     new_object.name = "Equity"
     new_object.normal_balance = NORMAL_BALANCE[:credit]
     new_object.account_case = ACCOUNT_CASE[:group]
     new_object.classification = ACCOUNT_CLASSIFICATION[:equity]
     new_object.is_base_account = true 
+    new_object.office_id = office.id
     new_object.save
     return new_object
   end
@@ -341,12 +347,12 @@ class Account < ActiveRecord::Base
 
 
 
-  def self.create_base_objects 
-    self.create_asset 
-    self.create_expense
-    self.create_revenue
-    self.create_liability
-    self.create_equity 
+  def self.create_base_objects( office ) 
+    self.create_asset( office ) 
+    self.create_expense( office ) 
+    self.create_revenue( office ) 
+    self.create_liability( office ) 
+    self.create_equity( office ) 
   end
   
   
@@ -618,10 +624,10 @@ class Account < ActiveRecord::Base
     new_object.save  
   end
   
-  def self.setup_business
-    self.create_base_objects
-    self.create_business_specific_objects
-    self.create_temporary_migration_objects 
+  def self.setup_business( office ) 
+    self.create_base_objects( office )
+    self.create_business_specific_objects( office ) 
+    self.create_temporary_migration_objects( office ) 
   end
   
   

@@ -7,7 +7,7 @@ class Api::BookingsController < Api::BaseApiController
     # livesearch
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
-      @objects = Booking.joins(:customer,:calendar).where{
+      @objects = current_office.bookings.joins(:customer,:calendar).where{
         (is_deleted.eq false) & 
         (
           (customer.name =~  livesearch ) | 
@@ -18,7 +18,7 @@ class Api::BookingsController < Api::BaseApiController
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
-      @total = Booking.joins(:customer,:calendar).where{
+      @total = current_office.bookings.joins(:customer,:calendar).where{
         (is_deleted.eq false) & 
         (
           (customer.name =~  livesearch ) | 
@@ -30,11 +30,11 @@ class Api::BookingsController < Api::BaseApiController
     elsif params[:startDate].present? 
       startDate = extract_extensible_date( params[:startDate])
       endDate = ( extract_extensible_date(params[:endDate]) + 1.day ).to_date.to_datetime
-      @objects = Booking.active_objects.joins(:customer).bookings_in_between(startDate, endDate)
+      @objects = current_office.bookings.active_objects.joins(:customer).bookings_in_between(startDate, endDate)
       @total = @objects.count 
     else
-      @objects = Booking.active_objects.joins(:customer, :calendar).page(params[:page]).per(params[:limit]).order("id DESC")
-      @total = Booking.active_objects.count
+      @objects = current_office.bookings.active_objects.joins(:customer, :calendar).page(params[:page]).per(params[:limit]).order("id DESC")
+      @total = current_office.bookings.active_objects.count
     end
     
   end
@@ -43,7 +43,7 @@ class Api::BookingsController < Api::BaseApiController
     
     params[:booking][:start_datetime] =  parse_datetime_from_client_booking( params[:booking][:start_datetime] )
     
-    @object = Booking.create_object(params[:booking])
+    @object = current_office.bookings.create_object(params[:booking])
  
     if @object.errors.size  == 0
       render :json => { :success => true, 
@@ -58,7 +58,7 @@ class Api::BookingsController < Api::BaseApiController
                             	:is_downpayment_imposed 		 =>	@object.is_downpayment_imposed
                             }
                           ] , 
-                        :total => Booking.active_objects.count }  
+                        :total => current_office.bookings.active_objects.count }  
     else
       msg = {
         :success => false, 
@@ -72,7 +72,7 @@ class Api::BookingsController < Api::BaseApiController
   end
   
   def show
-    @object  = Booking.find params[:id]
+    @object  = current_office.bookings.find params[:id]
     render :json => { :success => true,   
                       :booking => {
                         :id 						 =>	@object.id,                                               
@@ -83,11 +83,11 @@ class Api::BookingsController < Api::BaseApiController
                       	:calendar_id 		 =>	@object.calendar_id,
                       	:is_downpayment_imposed 		 =>	@object.is_downpayment_imposed
                       },
-                      :total => Booking.active_objects.count  }
+                      :total => current_office.bookings.active_objects.count  }
   end
 
   def update
-    @object = Booking.find(params[:id])
+    @object = current_office.bookings.find(params[:id])
     
     if params[:update_actual_start_datetime].present?  
       params[:booking][:actual_start_datetime] =  parse_datetime_from_client_booking( params[:booking][:actual_start_datetime] )
@@ -119,7 +119,7 @@ class Api::BookingsController < Api::BaseApiController
                         	:calendar_id 		 =>	@object.calendar_id,
                         	:is_downpayment_imposed 		 =>	@object.is_downpayment_imposed
                         }],
-                        :total => Booking.active_objects.count  } 
+                        :total => current_office.bookings.active_objects.count  } 
     else
       msg = {
         :success => false, 
@@ -133,7 +133,7 @@ class Api::BookingsController < Api::BaseApiController
   end
 
   def destroy
-    @object = Booking.find(params[:id])
+    @object = current_office.bookings.find(params[:id])
     puts "Gonna destroy "
     if @object.is_confirmed? 
       if not current_user.has_role?(:bookings , :post_confirm_destroy)
@@ -146,7 +146,7 @@ class Api::BookingsController < Api::BaseApiController
     @object.delete_object
 
     if (not @object.persisted? or @object.is_deleted? ) and @object.errors.size == 0 
-      render :json => { :success => true, :total => Booking.active_objects.count }  
+      render :json => { :success => true, :total => current_office.bookings.active_objects.count }  
     else
       
       msg = {
@@ -165,12 +165,12 @@ class Api::BookingsController < Api::BaseApiController
   Business Process 
 =end
   def confirm
-    @object = Booking.find_by_id params[:id]
+    @object = current_office.bookings.find_by_id params[:id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @object.confirm(nil)
     
     if @object.errors.size == 0  and @object.is_confirmed? 
-      render :json => { :success => true, :total => Booking.active_objects.count }  
+      render :json => { :success => true, :total => current_office.bookings.active_objects.count }  
     else
       # render :json => { :success => false, :total => Delivery.active_objects.count } 
       msg = {
@@ -187,12 +187,12 @@ class Api::BookingsController < Api::BaseApiController
   
   
   def pay
-    @object = Booking.find_by_id params[:id]
+    @object = current_office.bookings.find_by_id params[:id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @object.pay(nil)
     
     if @object.errors.size == 0  and @object.is_confirmed?  and @object.is_paid? 
-      render :json => { :success => true, :total => Booking.active_objects.count }  
+      render :json => { :success => true, :total => current_office.bookings.active_objects.count }  
     else
       # render :json => { :success => false, :total => Delivery.active_objects.count } 
       msg = {
@@ -207,7 +207,7 @@ class Api::BookingsController < Api::BaseApiController
   end
   
   def execute_salvage
-    @object = Booking.find_by_id params[:id]
+    @object = current_office.bookings.find_by_id params[:id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @object.execute_salvage   
     @object.reload
@@ -215,7 +215,7 @@ class Api::BookingsController < Api::BaseApiController
     puts "=======> the error: #{@object.errors.messages.each {|x| puts x}}"
     puts "error count: #{@object.errors.size}"
     if @object.errors.size == 0  and @object.is_salvaged?   
-      render :json => { :success => true, :total => Booking.active_objects.count }  
+      render :json => { :success => true, :total => current_office.bookings.active_objects.count }  
     else
       # render :json => { :success => false, :total => Delivery.active_objects.count } 
       msg = {
@@ -242,14 +242,14 @@ class Api::BookingsController < Api::BaseApiController
     # on PostGre SQL, it is ignoring lower case or upper case 
     
     if  selected_id.nil?  
-      @objects = Booking.where{  (name =~ query)   & 
+      @objects = current_office.bookings.where{  (name =~ query)   & 
                                 (is_deleted.eq false )
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
     else
-      @objects = Booking.where{ (id.eq selected_id)  & 
+      @objects = current_office.bookings.where{ (id.eq selected_id)  & 
                                 (is_deleted.eq false )
                               }.
                         page(params[:page]).
@@ -293,7 +293,7 @@ class Api::BookingsController < Api::BaseApiController
     if view_value == VIEW_VALUE[:week]
       starting_date = date - date.wday.days 
       ending_date = starting_date + 7.days 
-      bookings = Booking.active_objects.where{
+      bookings = current_office.bookings.active_objects.where{
         (start_datetime.gte starting_date) & 
         (start_datetime.lt ending_date )
       }
@@ -327,7 +327,7 @@ class Api::BookingsController < Api::BaseApiController
       days_in_month = Time.days_in_month(date.month, date.year)
       ending_date = starting_date + days_in_month.days
    
-      bookings = Booking.active_objects.where{
+      bookings = current_office.bookings.active_objects.where{
         (start_datetime.gte starting_date) & 
         (start_datetime.lt ending_date )
       }

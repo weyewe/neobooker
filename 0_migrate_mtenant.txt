@@ -1,0 +1,14 @@
+base_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+
+Account.all.each {|x| x.office_id = base_office.id; x.save; }
+Booking.all.each {|x| x.office_id = base_office.id; x.save; }
+Calendar.all.each {|x| x.office_id = base_office.id; x.save; }
+Customer.all.each {|x| x.office_id = base_office.id; x.save; }
+Income.all.each {|x| x.office_id = base_office.id; x.save; }
+PriceDetail.all.each {|x| x.office_id = base_office.id; x.save; }
+PriceRule.all.each {|x| x.office_id = base_office.id; x.save; }
+Price.all.each {|x| x.office_id = base_office.id; x.save; }
+SalvageBooking.all.each {|x| x.office_id = base_office.id; x.save; }
+TransactionActivity.all.each {|x| x.office_id = base_office.id; x.save; }
+TransactionActivityEntry.all.each {|x| x.office_id = base_office.id; x.save; }
+User.all.each {|x| x.office_id = base_office.id; x.save; }  

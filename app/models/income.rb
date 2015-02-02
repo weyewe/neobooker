@@ -3,6 +3,7 @@
 =end
 
 class Income < ActiveRecord::Base
+  belongs_to :office
   attr_accessible :income_source_id, 
                   :income_source_type,
                   :amount ,

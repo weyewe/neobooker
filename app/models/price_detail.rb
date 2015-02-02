@@ -1,4 +1,5 @@
 class PriceDetail < ActiveRecord::Base
+  belongs_to :office
   after_create :update_amount 
   belongs_to :price_rule 
   belongs_to :booking 

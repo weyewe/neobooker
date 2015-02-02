@@ -1,4 +1,5 @@
 class PriceRule < ActiveRecord::Base
+  belongs_to :office
   belongs_to :calendar
 
   has_many :price_details

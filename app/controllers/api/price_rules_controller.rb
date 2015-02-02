@@ -1,21 +1,21 @@
 class Api::PriceRulesController < Api::BaseApiController
   
   def index
-    @parent = Calendar.find_by_id params[:calendar_id]
+    @parent = current_office.calendars.find_by_id params[:calendar_id]
     @objects = @parent.active_price_rules.joins(:calendar).page(params[:page]).per(params[:limit]).order("id DESC")
     @total = @parent.active_price_rules.count
   end
 
   def create
    
-    @parent = Calendar.find_by_id params[:calendar_id]
+    @parent = current_office.calendars.find_by_id params[:calendar_id]
     if( params[:price_rule][:holiday_date].present? )
       params[:price_rule][:holiday_date] =  parse_datetime_from_client_booking( params[:price_rule][:holiday_date] )
     end
    
     params[:price_rule][:calendar_id] = @parent.id 
     params[:price_rule][:rule_case] = PRICE_RULE_CASE[:specific]
-    @object = PriceRule.create_object(params[:price_rule])
+    @object = current_office.price_rules.create_object(params[:price_rule])
     
     
     if @object.errors.size == 0 
@@ -35,7 +35,7 @@ class Api::PriceRulesController < Api::BaseApiController
   end
 
   def update
-    @object = PriceRule.find_by_id params[:id] 
+    @object = current_office.price_rules.find_by_id params[:id] 
     @parent = @object.calendar 
     
     
@@ -63,7 +63,7 @@ class Api::PriceRulesController < Api::BaseApiController
   end
 
   def destroy
-    @object = PriceRule.find(params[:id])
+    @object = current_office.price_rules.find(params[:id])
     @parent = @object.calendar 
     @object.delete_object 
 

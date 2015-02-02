@@ -1,4 +1,5 @@
 class TransactionActivity < ActiveRecord::Base
+  belongs_to :office
   has_many :transaction_activity_entries 
   validates_presence_of :transaction_datetime 
   

@@ -4,14 +4,14 @@ class Api::TransactionActivitiesController < Api::BaseApiController
     
     if params[:livesearch].present? 
       livesearch = "%#{params[:livesearch]}%"
-      @objects = TransactionActivity.where{
+      @objects = current_office.transaction_activities.where{
         (
           (description =~  livesearch )
         )
         
       }.page(params[:page]).per(params[:limit]).order("id DESC")
       
-      @total = TransactionActivity.where{
+      @total = current_office.transaction_activities.where{
         (
           (description =~  livesearch )
         )
@@ -20,8 +20,8 @@ class Api::TransactionActivitiesController < Api::BaseApiController
       # calendar
       
     else
-      @objects = TransactionActivity.page(params[:page]).per(params[:limit]).order("id DESC")
-      @total = TransactionActivity.count 
+      @objects = current_office.transaction_activities.page(params[:page]).per(params[:limit]).order("id DESC")
+      @total = current_office.transaction_activities.count 
     end
     
     
@@ -29,9 +29,9 @@ class Api::TransactionActivitiesController < Api::BaseApiController
   end
 
   def create
-    # @object = TransactionActivity.new(params[:transaction_activity])
+    # @object = current_office.transaction_activities.new(params[:transaction_activity])
     params[:transaction_activity][:transaction_datetime] =  parse_date( params[:transaction_activity][:transaction_datetime] )
-    @object = TransactionActivity.create_object( params[:transaction_activity], false  )
+    @object = current_office.transaction_activities.create_object( params[:transaction_activity], false  )
     if @object.errors.size == 0 
       render :json => { :success => true, 
                         :transaction_activities => [
@@ -45,7 +45,7 @@ class Api::TransactionActivitiesController < Api::BaseApiController
                           	:is_confirmed 		 =>	@object.is_confirmed
                           }
                           ] , 
-                        :total => TransactionActivity.count }  
+                        :total => current_office.transaction_activities.count }  
     else
       msg = {
         :success => false, 
@@ -59,7 +59,7 @@ class Api::TransactionActivitiesController < Api::BaseApiController
   end
 
   def update
-    @object = TransactionActivity.find(params[:id])
+    @object = current_office.transaction_activities.find(params[:id])
     params[:transaction_activity][:transaction_datetime] =  parse_date( params[:transaction_activity][:transaction_datetime] )
     @object.update_object( params[:transaction_activity], false  )
     if @object.errors.size == 0 
@@ -76,7 +76,7 @@ class Api::TransactionActivitiesController < Api::BaseApiController
                             }
                             
                           ],
-                        :total => TransactionActivity.count  } 
+                        :total => current_office.transaction_activities.count  } 
     else
       msg = {
         :success => false, 
@@ -91,12 +91,12 @@ class Api::TransactionActivitiesController < Api::BaseApiController
   
   
   def confirm
-    @object = TransactionActivity.find_by_id params[:id]
+    @object = current_office.transaction_activities.find_by_id params[:id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @object.confirm   
     
     if @object.errors.size == 0  and @object.is_confirmed? 
-      render :json => { :success => true, :total => TransactionActivity.count }  
+      render :json => { :success => true, :total => current_office.transaction_activities.count }  
     else
       # render :json => { :success => false, :total => Delivery.active_objects.count } 
       msg = {
@@ -111,12 +111,12 @@ class Api::TransactionActivitiesController < Api::BaseApiController
   end
   
   def unconfirm
-    @object = TransactionActivity.find_by_id params[:id]
+    @object = current_office.transaction_activities.find_by_id params[:id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @object.external_unconfirm   
     
     if @object.errors.size == 0  and @object.is_confirmed? 
-      render :json => { :success => true, :total => TransactionActivity.count }  
+      render :json => { :success => true, :total => current_office.transaction_activities.count }  
     else
       # render :json => { :success => false, :total => Delivery.active_objects.count } 
       msg = {
@@ -133,11 +133,11 @@ class Api::TransactionActivitiesController < Api::BaseApiController
   
 
   def destroy
-    @object = TransactionActivity.find(params[:id])
+    @object = current_office.transaction_activities.find(params[:id])
     @object.delete_object 
 
     if ( not @object.persisted?   )  
-      render :json => { :success => true, :total => TransactionActivity.count }  
+      render :json => { :success => true, :total => current_office.transaction_activities.count }  
     else
       msg = {
         :success => false, 
@@ -162,21 +162,21 @@ class Api::TransactionActivitiesController < Api::BaseApiController
     # on PostGre SQL, it is ignoring lower case or upper case 
     
     if  selected_id.nil?
-      @objects = TransactionActivity.where{ (description =~ query)    
+      @objects = current_office.transaction_activities.where{ (description =~ query)    
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
     
-      @total =   TransactionActivity.where{ (description =~ query)    }.count
+      @total =   current_office.transaction_activities.where{ (description =~ query)    }.count
     else
-      @objects = TransactionActivity.where{ (id.eq selected_id)   
+      @objects = current_office.transaction_activities.where{ (id.eq selected_id)   
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
     
-      @total =   TransactionActivity.where{ (description =~ query)    }.count
+      @total =   current_office.transaction_activities.where{ (description =~ query)    }.count
     end
     
     

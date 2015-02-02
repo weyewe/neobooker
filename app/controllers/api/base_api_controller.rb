@@ -215,5 +215,10 @@ class Api::BaseApiController < ApplicationController
       return
     end
   end
+  
+  def current_office
+    return nil if current_user.nil?
+    return current_user.office 
+  end
  
 end

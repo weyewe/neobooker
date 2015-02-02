@@ -20,7 +20,7 @@ class Api::CalendarsController < Api::BaseApiController
      #     "cal_color" => 26
      # }]
      # 
-     @objects = Calendar.all.order("id ASC")
+     @objects = current_office.calendars.all.order("id ASC")
      
      # {
      #      "cal_id"    :"C8",
@@ -32,13 +32,13 @@ class Api::CalendarsController < Api::BaseApiController
   end
 
   def create
-    @object = Calendar.create_object( params[:calendar])
+    @object = current_office.calendars.create_object( params[:calendar])
  
     if @object.errors.size == 0 
       
       render :json => { :success => true, 
                         :calendars => [@object] , 
-                        :total => Calendar.active_objects.count }  
+                        :total => current_office.calendars.active_objects.count }  
     else
       puts "It is fucking error!!\n"*10
       @object.errors.messages.each {|x| puts x }
@@ -58,14 +58,14 @@ class Api::CalendarsController < Api::BaseApiController
   end
   
   def show
-    @object  = Calendar.find params[:id]
+    @object  = current_office.calendars.find params[:id]
     render :json => { :success => true,   
                       :calendar => @object,
-                      :total => Calendar.active_objects.count  }
+                      :total => current_office.calendars.active_objects.count  }
   end
 
   def update
-    @object = Calendar.find(params[:id])
+    @object = current_office.calendars.find(params[:id])
     
     # quick hack for ext-calendar 
     if not current_user.has_role?(:calendars , :update_details)
@@ -79,7 +79,7 @@ class Api::CalendarsController < Api::BaseApiController
     if @object.errors.size == 0 
       render :json => { :success => true,   
                         :calendars => [@object],
-                        :total => Calendar.active_objects.count  } 
+                        :total => current_office.calendars.active_objects.count  } 
     else
       
       msg = {
@@ -94,13 +94,13 @@ class Api::CalendarsController < Api::BaseApiController
   end
 
   def destroy
-    @object = Calendar.find(params[:id])
+    @object = current_office.calendars.find(params[:id])
     @object.delete_object
 
     if (( not @object.persisted? )   or @object.is_deleted ) and @object.errors.size == 0
-      render :json => { :success => true, :total => Calendar.active_objects.count }  
+      render :json => { :success => true, :total => current_office.calendars.active_objects.count }  
     else
-      render :json => { :success => false, :total => Calendar.active_objects.count, 
+      render :json => { :success => false, :total => current_office.calendars.active_objects.count, 
         :message => {
           :errors => extjs_error_format( @object.errors )  
         } 
@@ -119,14 +119,14 @@ class Api::CalendarsController < Api::BaseApiController
     # on PostGre SQL, it is ignoring lower case or upper case 
     
     if  selected_id.nil?  
-      @objects = Calendar.where{  (title =~ query)   & 
+      @objects = current_office.calendars.where{  (title =~ query)   & 
                                 (is_deleted.eq false )
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
     else
-      @objects = Calendar.where{ (id.eq selected_id)  & 
+      @objects = current_office.calendars.where{ (id.eq selected_id)  & 
                                 (is_deleted.eq false )
                               }.
                         page(params[:page]).

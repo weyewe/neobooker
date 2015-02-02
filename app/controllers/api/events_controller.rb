@@ -16,7 +16,7 @@ class Api::EventsController < Api::BaseApiController
       puts "startDate.to_time : #{startDate.to_time.to_s}"
       puts "endDate.to_time : #{endDate.to_time.to_s}"
       
-      @objects = Booking.active_objects.where(:is_salvaged => false).bookings_in_between(startDate, endDate)
+      @objects = current_office.bookings.active_objects.where(:is_salvaged => false).bookings_in_between(startDate, endDate)
       @total = @objects.count 
       puts "Total count: #{@total}"
       
@@ -25,7 +25,7 @@ class Api::EventsController < Api::BaseApiController
  
   
   def update 
-    @object = Booking.find(params[:id])
+    @object = current_office.bookings.find(params[:id])
     render :json => { :success => true,   
                       :bookings => [{
                         :id 						 =>	@object.id,                                               
@@ -34,7 +34,7 @@ class Api::EventsController < Api::BaseApiController
                       	:title 					 =>	@object.title,
                       	:calendar_id 		 =>	@object.calendar_id
                       }],
-                      :total => Booking.active_objects.count  } 
+                      :total => current_office.bookings.active_objects.count  } 
   end
  
 end

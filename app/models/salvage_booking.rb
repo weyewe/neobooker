@@ -1,4 +1,5 @@
 class SalvageBooking < ActiveRecord::Base
+  belongs_to :office
   belongs_to :booking
   
   # after_create :create_accounting_entry
