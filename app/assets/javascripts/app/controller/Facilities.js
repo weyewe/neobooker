@@ -150,6 +150,7 @@ Ext.define('AM.controller.Facilities', {
 			 
 		}else{
 			//  no record at all  => gonna create the new one 
+			// console.log("This is the new record");
 			var me  = this; 
 			var newObject = new AM.model.Facility( values ) ;
 			newObject.set('color'  , colorpicker.getValue()   ) ;
@@ -161,9 +162,12 @@ Ext.define('AM.controller.Facilities', {
 			newObject.save({
 				success: function(record){
 					//  since the grid is backed by store, if store changes, it will be updated
+					// console.log("create new record");
+					// 					console.log( record )
 					store.load();
 					form.setLoading(false);
 					win.close();
+					// console.log( record )
 					
 					me.updateChildGrid(record );
 					
@@ -217,6 +221,8 @@ Ext.define('AM.controller.Facilities', {
 		var priceRuleGrid = this.getPriceRuleList();
 		// priceRuleGrid.setTitle("Purchase Order: " + record.get('code'));
 		priceRuleGrid.setObjectTitle( record ) ;
+		
+		// console.log("record id: " + record.get("id"));
 		priceRuleGrid.getStore().load({
 			params : {
 				calendar_id : record.get('id')
