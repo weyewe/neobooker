@@ -34,6 +34,18 @@ class Api::AppUsersController < Api::BaseApiController
   def create
     @object = current_office.users.create_by_employee(current_user,  params[:user] )  
     
+    if current_office.is_demo?
+      @object.errors.add(:generic_errors, "Tidak dapat membuat user sebagai demo account")
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg
+      return  
+    end
     
  
     if @object.errors.size == 0 

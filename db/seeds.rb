@@ -125,9 +125,9 @@ manager_role = Role.create!(
 
 current_office = Office.create_registration_object(
                   :is_confirmed        => true    ,        
-                  :is_demo             => false    ,
-                  :main_email          => params[:main_email       ],
-                  :starter_password    => params[:starter_password ],
+                  :is_demo             => true    ,
+                  :main_email          => "admin@gmail.com",
+                  :starter_password    => "willy1234",
                   :name        => "OFfice1", 
                   :description => "balblalbalba", 
                   :code        => "XXX"

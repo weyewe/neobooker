@@ -20,7 +20,7 @@ class Api::CalendarsController < Api::BaseApiController
      #     "cal_color" => 26
      # }]
      # 
-     @objects = current_office.calendars.all.order("id ASC")
+     @objects = current_office.calendars.order("id ASC")
      
      # {
      #      "cal_id"    :"C8",

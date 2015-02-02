@@ -13,6 +13,9 @@ class Api::PasswordsController < Api::BaseApiController
       return 
     end
     
+
+    
+    
     if @user.update_with_password(params[:user])
       sign_in(@user, :bypass => true)
       flash[:notice] = "Password is updated successfully."
