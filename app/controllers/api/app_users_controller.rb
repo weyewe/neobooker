@@ -54,7 +54,25 @@ class Api::AppUsersController < Api::BaseApiController
 
   def update
     
+    
+    
+    
     @object = current_office.users.find_by_id params[:id] 
+    
+    if current_office.is_demo?
+      @object.errors.add(:generic_errors, "Tidak dapat update user sebagai demo account")
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg
+      return  
+    end
+    
+    
     @object.update_by_employee(current_user,  params[:user])
      
     if @object.errors.size == 0 
@@ -75,6 +93,20 @@ class Api::AppUsersController < Api::BaseApiController
 
   def destroy
     @object = current_office.users.find(params[:id])
+    
+    if current_office.is_demo?
+      @object.errors.add(:generic_errors, "Tidak dapat update user sebagai demo account")
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg
+      return  
+    end
+    
     @object.delete(current_user)
 
     if @object.is_deleted

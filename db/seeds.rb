@@ -14,10 +14,7 @@ Role.create!(
 )
 
 
-current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
 
-Account.setup_business
-Account.all.each {|x| x.office_id = current_office.id; x.save ; }
 
 data_entry_role = {
   :passwords => {
@@ -57,6 +54,12 @@ data_entry_role = {
     :index => true 
   }
 }
+
+
+
+# Account.setup_business
+# Account.all.each {|x| x.office_id = current_office.id; x.save ; }
+
 
 data_entry_role = Role.create!(
   :name        => ROLE_NAME[:data_entry],
@@ -120,9 +123,20 @@ manager_role = Role.create!(
 )
 
 
-admin = current_office.users.create_main_user(  :name => "Admin", :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
+current_office = Office.create_registration_object(
+                  :is_confirmed        => true    ,        
+                  :is_demo             => false    ,
+                  :main_email          => params[:main_email       ],
+                  :starter_password    => params[:starter_password ],
+                  :name        => "OFfice1", 
+                  :description => "balblalbalba", 
+                  :code        => "XXX"
 
-admin.set_as_main_user
+                )
+
+
+
+admin = current_office.main_user # current_office.users.create_main_user(  :name => "Admin", :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
 
 manager = current_office.users.create_object(:name => "Manager", :email => "manager@gmail.com", 
               :password => 'willy1234', 

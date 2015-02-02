@@ -4,7 +4,15 @@ class Api::PasswordsController < Api::BaseApiController
  
   def update
     @user = current_user
-
+    
+    if current_office.is_demo?
+      render :json => {
+        :success => false, 
+        :message => "Demo company tidak dapat mengganti password"
+      }
+      return 
+    end
+    
     if @user.update_with_password(params[:user])
       sign_in(@user, :bypass => true)
       flash[:notice] = "Password is updated successfully."
