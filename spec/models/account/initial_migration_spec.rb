@@ -4,20 +4,32 @@ describe Account do
 
 
   before(:each) do
-    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
-    
+    role = {
+      :system => {
+        :administrator => true
+      }
+    }
+
+    Role.create!(
+      :name        => ROLE_NAME[:admin],
+      :title       => 'Administrator',
+      :description => 'Role for administrator',
+      :the_role    => role.to_json
+    )
+    @current_office = Office.create_registration_object :name => "OFfice2", :description => "balblalbalba", :code => "XXX", 
+            :main_email => "test@gmail.com", :starter_password => "ababa"
     
     # @current_office.accounts.setup_business
-    @asset_account     = @current_office.accounts.asset_account
-    @expense_account   = @current_office.accounts.expense_account
-    @revenue_account   = @current_office.accounts.revenue_account
-    @liability_account = @current_office.accounts.liability_account
-    @equity_account    = @current_office.accounts.equity_account 
-    @cash_drawer_account = @current_office.accounts.cash_drawer_account
-    @cash_account = @current_office.accounts.cash_account 
-    @field_usage_revenue_account = @current_office.accounts.field_usage_revenue_account
-    @salvaged_downpayment_revenue_account = @current_office.accounts.salvaged_downpayment_revenue_account
-    @field_booking_downpayment_account = @current_office.accounts.field_booking_downpayment_account
+    @asset_account     = @current_office.accounts.asset_account(@current_office)
+    @expense_account   = @current_office.accounts.expense_account(@current_office)
+    @revenue_account   = @current_office.accounts.revenue_account(@current_office)
+    @liability_account = @current_office.accounts.liability_account(@current_office)
+    @equity_account    = @current_office.accounts.equity_account(@current_office)
+    @cash_drawer_account = @current_office.accounts.cash_drawer_account(@current_office)
+    @cash_account = @current_office.accounts.cash_account(@current_office) 
+    @field_usage_revenue_account = @current_office.accounts.field_usage_revenue_account(@current_office)
+    @salvaged_downpayment_revenue_account = @current_office.accounts.salvaged_downpayment_revenue_account(@current_office)
+    @field_booking_downpayment_account = @current_office.accounts.field_booking_downpayment_account(@current_office)
     
   end
   

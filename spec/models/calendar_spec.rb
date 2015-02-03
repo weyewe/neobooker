@@ -3,7 +3,20 @@ require 'spec_helper'
 describe Calendar do
   before(:each) do
     # Account.setup_business
-    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+    role = {
+      :system => {
+        :administrator => true
+      }
+    }
+
+    Role.create!(
+      :name        => ROLE_NAME[:admin],
+      :title       => 'Administrator',
+      :description => 'Role for administrator',
+      :the_role    => role.to_json
+    )
+    @current_office = Office.create_registration_object :name => "OFfice2", :description => "balblalbalba", :code => "XXX", 
+            :main_email => "test@gmail.com", :starter_password => "ababa"
     @calendar_amount = BigDecimal('200000')
     @downpayment_percentage = BigDecimal( '20')
     @calendar =  @current_office.calendars.create_object({

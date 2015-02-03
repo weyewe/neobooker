@@ -5,20 +5,36 @@ describe Account do
   
   context "base accounts creation" do
     before(:each) do
-      @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
-      # @asset_account     = Account.create_asset
-      # @expense_account   = Account.create_expense
-      # @revenue_account   = Account.create_revenue
-      # @liability_account = Account.create_liability
-      # @equity_account    = Account.create_equity
-      @asset_account = @current_office.accounts.asset_account
-      @expense_account = @current_office.accounts.expense_account
-      @revenue_account = @current_office.accounts.revenue_account
-      @liability_account = @current_office.accounts.liability_account
-      @equity_account = @current_office.accounts.equity_account
+      role = {
+        :system => {
+          :administrator => true
+        }
+      }
+
+      Role.create!(
+        :name        => ROLE_NAME[:admin],
+        :title       => 'Administrator',
+        :description => 'Role for administrator',
+        :the_role    => role.to_json
+      )
+      
+      @current_office = Office.create_registration_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX", 
+              :main_email => "test@gmail.com", :starter_password => "ababa"
+      
+      @asset_account     = Account.asset_account(@current_office)
+      @expense_account   = Account.expense_account(@current_office)
+      @revenue_account   = Account.revenue_account(@current_office)
+      @liability_account = Account.liability_account(@current_office)
+      @equity_account    = Account.equity_account(@current_office)
+
 
     end
-
+    
+    it "should create valid office" do
+      @current_office.errors.messages.each {|x| puts x}
+      @current_office.should be_valid 
+    end
+    
     it 'should create 5 base accounts' do 
       @asset_account    .should be_valid
       @expense_account  .should be_valid
@@ -26,16 +42,31 @@ describe Account do
       @liability_account.should be_valid
       @equity_account   .should be_valid
     end
+      
+  
   end
   
   context "business accounts creation" do
     before(:each) do
-      @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
-      @asset_account     = @current_office.accounts.asset_account
-      @expense_account   = @current_office.accounts.expense_account
-      @revenue_account   = @current_office.accounts.revenue_account
-      @liability_account = @current_office.accounts.liability_account
-      @equity_account    = @current_office.accounts.equity_account
+      role = {
+        :system => {
+          :administrator => true
+        }
+      }
+
+      Role.create!(
+        :name        => ROLE_NAME[:admin],
+        :title       => 'Administrator',
+        :description => 'Role for administrator',
+        :the_role    => role.to_json
+      )
+      @current_office = Office.create_registration_object :name => "OFfice2", :description => "balblalbalba", :code => "XXX", 
+              :main_email => "test@gmail.com", :starter_password => "ababa"
+      @asset_account     = Account.asset_account(@current_office)
+      @expense_account   = Account.expense_account(@current_office)
+      @revenue_account   = Account.revenue_account(@current_office)
+      @liability_account = Account.liability_account(@current_office)
+      @equity_account    = Account.equity_account(@current_office)
       
     end
     
@@ -59,15 +90,15 @@ describe Account do
       # 4. salvaged_downpayment_revenue 
       # 5. field_booking_downpayment 
       
-      @current_office.accounts.cash_account.should be_valid 
-      @current_office.accounts.cash_drawer_account.should be_valid
-      @current_office.accounts.field_usage_revenue_account.should be_valid 
-      @current_office.accounts.salvaged_downpayment_revenue_account.should be_valid 
-      @current_office.accounts.field_booking_downpayment_account.should be_valid 
+      Account.cash_account(@current_office).should be_valid 
+      Account.cash_drawer_account(@current_office).should be_valid
+      Account.field_usage_revenue_account(@current_office).should be_valid 
+      Account.salvaged_downpayment_revenue_account(@current_office).should be_valid 
+      Account.field_booking_downpayment_account(@current_office).should be_valid 
     end
     
     it 'should give asset_account 2 children : cash_drawer and cash' do
-      @asset_account = @current_office.accounts.asset_account
+      @asset_account = Account.asset_account(@current_office)
 =begin
 descendants  => all childs down the tree
 children => direct children (1 depth below)
@@ -93,19 +124,19 @@ same_scope?
     end
     
     it 'should give liability a descendant: downpayment_revenue' do
-      @liability_account = @current_office.accounts.liability_account 
+      @liability_account = Account.liability_account(@current_office)
       @liability_account.descendants.count.should == 1 
       
-      @downpayment_unearned_revenue_account = @current_office.accounts.field_booking_downpayment_account
+      @downpayment_unearned_revenue_account = Account.field_booking_downpayment_account(@current_office)
       
       @downpayment_unearned_revenue_account.is_descendant_of?(@liability_account).should be_true 
     end
     
     it 'should create 2 descendants of revenue account' do
-      @field_usage_revenue = @current_office.accounts.field_usage_revenue_account 
-      @salvaged_downpayment_revenue = @current_office.accounts.salvaged_downpayment_revenue_account 
+      @field_usage_revenue = Account.field_usage_revenue_account(@current_office)
+      @salvaged_downpayment_revenue = Account.salvaged_downpayment_revenue_account(@current_office)
       
-      @revenue = @current_office.accounts.revenue_account
+      @revenue = Account.revenue_account(@current_office)
       @revenue.descendants.count.should == 2 
       @field_usage_revenue.is_descendant_of?(@revenue).should be_true 
       @salvaged_downpayment_revenue.is_descendant_of?(@revenue).should be_true 

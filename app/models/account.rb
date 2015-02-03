@@ -4,7 +4,7 @@ class Account < ActiveRecord::Base
   
   has_many :transaction_activity_entries
   
-  validates_uniqueness_of :name  
+  # validates_uniqueness_of :name  
   
   
   
@@ -17,6 +17,31 @@ class Account < ActiveRecord::Base
   validate :original_account_id_must_be_ledger_account
   validate :original_account_must_have_the_same_direct_ancestor
   validate :valid_account_case 
+  
+  validate :name_must_unique_in_one_office
+  
+  def name_must_unique_in_one_office
+    return if not name.present? 
+    current_name = self.name 
+    
+     
+    if self.persisted?
+      current_object = self 
+      
+      if Office.find_by_id( self.office_id).accounts.where{
+        ( id.not_eq current_object.id ) & 
+        ( name.eq current_name)
+      }.count != 0
+        self.errors.add(:name, "Harus unique")
+        return self 
+      end
+    else
+      if Office.find_by_id(self.office_id).accounts.where(:name => current_name).count != 0 
+        self.errors.add(:name, "Tidak boleh duplikasi")
+        return self 
+      end
+    end
+  end
   
   
   
@@ -445,79 +470,89 @@ class Account < ActiveRecord::Base
 =begin
   Create Cash Drawer account.. Asset > Cash > Cash Drawer 
 =end
-  def self.asset_account
+  def self.asset_account(office)
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:asset],
-      :is_base_account => true 
+      :is_base_account => true ,
+      :office_id => office.id
     ).first 
   end
   
-  def self.liability_account
+  def self.liability_account(office)
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:liability],
-      :is_base_account => true 
+      :is_base_account => true ,
+      :office_id => office.id
     ).first
   end
   
-  def self.revenue_account
+  def self.revenue_account(office)
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:revenue],
-      :is_base_account => true 
+      :is_base_account => true ,
+      :office_id => office.id
     ).first 
   end
   
-  def self.expense_account
+  def self.expense_account(office) 
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:expense],
-      :is_base_account => true 
+      :is_base_account => true ,
+      :office_id => office.id
     ).first 
   end
   
-  def self.equity_account
+  def self.equity_account( office) 
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:equity],
-      :is_base_account => true 
+      :is_base_account => true ,
+      :office_id => office.id
     ).first 
   end
   
   
-  def self.cash_account
+  def self.cash_account( office ) 
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:asset],
       :is_base_account => false,
-      :code => APP_SPECIFIC_ACCOUNT_CODE[:cash]
+      :code => APP_SPECIFIC_ACCOUNT_CODE[:cash],
+      :office_id => office.id
     ).first
   end
   
-  def self.cash_drawer_account
+  def self.cash_drawer_account( office ) 
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:asset],
       :is_base_account => false,
-      :code => APP_SPECIFIC_ACCOUNT_CODE[:cash_drawer]
+      :code => APP_SPECIFIC_ACCOUNT_CODE[:cash_drawer],
+      :office_id => office.id
     ).first
   end
   
-  def self.field_usage_revenue_account
+  def self.field_usage_revenue_account( office ) 
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:revenue],
       :is_base_account => false,
-      :code => APP_SPECIFIC_ACCOUNT_CODE[:field_usage_revenue]
+      :code => APP_SPECIFIC_ACCOUNT_CODE[:field_usage_revenue],
+      :office_id => office.id
     ).first
   end
   
-  def self.salvaged_downpayment_revenue_account
+  def self.salvaged_downpayment_revenue_account( office ) 
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:revenue],
       :is_base_account => false,
-      :code => APP_SPECIFIC_ACCOUNT_CODE[:salvaged_downpayment_revenue]
+      :code => APP_SPECIFIC_ACCOUNT_CODE[:salvaged_downpayment_revenue],
+      :office_id => office.id
     ).first
   end
   
-  def self.field_booking_downpayment_account
+  def self.field_booking_downpayment_account( office ) 
     self.where(
       :classification => ACCOUNT_CLASSIFICATION[:liability],
       :is_base_account => false,
-      :code => APP_SPECIFIC_ACCOUNT_CODE[:unearned_revenue_booking_downpayment]
+      :code => APP_SPECIFIC_ACCOUNT_CODE[:unearned_revenue_booking_downpayment],
+      :office_id => office.id
     ).first
   end
   
@@ -526,7 +561,7 @@ class Account < ActiveRecord::Base
   def self.create_cash_account( office) 
     new_object = self.new
     new_object.name = "Cash"
-    new_object.parent_id = self.asset_account.id 
+    new_object.parent_id = self.asset_account(office).id 
     new_object.normal_balance = NORMAL_BALANCE[:debit]
     new_object.account_case = ACCOUNT_CASE[:group]
     new_object.classification = ACCOUNT_CLASSIFICATION[:asset]
@@ -539,7 +574,7 @@ class Account < ActiveRecord::Base
   def self.create_downpayment_account(office)
     new_object = self.new
     new_object.name = "Downpayment"
-    new_object.parent_id = self.liability_account.id 
+    new_object.parent_id = self.liability_account(office).id 
     new_object.normal_balance = NORMAL_BALANCE[:credit]
     new_object.account_case = ACCOUNT_CASE[:ledger]
     new_object.classification = ACCOUNT_CLASSIFICATION[:liability]
@@ -569,7 +604,7 @@ class Account < ActiveRecord::Base
       
     )
     
-    revenue_account = self.revenue_account 
+    revenue_account = self.revenue_account(office) 
     self.create_object({
       :name => "Field Usage Revenue",
       :parent_id => revenue_account.id , 
@@ -596,7 +631,7 @@ class Account < ActiveRecord::Base
     
     # unearned revenue 
     # downpayment_account = self.create_downpayment_account # part of liability account => unearned revenue 
-    liability_account = self.liability_account
+    liability_account = self.liability_account(office)
     self.create_object({
       :name => "Field Booking Downpayment",
       :parent_id => liability_account.id , 

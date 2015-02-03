@@ -797,7 +797,7 @@ Solution: get the PriceRule on that is active on the creation time
     end
     
     if self.is_confirmed? and not self.is_paid?
-      SalvageBooking.create_object :booking_id => self.id, :salvaged_datetime => DateTime.now  
+      SalvageBooking.create_object :booking_id => self.id, :salvaged_datetime => DateTime.now  , :office_id => self.office_id
       self.is_salvaged = true
       self.save
     elsif not self.is_confirmed?

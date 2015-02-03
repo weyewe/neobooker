@@ -33,8 +33,8 @@ class Income < ActiveRecord::Base
       
     # create unearned revenue  : credit
     # create cash_drawer   : debit 
-    cash_drawer_account = Account.cash_drawer_account
-    unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account
+    cash_drawer_account = Account.cash_drawer_account(income.office)
+    unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account(income.office)
     
       
     ta = TransactionActivity.create_object({
@@ -102,9 +102,9 @@ class Income < ActiveRecord::Base
     # 2. credit the revenue for usage  ( unearned revenue + cash from remaining payment)
     # 3. debit the cash_drawer 
     
-    unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account
-    cash_drawer_account = Account.cash_drawer_account 
-    field_usage_revenue_account = Account.field_usage_revenue_account
+    unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account(income.office)
+    cash_drawer_account = Account.cash_drawer_account(income.office) 
+    field_usage_revenue_account = Account.field_usage_revenue_account(income.office)
     
     ta = TransactionActivity.create_object({
       :transaction_datetime => income_source.paid_datetime  ,
@@ -198,8 +198,8 @@ class Income < ActiveRecord::Base
       # transaction_1: credit the unearned revenue (equal to the amount of confirmation payment)
       # transaction_3: debit the cash_drawer
       
-      cash_drawer_account = Account.cash_drawer_account
-      unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account
+      cash_drawer_account = Account.cash_drawer_account(self.office)
+      unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account(self.office)
     
       ta.reload 
       
@@ -231,9 +231,9 @@ class Income < ActiveRecord::Base
       ta.confirm
       
     elsif  self.case == INCOME_CASE[:remaining_payment]
-      unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account
-      cash_drawer_account = Account.cash_drawer_account 
-      field_usage_revenue_account = Account.field_usage_revenue_account
+      unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account(self.office)
+      cash_drawer_account = Account.cash_drawer_account(self.office) 
+      field_usage_revenue_account = Account.field_usage_revenue_account(self.office)
       
       
       # transaction_1: debit the unearned revenue (equal to the amount of confirmation payment)

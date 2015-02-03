@@ -3,7 +3,20 @@ require 'spec_helper'
 describe TransactionActivityEntry do
   before(:each) do
     # Account.setup_business
-    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+    role = {
+      :system => {
+        :administrator => true
+      }
+    }
+
+    Role.create!(
+      :name        => ROLE_NAME[:admin],
+      :title       => 'Administrator',
+      :description => 'Role for administrator',
+      :the_role    => role.to_json
+    )
+    @current_office = Office.create_registration_object :name => "OFfice2", :description => "balblalbalba", :code => "XXX", 
+            :main_email => "test@gmail.com", :starter_password => "ababa"
     
     
     @transaction_datetime =DateTime.now 
@@ -14,8 +27,8 @@ describe TransactionActivityEntry do
       :transaction_datetime => @transaction_datetime ,
       :description => @msg 
     }, true )
-    @cash_drawer_account = Account.cash_drawer_account
-    @field_usage_revenue_account = Account.field_usage_revenue_account
+    @cash_drawer_account = Account.cash_drawer_account(@current_office)
+    @field_usage_revenue_account = Account.field_usage_revenue_account(@current_office)
     
     @revenue_amount = BigDecimal("300000")
     
@@ -82,11 +95,11 @@ describe TransactionActivityEntry do
       
       context "confirming the transaction" do
         before(:each) do
-          @revenue_account   = Account.revenue_account
-          @field_usage_revenue_account = Account.field_usage_revenue_account
-          @asset_account     = Account.asset_account 
-          @cash_account = Account.cash_account
-          @cash_drawer_account = Account.cash_drawer_account
+          @revenue_account   = Account.revenue_account(@current_office)
+          @field_usage_revenue_account = Account.field_usage_revenue_account(@current_office)
+          @asset_account     = Account.asset_account(@current_office) 
+          @cash_account = Account.cash_account(@current_office)
+          @cash_drawer_account = Account.cash_drawer_account(@current_office)
       
           @initial_cash_drawer_account = @cash_drawer_account.amount
           @initial_cash_account = @cash_account.amount 

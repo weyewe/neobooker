@@ -3,18 +3,31 @@ require 'spec_helper'
 describe Booking do
   before(:each) do
     # Account.setup_business
-    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
-    @asset_account     = Account.asset_account
-    @expense_account   = Account.expense_account
-    @revenue_account   = Account.revenue_account
-    @liability_account = Account.liability_account
-    @equity_account    = Account.equity_account
+    role = {
+      :system => {
+        :administrator => true
+      }
+    }
+
+    Role.create!(
+      :name        => ROLE_NAME[:admin],
+      :title       => 'Administrator',
+      :description => 'Role for administrator',
+      :the_role    => role.to_json
+    )
+    @current_office = Office.create_registration_object :name => "OFfice2", :description => "balblalbalba", :code => "XXX", 
+            :main_email => "test@gmail.com", :starter_password => "ababa"
+    @asset_account     = Account.asset_account(@current_office)
+    @expense_account   = Account.expense_account(@current_office)
+    @revenue_account   = Account.revenue_account(@current_office)
+    @liability_account = Account.liability_account(@current_office)
+    @equity_account    = Account.equity_account(@current_office)
     
-    @cash_account = Account.cash_account 
-    @cash_drawer_account = Account.cash_drawer_account 
-    @field_usage_revenue_account = Account.field_usage_revenue_account 
-    @salvaged_downpayment_revenue_account = Account.salvaged_downpayment_revenue_account  
-    @field_booking_downpayment_account = Account.field_booking_downpayment_account 
+    @cash_account = Account.cash_account(@current_office) 
+    @cash_drawer_account = Account.cash_drawer_account(@current_office) 
+    @field_usage_revenue_account = Account.field_usage_revenue_account(@current_office) 
+    @salvaged_downpayment_revenue_account = Account.salvaged_downpayment_revenue_account(@current_office)  
+    @field_booking_downpayment_account = Account.field_booking_downpayment_account(@current_office) 
     
     
     @calendar_amount = BigDecimal('200000')
@@ -139,20 +152,7 @@ describe Booking do
        
       @salvage_transaction_activity.amount.should == @booking.downpayment_amount 
     end
-    
-=begin
-@asset_account     = Account.asset_account
-@expense_account   = Account.expense_account
-@revenue_account   = Account.revenue_account
-@liability_account = Account.liability_account
-@equity_account    = Account.equity_account
-
-@cash_account = Account.cash_account 
-@cash_drawer_account = Account.cash_drawer_account 
-@field_usage_revenue_account = Account.field_usage_revenue_account 
-@salvaged_downpayment_revenue_account = Account.salvaged_downpayment_revenue_account  
-@field_booking_downpayment_account = Account.field_booking_downpayment_account
-=end
+ 
     it 'should update the account.s amount ' do
       @downpayment_amount = @booking.downpayment_amount 
       @asset_account  .amount.should == @downpayment_amount

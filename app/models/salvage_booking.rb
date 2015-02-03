@@ -9,6 +9,7 @@ class SalvageBooking < ActiveRecord::Base
     new_object = self.new
     new_object.booking_id = params[:booking_id]
     new_object.salvaged_datetime = params[:salvaged_datetime]
+    new_object.office_id = params[:office_id]
     if new_object.save 
       
       # puts "\n\n\n"
@@ -22,8 +23,8 @@ class SalvageBooking < ActiveRecord::Base
     
     # transaction_1: debit the unearned revenue
     # transaction_4: credit to the other_revenue 
-    unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account
-    salvaged_downpayment_revenue_account = Account.salvaged_downpayment_revenue_account
+    unearned_revenue_booking_downpayment_account = Account.field_booking_downpayment_account(self.office)
+    salvaged_downpayment_revenue_account = Account.salvaged_downpayment_revenue_account(self.office)
     
     # puts "create transaction_activity"
     

@@ -7,10 +7,10 @@ role = {
 }
 
 Role.create!(
-:name        => ROLE_NAME[:admin],
-:title       => 'Administrator',
-:description => 'Role for administrator',
-:the_role    => role.to_json
+  :name        => ROLE_NAME[:admin],
+  :title       => 'Administrator',
+  :description => 'Role for administrator',
+  :the_role    => role.to_json
 )
 
 
@@ -292,4 +292,15 @@ if Rails.env.development?
 
 end
 
+
+office_4 = Office.create_registration_object(
+                  :is_confirmed        => true    ,        
+                  :is_demo             => false    ,
+                  :main_email          => "admin5@gmail.com",
+                  :starter_password    => "willy1234",
+                  :name        => "OFfice5", 
+                  :description => "balblalbalbaaa", 
+                  :code        => "XXaaaX"
+
+                )
  

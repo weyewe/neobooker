@@ -2,7 +2,20 @@ require 'spec_helper'
 
 describe TransactionActivity do
   before(:each) do
-    @current_office = Office.create_object :name => "OFfice1", :description => "balblalbalba", :code => "XXX"
+    role = {
+      :system => {
+        :administrator => true
+      }
+    }
+
+    Role.create!(
+      :name        => ROLE_NAME[:admin],
+      :title       => 'Administrator',
+      :description => 'Role for administrator',
+      :the_role    => role.to_json
+    )
+    @current_office = Office.create_registration_object :name => "OFfice2", :description => "balblalbalba", :code => "XXX", 
+            :main_email => "test@gmail.com", :starter_password => "ababa"
     
   end
    
