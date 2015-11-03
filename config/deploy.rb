@@ -13,13 +13,19 @@ require 'mina/whenever'
 #   branch       - Branch name to deploy. (needed by mina/git)
 # https://github.com/weyewe/shopper-deployment.git
  
+
 set :domain, '128.199.193.90'
+
+puts "Gonna deploy in #{domain}"
 set :deploy_to, '/var/www/booker.com'
 # https://github.com/weyewe/esman.git
 set :repository, 'git://github.com/weyewe/neobooker.git'
 set :branch, 'master'
 set :user , 'app_deploy'
 set :unicorn_pid, "#{deploy_to}/shared/pids/unicorn.pid"
+
+set :rbenv_path, "/usr/local/rbenv"
+
 
 # For system-wide RVM install.
 #   set :rvm_path, '/usr/local/rvm/bin/rvm'
@@ -48,6 +54,11 @@ end
 # For Rails apps, we'll make some of the shared paths that are shared between
 # all releases.
 task :setup => :environment do
+
+  # sudo mkdir -p "/var/www/booker.com" && sudo chown -R app_deploy "/var/www/booker.com"
+
+
+
 
   queue! %[mkdir -p "#{deploy_to}/shared/sockets"]
   queue! %[chmod g+rx,u+rwx "#{deploy_to}/shared/sockets"]
