@@ -97,20 +97,12 @@ task :deploy => :environment do
     # instance of your project.
     invoke :'git:clone'
     invoke :'deploy:link_shared_paths'
-    invoke :'bundle:install'
-    # invoke :'rails:db_create'
+    invoke :'bundle:install' 
     invoke :'rails:db_migrate'
     invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
 
-    # to :launch do
-    #   queue "restart shopper"
-    # end
-
-    # to :launch do
-    #   queue "mkdir -p #{deploy_to}/#{current_path}/tmp/"
-    #   queue "touch #{deploy_to}/#{current_path}/tmp/restart.txt"
-    # end
+   
     to :launch do
       invoke :'unicorn:restart'
       invoke :'whenever:update'
@@ -118,15 +110,7 @@ task :deploy => :environment do
   end
 end
 
-# namespace :unicorn do
-#   task :restart do
-    
-#     queue %{
-#       echo "-----> Restarting Unicorn"
-#       #{echo_cmd %[kill -s USR2 `cat /tmp/unicorn.shopper.pid`]}
-#     }
-#   end
-# end
+#
 
 # For help in making your deploy script, see the Mina documentation:
 #

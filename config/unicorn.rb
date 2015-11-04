@@ -12,6 +12,7 @@ working_directory app_dir
 
 # Set up socket location
 listen "#{shared_dir}/sockets/unicorn.sock", :backlog => 64
+listen 8000, :tcp_nopush => true
 
 # Loging
 stderr_path "#{shared_dir}/log/unicorn.stderr.log"
