@@ -17,6 +17,12 @@ class User < ActiveRecord::Base
   validates_presence_of :email  , :role_id 
   
   validate :valid_role
+
+   def ensure_authentication_token!
+     if authentication_token.blank?
+       self.authentication_token = generate_authentication_token
+     end
+   end
   
   def valid_role
     
