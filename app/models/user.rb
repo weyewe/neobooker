@@ -23,6 +23,13 @@ class User < ActiveRecord::Base
        self.authentication_token = generate_authentication_token
      end
    end
+
+   def generate_authentication_token
+     loop do
+       token = Devise.friendly_token
+       break token unless User.where(authentication_token: token).first
+     end
+   end
   
   def valid_role
     
