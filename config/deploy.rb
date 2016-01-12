@@ -14,6 +14,8 @@ require 'mina/whenever'
 # https://github.com/weyewe/shopper-deployment.git
  
 
+set :domain, '188.166.185.75'
+
 set :repository, 'git://github.com/weyewe/neobooker.git'
 
 puts "Gonna deploy in #{domain}"

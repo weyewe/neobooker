@@ -1,23 +1,12 @@
-# PostgreSQL. Versions 7.4 and 8.x are supported.
-#
-# Install the pg driver:
-#   gem install pg
-# On Mac OS X with macports:
-#   gem install pg -- --with-pg-config=/opt/local/lib/postgresql84/bin/pg_config
-# On Windows:
-#   gem install pg
-#       Choose the win32 build.
-#       Install PostgreSQL and put its /bin directory on your path.
-#
-# Configure Using Gemfile
-# gem 'pg'
-#
 development:
   adapter: postgresql
   encoding: unicode
-  database: neobooker_development
+  database: neobooker_dev
   pool: 5
   username: weyewe
+  password: willy1234W
+
+#   pg_restore --verbose --clean --no-acl --no-owner -h localhost -U weyewe -d neosikki_development latest.dump
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
@@ -40,13 +29,14 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: neobooker_test
+  database: repay_test
   pool: 5
   username: weyewe
+  password: willy1234W
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: neobooker_production
+  database: neosikki_production
   pool: 5
   username: weyewe

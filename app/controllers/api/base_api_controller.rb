@@ -9,10 +9,9 @@ class Api::BaseApiController < ApplicationController
   end
   
   
-  
   def authenticate_auth_token
-    # puts "Inside the authenticate_auth_token\n"*10
-    # puts "The auth_token: #{params[:auth_token]}"
+    puts "Inside the authenticate_auth_token\n"*10
+    puts "The auth_token: #{params[:auth_token]}"
     resource = User.find_by_authentication_token( params[:auth_token])
     # puts "The resource : #{resource.inspect}"
     if resource.nil?
@@ -30,7 +29,6 @@ class Api::BaseApiController < ApplicationController
       return 
     end
   end
-  
   
   def extjs_error_format( errors ) 
     new_error = {}

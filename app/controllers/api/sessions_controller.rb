@@ -8,6 +8,7 @@ class Api::SessionsController < Api::BaseApiController
 
   respond_to :json
 
+
   def create
     
      
@@ -28,6 +29,7 @@ class Api::SessionsController < Api::BaseApiController
     
     invalid_login_attempt
   end
+  
   
   def say_hi
     render :json=> {:success=>true, 
